@@ -1,0 +1,28 @@
+---
+title: "aa-exploration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{aa-exploration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(evavelo)
+library(openxlsx)
+```
+
+Dans ce document, je vais charger un fichier excel et appliqué la méthodologie pour corriger la catégorie cycliste.
+
+## Import du fichier Excel
+
+
+## Application de la méthodologie
+
