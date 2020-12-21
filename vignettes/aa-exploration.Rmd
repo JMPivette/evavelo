@@ -17,12 +17,92 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(evavelo)
 library(openxlsx)
+library(magrittr)
+library(stringr)
+library(dplyr)
+library(janitor)
 ```
 
 Dans ce document, je vais charger un fichier excel et appliqué la méthodologie pour corriger la catégorie cycliste.
 
 ## Import du fichier Excel
+```{r}
+# Full data
+# xlsx_path <- system.file("example-data/01_all.xlsx", package = "evavelo")
+# Reduced size data
+#xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
+xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
+
+## Sheet: Comptage Post Traitements
+comptage_post <- openxlsx::read.xlsx(xlsx_path,
+                                     sheet = "comptages_man_post_traitements")
+
+comptage_post <- comptage_post %>% 
+  select(starts_with("[")) %>%  ## Don't take in account "old" col names that could create duplicated entries
+  janitor::clean_names() %>% 
+  mutate(categorie_breve = as.character(categorie_breve))
+
+## Sheet: Enquetes Post Traitements
+enquete_post <- openxlsx::read.xlsx(xlsx_path,
+                                    sheet = "enquetes_post_traitement")
+enquete_post <- enquete_post %>% 
+  janitor::clean_names()
+  
+
+```
+
+## Application de la méthodologie pour déterminer [categorie_corrige]
+
+Il s'agit aussi du champ [categorie_visuelle_cycliste_corrige] dans les comptages
+
+Se référer au chapitre 3.1.11 de la méthodologie EVA-Velo:
 
 
-## Application de la méthodologie
+### Recherche des incohérence
+Recherche de réponses incohérentes entre [categorie] (enquetes) et [categorie_visuelle_cyclistes] (comptage)
+
+```{r}
+## Keep only necessary fields from enquete
+
+## Look at categories from "comptage"
+comptage_post %>% 
+  filter(!is.na(categorie_visuelle_cycliste)) %>% 
+  select(id_quest,
+         starts_with("categorie"))
+## Search for categorie_breve
+comptage_post %>% 
+  filter(!is.na(categorie_breve))
+
+## Check for question answered but no visual category (anomaly)
+comptage_post %>% 
+  select(id_quest,categorie_visuelle_cycliste, categorie_breve) %>% 
+  left_join(select(enquete_post, id_quest, categorie), 
+            by = "id_quest") %>% 
+  filter(is.na(categorie) == FALSE & is.na(categorie_visuelle_cycliste))
+```
+
+```{r create a function to correct category}
+correct_category <- function(cat_visual, cat_itw, cat_quest){
+  stopifnot(length(cat_visual) == length(cat_itw),
+            length(cat_itw) == length(cat_quest))
+  # initialize output and use interview output over visual category if available
+  correct <- dplyr::coalesce(cat_itw, cat_visual)
+  print(paste(sum(cat_visual[!is.na(cat_itw)] != cat_itw[!is.na(cat_itw)]),
+              "line(s) have been changed based on interview result"))
+  correct
+  
+  
+}
+
+comptage_post %>% 
+  select(id_quest,categorie_visuelle_cycliste, categorie_breve) %>% 
+  left_join(select(enquete_post, id_quest, categorie), 
+            by = "id_quest") %>% 
+  mutate(categorie_corrigee = correct_category(categorie_visuelle_cycliste,
+                                               categorie_breve,
+                                               categorie))
+
+
+```
+
 
