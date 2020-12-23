@@ -26,12 +26,19 @@ library(janitor)
 Dans ce document, je vais charger un fichier excel et appliqué la méthodologie pour corriger la catégorie cycliste.
 
 ## Import du fichier Excel
-```{r}
+```{r import and clean data}
 # Full data
-# xlsx_path <- system.file("example-data/01_all.xlsx", package = "evavelo")
+xlsx_path <- system.file("example-data/01_all.xlsx", package = "evavelo")
 # Reduced size data
 #xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
-xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
+#xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
+
+## List of expected values 
+cat_list <- c("Sportif", "Itinérant", "Utilitaire", "Loisir")
+type_sortie_list <- c("Une heure ou deux",
+                      "Demi-journée",
+                      "Journée",
+                      "Plusieurs jours")
 
 ## Sheet: Comptage Post Traitements
 comptage_post <- openxlsx::read.xlsx(xlsx_path,
@@ -61,7 +68,7 @@ Se référer au chapitre 3.1.11 de la méthodologie EVA-Velo:
 ### Recherche des incohérence
 Recherche de réponses incohérentes entre [categorie] (enquetes) et [categorie_visuelle_cyclistes] (comptage)
 
-```{r}
+```{r error checking}
 ## Keep only necessary fields from enquete
 
 ## Look at categories from "comptage"
@@ -69,39 +76,88 @@ comptage_post %>%
   filter(!is.na(categorie_visuelle_cycliste)) %>% 
   select(id_quest,
          starts_with("categorie"))
+
 ## Search for categorie_breve
 comptage_post %>% 
   filter(!is.na(categorie_breve))
 
-## Check for question answered but no visual category (anomaly)
+## Check for question answered but no visual category cyclist (anomaly)
+## Vérifié avec Stephanie, il s'agit d'etudes spécifiques sur piétons qu'il faut ignorer dans mon analyse
 comptage_post %>% 
   select(id_quest,categorie_visuelle_cycliste, categorie_breve) %>% 
   left_join(select(enquete_post, id_quest, categorie), 
             by = "id_quest") %>% 
   filter(is.na(categorie) == FALSE & is.na(categorie_visuelle_cycliste))
-```
 
-```{r create a function to correct category}
-correct_category <- function(cat_visual, cat_itw, cat_quest){
-  stopifnot(length(cat_visual) == length(cat_itw),
-            length(cat_itw) == length(cat_quest))
-  # initialize output and use interview output over visual category if available
-  correct <- dplyr::coalesce(cat_itw, cat_visual)
-  print(paste(sum(cat_visual[!is.na(cat_itw)] != cat_itw[!is.na(cat_itw)]),
-              "line(s) have been changed based on interview result"))
-  correct
-  
-  
-}
-
+## Check for  cyclist categories that are not in the expected list
 comptage_post %>% 
-  select(id_quest,categorie_visuelle_cycliste, categorie_breve) %>% 
-  left_join(select(enquete_post, id_quest, categorie), 
-            by = "id_quest") %>% 
-  mutate(categorie_corrigee = correct_category(categorie_visuelle_cycliste,
-                                               categorie_breve,
-                                               categorie))
+  filter(!is.na(categorie_visuelle_cycliste)) %>% 
+  filter(!categorie_visuelle_cycliste %in% cat_list) %>% 
+  count(categorie_visuelle_cycliste)
 
+# Warning Loisirs is used instead of Loisir.... correcting by removing trailing (s) in table
+comptage_post <- comptage_post %>% 
+  mutate(categorie_visuelle_cycliste = stringr::str_remove(categorie_visuelle_cycliste,
+                                                           "s$"))
+comptage_post %>% 
+  filter(!is.na(categorie_breve)) %>% 
+  filter(!categorie_breve %in% cat_list) %>% 
+  count(categorie_breve)
+
+enquete_post %>% 
+  filter(!categorie %in% cat_list)
+
+## Check for type_sortie 
+enquete_post %>% 
+  filter(!type_sortie %in% type_sortie_list) %>% 
+  count(type_sortie)
+
+## correct type_sortie
+enquete_post <- enquete_post %>% 
+  mutate(type_sortie = replace(type_sortie,
+                               type_sortie == "Demi journée",
+                               "Demi-journée"),
+         type_sortie = replace(type_sortie,
+                               type_sortie == "La journée",
+                               "Journée"))
+
+
+```
+### Correction des catégories dans comptage
+```{r categorie_visuelle_cycliste_corrige}
+comptage_post %>% 
+  mutate(categorie_visuelle_cycliste_corrige = coalesce(categorie_breve, ## chapter 3.1.12.2 categorie_breve override categorie_visuelle_cycliste
+                                                        categorie_visuelle_cycliste)) %>% 
+  select(starts_with("categ"))
+```
+### Correction des categories dans enquete
+Il y a 12 cas de figure décrit dans le chapitre 3.1.11 de la méthodologie
+
+```{r categorie_corrigee}
+
+## keep only needed informations
+
+enquete <- enquete_post %>% 
+  select(id_quest, categorie, categorie_corrige,
+         type_sortie) %>% 
+  left_join(select(comptage_post, 
+                   id_quest, categorie_visuelle_cycliste),
+            by = "id_quest") %>% 
+  filter(!is.na(categorie_visuelle_cycliste)) ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
+
+
+## find differences between categorie and categorie_visuelle_cycliste
+enquete %>% 
+  filter(categorie != categorie_visuelle_cycliste) %>% 
+  count(categorie, categorie_visuelle_cycliste)
+
+```
+#### Cas 1
+
+```{r}
+enquete %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Itinérant")
+  
 
 ```
 
