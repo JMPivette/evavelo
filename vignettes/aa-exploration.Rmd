@@ -112,15 +112,14 @@ enquete_post %>%
   filter(!type_sortie %in% type_sortie_list) %>% 
   count(type_sortie)
 
-## correct type_sortie
-enquete_post <- enquete_post %>% 
-  mutate(type_sortie = replace(type_sortie,
-                               type_sortie == "Demi journée",
-                               "Demi-journée"),
-         type_sortie = replace(type_sortie,
-                               type_sortie == "La journée",
-                               "Journée"))
 
+enquete_post <- enquete_post %>% 
+  mutate(
+    type_sortie = case_when(
+      type_sortie == "Demi journée" ~ "Demi-journée",
+      type_sortie == "La journée" ~ "Journée",
+      TRUE ~ type_sortie)
+    )
 
 ```
 ### Correction des catégories dans comptage
@@ -139,7 +138,7 @@ Il y a 12 cas de figure décrit dans le chapitre 3.1.11 de la méthodologie
 
 enquete <- enquete_post %>% 
   select(id_quest, categorie, categorie_corrige,
-         type_sortie) %>% 
+         type_sortie, dms, starts_with("iti_")) %>% 
   left_join(select(comptage_post, 
                    id_quest, categorie_visuelle_cycliste),
             by = "id_quest") %>% 
@@ -147,17 +146,55 @@ enquete <- enquete_post %>%
 
 
 ## find differences between categorie and categorie_visuelle_cycliste
-enquete %>% 
-  filter(categorie != categorie_visuelle_cycliste) %>% 
+cat_to_correct <- enquete %>% 
+  filter(categorie != categorie_visuelle_cycliste) 
+
+cat_to_correct%>% 
   count(categorie, categorie_visuelle_cycliste)
 
 ```
 #### Cas 1
 
-```{r}
-enquete %>% 
+```{r cas 1}
+cat_to_correct %>% 
   filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Itinérant")
-  
+
+cat_to_correct %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Itinérant") %>% 
+  #mutate(iti_test = c(1,NA,2,NA,3,NA)) %>% ## For tests (because there was no responses to iti in the example)
+  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0) %>%  ## check if any response from Q25 to Q27
+  mutate(
+    categorie_corrige = 
+      case_when(
+        iti_any ~ "Itinérant",
+        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
+        TRUE ~ "Sportif"
+      ))  
+         
+
+```
+
+Attention 
+
+### Cas 2
+
+En fait le cas 2 est exactement le même algorithme que le cas 1 (en remplaçant sportif par utilitaire)
+
+
+```{r cas 2}
+cat_to_correct %>% 
+  filter(categorie == "Utilitaire" & categorie_visuelle_cycliste =="Itinérant")
+
+cat_to_correct %>% 
+  filter(categorie == "Utilitaire" & categorie_visuelle_cycliste =="Itinérant") %>% 
+  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0) %>%  ## check if any response from Q25 to Q27
+  mutate(
+    categorie_corrige = 
+      case_when(
+        iti_any ~ "Itinérant",
+        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
+        TRUE ~ "Utilitaire"
+      ))  
 
 ```
 
