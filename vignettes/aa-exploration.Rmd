@@ -39,6 +39,7 @@ type_sortie_list <- c("Une heure ou deux",
                       "Demi-journée",
                       "Journée",
                       "Plusieurs jours")
+type_trajet_list <- c("Aller-retour", "Boucle", "Trajet simple")
 
 ## Sheet: Comptage Post Traitements
 comptage_post <- openxlsx::read.xlsx(xlsx_path,
@@ -121,6 +122,18 @@ enquete_post <- enquete_post %>%
       TRUE ~ type_sortie)
     )
 
+## Check for type_trajet
+enquete_post %>% 
+  filter(!type_trajet %in% type_trajet_list) %>% 
+  count(type_trajet)
+
+enquete_post <- enquete_post %>% 
+  mutate(
+    type_trajet = case_when(
+      stringr::str_detect(type_trajet, "simple") ~ "Trajet simple",
+      stringr::str_detect(type_trajet, "retour") ~ "Aller-retour",
+      TRUE ~ type_trajet)
+  )
 ```
 ### Correction des catégories dans comptage
 ```{r categorie_visuelle_cycliste_corrige}
@@ -138,7 +151,8 @@ Il y a 12 cas de figure décrit dans le chapitre 3.1.11 de la méthodologie
 
 enquete <- enquete_post %>% 
   select(id_quest, categorie, categorie_corrige,
-         type_sortie, dms, starts_with("iti_")) %>% 
+         type_sortie, dms, starts_with("iti_"),
+         km_sortie, type_trajet) %>% 
   left_join(select(comptage_post, 
                    id_quest, categorie_visuelle_cycliste),
             by = "id_quest") %>% 
@@ -261,3 +275,19 @@ cat_to_correct %>%
 ```
 
 Attention, j'ai un cas pour lequel la dms n'est pas renseignée (questionnaire 115A11). Cela le classifie en Sportif alors que de toute évidence il est Itinérant.
+
+#### Cas 5
+
+```{r cas 5}
+cat_to_correct %>% 
+  filter(categorie == "Utilitaire" & categorie_visuelle_cycliste =="Sportif") %>% 
+  mutate(
+    categorie_corrige = 
+      case_when(
+        km_sortie <= 30 & type_trajet == "Aller-retour" ~ "Utilitaire",
+        TRUE ~ "Sportif"
+      )
+    )
+
+```
+
