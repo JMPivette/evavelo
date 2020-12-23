@@ -174,9 +174,9 @@ cat_to_correct %>%
 
 ```
 
-Attention 
+Attention j'ai des sportifs qui se transforment en loisir dans les fichier Excel avec les catégories corrigées
 
-### Cas 2
+#### Cas 2
 
 En fait le cas 2 est exactement le même algorithme que le cas 1 (en remplaçant sportif par utilitaire)
 
@@ -198,7 +198,7 @@ cat_to_correct %>%
 
 ```
 
-### Cas 3
+#### Cas 3
 
 On est encore sur le même algorithme que les cas 1 et cas 2.
 Attention il y a une subtilité dans la methodologie "Réponses cohérentes"
@@ -220,7 +220,7 @@ cat_to_correct %>%
 
 ```
 
-### Cas 1 2 & 3
+#### Cas 1 2 & 3
 
 L'algorithmie est identique sur les 3 premiers cas qui correspondent à une categorie visuelle "Itinérant" là ou le questionnaire indique autre chose
 
@@ -240,3 +240,24 @@ cat_to_correct %>%
 
 ```
 
+
+
+#### Cas 4
+
+```{r}
+cat_to_correct %>% 
+  filter(categorie == "Itinérant" & categorie_visuelle_cycliste =="Sportif")
+
+cat_to_correct %>% 
+  filter(categorie == "Itinérant" & categorie_visuelle_cycliste =="Sportif") %>% 
+  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0) %>%  ## check if any response from Q25 to Q27
+  mutate(
+    categorie_corrige = 
+      case_when(
+        iti_any ~ "Itinérant",
+        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
+        TRUE ~ "Sportif"
+      ))  
+```
+
+Attention, j'ai un cas pour lequel la dms n'est pas renseignée (questionnaire 115A11). Cela le classifie en Sportif alors que de toute évidence il est Itinérant.
