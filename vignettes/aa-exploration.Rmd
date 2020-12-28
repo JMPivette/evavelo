@@ -388,4 +388,76 @@ cat_to_correct %>%
 
 ```
 
+#### Cas 10
+Même algorithme que les cas 4 et 7
+
+```{r cas 10}
+cat_to_correct %>% 
+  filter(categorie == "Itinérant" & categorie_visuelle_cycliste =="Loisir")
+
+cat_to_correct %>% 
+  filter(categorie == "Itinérant" & categorie_visuelle_cycliste =="Loisir") %>% 
+  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0) %>%  ## check if any response from Q25 to Q27
+  mutate(
+    categorie_corrige = 
+      case_when(
+        iti_any ~ "Itinérant",
+        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
+        TRUE ~ "Loisir"
+      ))  
+
+```
+
+#### Cas 4 7 & 10
+
+L'algorithmie est identique sur ces 3 cas qui correspondent à une categorie questionnaire "Itinérant" là ou la categorie visuelle indique autre chose
+
+On peut donc le faire en une seule passe
+
+```{r}
+cat_to_correct %>% 
+  filter(categorie_visuelle_cycliste !="Itinérant" & categorie == "Itinérant") %>% 
+  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0) %>%  ## check if any response from Q25 to Q27
+  mutate(
+    categorie_corrige = 
+      case_when(
+        iti_any ~ "Itinérant",
+        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
+        TRUE ~ categorie_visuelle_cycliste
+      ))  
+
+```
+
+#### Cas 1,2,3,4,7 & 10
+
+On peut aussi regrouper 6 des cas qui sont très similaires. Ce sont les cas pour lesquels il y a une incohérence entre la catégorie visuelle et la catégorie questionnaire ainsi qu'au moins une catégorie de type "itinerant"
+
+```{r}
+cat_to_correct %>% 
+  filter("Itinérant" %in% c(categorie_visuelle_cycliste, categorie)) %>% 
+  select(id_quest,
+         starts_with("categorie"))
+
+cat_to_correct %>% 
+  filter(categorie == "Itinérant" | categorie_visuelle_cycliste == "Itinérant") %>% 
+  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0,## check if any response from Q25 to Q27
+         ## Other category than Itinérant
+         other_cat = coalesce(na_if(categorie, "Itinérant"),
+                              na_if(categorie_visuelle_cycliste, "Itinérant"))
+  ) %>%  
+  mutate(
+    categorie_corrige = 
+      case_when(
+        iti_any ~ "Itinérant",
+        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
+        TRUE ~ other_cat
+      )
+  )
+   
+  
+  
+  
+
+
+```
 
