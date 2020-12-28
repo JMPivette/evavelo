@@ -154,7 +154,8 @@ enquete <- enquete_post %>%
   select(id_quest, categorie, categorie_corrige,
          type_sortie, dms, starts_with("iti_"),
          km_sortie, type_trajet, # used for Case 5
-         nb_vae, nb_total_velo, activites ## Used for Case 6
+         nb_vae, nb_total_velo, activites, ## Used for Case 6
+         activite_motiv # USed for Case 9
          ) %>% 
   left_join(select(comptage_post, 
                    id_quest, categorie_visuelle_cycliste),
@@ -369,4 +370,22 @@ cat_to_correct %>%
 
 ```
 
-####
+#### Cas 9
+
+```{r cas 9}
+cat_to_correct %>% 
+  filter(categorie == "Loisir" & categorie_visuelle_cycliste =="Utilitaire") %>% 
+  select(id_quest, categorie_corrige, activite_motiv, activites)
+
+cat_to_correct %>% 
+  filter(categorie == "Loisir" & categorie_visuelle_cycliste =="Utilitaire") %>% 
+  mutate(
+    categorie_corrige = case_when(
+      is.na(activite_motiv) ~ "Loisir",
+      stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
+      TRUE ~"Loisir"
+    ))
+
+```
+
+
