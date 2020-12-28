@@ -134,6 +134,7 @@ enquete_post <- enquete_post %>%
       stringr::str_detect(type_trajet, "retour") ~ "Aller-retour",
       TRUE ~ type_trajet)
   )
+
 ```
 ### Correction des catégories dans comptage
 ```{r categorie_visuelle_cycliste_corrige}
@@ -152,7 +153,9 @@ Il y a 12 cas de figure décrit dans le chapitre 3.1.11 de la méthodologie
 enquete <- enquete_post %>% 
   select(id_quest, categorie, categorie_corrige,
          type_sortie, dms, starts_with("iti_"),
-         km_sortie, type_trajet) %>% 
+         km_sortie, type_trajet, # used for Case 5
+         nb_vae, nb_total_velo, activites ## Used for Case 6
+         ) %>% 
   left_join(select(comptage_post, 
                    id_quest, categorie_visuelle_cycliste),
             by = "id_quest") %>% 
@@ -279,6 +282,10 @@ Attention, j'ai un cas pour lequel la dms n'est pas renseignée (questionnaire 1
 #### Cas 5
 
 ```{r cas 5}
+
+cat_to_correct %>% 
+  filter(categorie == "Utilitaire" & categorie_visuelle_cycliste =="Sportif")
+
 cat_to_correct %>% 
   filter(categorie == "Utilitaire" & categorie_visuelle_cycliste =="Sportif") %>% 
   mutate(
@@ -291,3 +298,75 @@ cat_to_correct %>%
 
 ```
 
+#### Cas 6
+
+Ajout de l'information "VAE" et "autres activités".
+
+La méthodologie indique d'appliquer un traitement différentié s'il s'agit d'un VTT ou d'un vélo de montagne mais je ne retrouve pas cette information dans le questionnaire..
+
+Pour la suite, je considère les questionnaires comme VAE si tous les vélos sont des VAE.
+
+```{r cas 6}
+cat_to_correct %>% 
+  filter(categorie == "Loisir" & categorie_visuelle_cycliste =="Sportif") %>% 
+  transmute(id_quest, categorie, categorie_corrige, categorie_visuelle_cycliste,
+         nb_vae, nb_total_velo, km_sortie,
+         autre_activite = !is.na(activites) & activites != "Aucune")
+
+cat_to_correct %>% 
+  filter(categorie == "Loisir" & categorie_visuelle_cycliste =="Sportif") %>% 
+  mutate(autre_activite = !is.na(activites) & activites != "Aucune",
+         vae = !is.na(nb_vae) & nb_vae == nb_total_velo) %>% 
+  mutate(
+    categorie_corrige = case_when(
+      is.na(km_sortie) ~ "Loisir",
+      km_sortie > 50 & autre_activite == FALSE & vae == FALSE ~ "Sportif",
+      TRUE ~ "Loisir"))
+  
+
+```
+
+#### Cas 7
+
+Algorithme identique au Cas 4 (inverse du cas 2)
+
+```{r cas 7}
+cat_to_correct %>% 
+  filter(categorie == "Itinérant" & categorie_visuelle_cycliste =="Utilitaire")
+
+cat_to_correct %>% 
+  filter(categorie == "Itinérant" & categorie_visuelle_cycliste =="Utilitaire") %>% 
+  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0) %>%  ## check if any response from Q25 to Q27
+  mutate(
+    categorie_corrige = 
+      case_when(
+        iti_any ~ "Itinérant",
+        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
+        TRUE ~ "Utilitaire"
+      ))  
+
+
+```
+
+#### Cas 8
+
+Cas inverse de 5 mais n'utilise pas les mêmes critères.
+
+```{r cas 8}
+cat_to_correct %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Utilitaire")
+
+cat_to_correct %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Utilitaire") %>% 
+  mutate(vae = !is.na(nb_vae) & nb_vae == nb_total_velo) %>% 
+  mutate(
+    categorie_corrige = ifelse(
+      km_sortie > 50 & vae == FALSE,
+      "Sportif",
+      "Utilitaire"
+    )
+  )
+
+```
+
+####
