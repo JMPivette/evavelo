@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-Le but du package {evavelo} est d'appliquer des traitements automatiques sur des fichiers d'enquêtes liés à la méthode EVA-VELO (Méthode nationale evaluation des retombées des vélo-routes) développée par **Vélo et Térritoires**
+Le but du package {evavelo} est d'appliquer des traitements automatiques sur des fichiers d'enquêtes liés à la méthode EVA-VELO (Méthode nationale evaluation des retombées des vélo-routes) développée par **Vélo et Territoires**
 
 ## Utilisation
 

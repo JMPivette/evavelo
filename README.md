@@ -12,7 +12,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 Le but du package {evavelo} est d’appliquer des traitements automatiques
 sur des fichiers d’enquêtes liés à la méthode EVA-VELO (Méthode
 nationale evaluation des retombées des vélo-routes) développée par
-**Vélo et Térritoires**
+**Vélo et Territoires**
 
 ## Utilisation
 
