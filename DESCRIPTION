@@ -12,11 +12,13 @@ Description: Applique differents traitement automatique en lien
 License: MIT + file LICENSE
 URL: https://github.com/JMPivette/evavelo
 BugReports: https://github.com/JMPivette/evavelo/issues
-Suggests: 
+Imports: 
     dplyr,
+    magrittr,
+    rlang
+Suggests: 
     janitor,
     knitr,
-    magrittr,
     openxlsx,
     rmarkdown,
     stringr
