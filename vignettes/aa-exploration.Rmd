@@ -134,7 +134,9 @@ enquete_post <- enquete_post %>%
 comptage_post %>% 
   mutate(categorie_visuelle_cycliste_corrige = coalesce(categorie_breve, ## chapter 3.1.12.2 categorie_breve override categorie_visuelle_cycliste
                                                         categorie_visuelle_cycliste)) %>% 
-  select(starts_with("categ"))
+  select(-categorie_visuelle) %>% 
+  select(starts_with("categ")) %>% 
+  count(across(starts_with("categ")), sort = TRUE)
 ```
 ## Correction des categories dans enquete
 Il y a 12 cas de figure décrit dans le chapitre 3.1.11 de la méthodologie
