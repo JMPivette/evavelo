@@ -434,7 +434,7 @@ On peut aussi regrouper 6 des cas qui sont très similaires. Ce sont les cas pou
 
 ```{r}
 cat_to_correct %>% 
-  filter("Itinérant" %in% c(categorie_visuelle_cycliste, categorie)) %>% 
+  filter(categorie == "Itinérant" | categorie_visuelle_cycliste == "Itinérant") %>% 
   select(id_quest,
          starts_with("categorie"))
 
@@ -457,6 +457,54 @@ cat_to_correct %>%
   
   
   
+
+
+```
+#### Cas 11
+Le cas 11 est l'inverse du cas 6 avec le même algorithme
+
+```{r cas 11}
+cat_to_correct %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir") %>% 
+  transmute(id_quest, categorie, categorie_corrige, categorie_visuelle_cycliste,
+         nb_vae, nb_total_velo, km_sortie,
+         autre_activite = !is.na(activites) & activites != "Aucune")
+
+cat_to_correct %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir") %>% 
+  mutate(autre_activite = !is.na(activites) & activites != "Aucune",
+         vae = !is.na(nb_vae) & nb_vae == nb_total_velo) %>% 
+  mutate(
+    categorie_corrige = case_when(
+      is.na(km_sortie) ~ "Loisir",
+      km_sortie > 50 & autre_activite == FALSE & vae == FALSE ~ "Sportif",
+      TRUE ~ "Loisir"))
+
+```
+
+#### Cas 6 & 11
+
+Les cas 6 et 11 sont quasiment identique et peuvent être regroupés dans le même algorithme
+
+```{r}
+
+cat_to_correct %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir" |
+           categorie == "Loisir" & categorie_visuelle_cycliste =="Sportif") %>% 
+  transmute(id_quest, categorie, categorie_corrige, categorie_visuelle_cycliste,
+         nb_vae, nb_total_velo, km_sortie,
+         autre_activite = !is.na(activites) & activites != "Aucune")
+
+cat_to_correct %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir" |
+           categorie == "Loisir" & categorie_visuelle_cycliste =="Sportif") %>% 
+  mutate(autre_activite = !is.na(activites) & activites != "Aucune",
+         vae = !is.na(nb_vae) & nb_vae == nb_total_velo) %>% 
+  mutate(
+    categorie_corrige = case_when(
+      is.na(km_sortie) ~ "Loisir",
+      km_sortie > 50 & autre_activite == FALSE & vae == FALSE ~ "Sportif",
+      TRUE ~ "Loisir"))
 
 
 ```
