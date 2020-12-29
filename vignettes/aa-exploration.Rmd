@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup,include=FALSE}
 library(evavelo)
 library(openxlsx)
 library(magrittr)
@@ -24,6 +24,11 @@ library(janitor)
 ```
 
 Dans ce document, je vais charger un fichier excel et appliqué la méthodologie pour corriger la catégorie cycliste.
+
+
+Il s'agit aussi du champ **[categorie_visuelle_cycliste_corrige]** dans les comptages
+
+Se référer au chapitre 3.1.11 de la méthodologie EVA-Velo:
 
 ## Import du fichier Excel
 ```{r import and clean data}
@@ -59,36 +64,25 @@ enquete_post <- enquete_post %>%
 
 ```
 
-## Application de la méthodologie pour déterminer [categorie_corrige]
 
-Il s'agit aussi du champ [categorie_visuelle_cycliste_corrige] dans les comptages
-
-Se référer au chapitre 3.1.11 de la méthodologie EVA-Velo:
-
-
-### Recherche des incohérence
-Recherche de réponses incohérentes entre [categorie] (enquetes) et [categorie_visuelle_cyclistes] (comptage)
+## Recherche des incohérence
+Recherche de réponses incohérentes dans **[categorie]** (enquêtes) et **[categorie_visuelle_cyclistes]** (comptage)
 
 ```{r error checking}
-## Keep only necessary fields from enquete
 
 ## Look at categories from "comptage"
 comptage_post %>% 
   filter(!is.na(categorie_visuelle_cycliste)) %>% 
-  select(id_quest,
-         starts_with("categorie"))
+  count(categorie_visuelle_cycliste, sort = TRUE)
 
-## Search for categorie_breve
-comptage_post %>% 
-  filter(!is.na(categorie_breve))
-
-## Check for question answered but no visual category cyclist (anomaly)
-## Vérifié avec Stephanie, il s'agit d'etudes spécifiques sur piétons qu'il faut ignorer dans mon analyse
-comptage_post %>% 
-  select(id_quest,categorie_visuelle_cycliste, categorie_breve) %>% 
-  left_join(select(enquete_post, id_quest, categorie), 
-            by = "id_quest") %>% 
-  filter(is.na(categorie) == FALSE & is.na(categorie_visuelle_cycliste))
+## Search for categorie_breve (not present in test file)
+# comptage_post %>% 
+#   filter(!is.na(categorie_breve))
+## Check for categorie_breve answers not from the expected list
+# comptage_post %>% 
+#   filter(!is.na(categorie_breve)) %>% 
+#   filter(!categorie_breve %in% cat_list) %>% 
+#   count(categorie_breve)
 
 ## Check for  cyclist categories that are not in the expected list
 comptage_post %>% 
@@ -100,13 +94,11 @@ comptage_post %>%
 comptage_post <- comptage_post %>% 
   mutate(categorie_visuelle_cycliste = stringr::str_remove(categorie_visuelle_cycliste,
                                                            "s$"))
-comptage_post %>% 
-  filter(!is.na(categorie_breve)) %>% 
-  filter(!categorie_breve %in% cat_list) %>% 
-  count(categorie_breve)
 
+## Check for categorie enquete not in the expected list
 enquete_post %>% 
-  filter(!categorie %in% cat_list)
+  filter(!categorie %in% cat_list) %>% 
+  count(categorie)
 
 ## Check for type_sortie 
 enquete_post %>% 
@@ -122,11 +114,12 @@ enquete_post <- enquete_post %>%
       TRUE ~ type_sortie)
     )
 
-## Check for type_trajet
+## Check for type_trajet not in the expected list
 enquete_post %>% 
   filter(!type_trajet %in% type_trajet_list) %>% 
   count(type_trajet)
 
+## Correction of type_trajet
 enquete_post <- enquete_post %>% 
   mutate(
     type_trajet = case_when(
@@ -136,14 +129,14 @@ enquete_post <- enquete_post %>%
   )
 
 ```
-### Correction des catégories dans comptage
+## Correction des catégories dans comptage
 ```{r categorie_visuelle_cycliste_corrige}
 comptage_post %>% 
   mutate(categorie_visuelle_cycliste_corrige = coalesce(categorie_breve, ## chapter 3.1.12.2 categorie_breve override categorie_visuelle_cycliste
                                                         categorie_visuelle_cycliste)) %>% 
   select(starts_with("categ"))
 ```
-### Correction des categories dans enquete
+## Correction des categories dans enquete
 Il y a 12 cas de figure décrit dans le chapitre 3.1.11 de la méthodologie
 
 ```{r categorie_corrigee}
@@ -168,9 +161,14 @@ cat_to_correct <- enquete %>%
   filter(categorie != categorie_visuelle_cycliste) 
 
 cat_to_correct%>% 
-  count(categorie, categorie_visuelle_cycliste)
+  count(categorie, categorie_visuelle_cycliste, sort = TRUE)
 
 ```
+### Traitement des cas individuels
+
+Traitement des cas individuellement comme proposé dans la méthodologie.
+Un regroupement sera effectué dans le chapitre suivant.
+
 #### Cas 1
 
 ```{r cas 1}
@@ -237,28 +235,6 @@ cat_to_correct %>%
       ))  
 
 ```
-
-#### Cas 1 2 & 3
-
-L'algorithmie est identique sur les 3 premiers cas qui correspondent à une categorie visuelle "Itinérant" là ou le questionnaire indique autre chose
-
-On peut donc le faire en une seule passe
-
-```{r}
-cat_to_correct %>% 
-  filter(categorie_visuelle_cycliste =="Itinérant" & categorie != "Itinérant") %>% 
-  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0) %>%  ## check if any response from Q25 to Q27
-  mutate(
-    categorie_corrige = 
-      case_when(
-        iti_any ~ "Itinérant",
-        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
-        TRUE ~ categorie
-      ))  
-
-```
-
-
 
 #### Cas 4
 
@@ -408,25 +384,53 @@ cat_to_correct %>%
 
 ```
 
-#### Cas 4 7 & 10
+#### Cas 11
+Le cas 11 est l'inverse du cas 6 avec le même algorithme
 
-L'algorithmie est identique sur ces 3 cas qui correspondent à une categorie questionnaire "Itinérant" là ou la categorie visuelle indique autre chose
-
-On peut donc le faire en une seule passe
-
-```{r}
+```{r cas 11}
 cat_to_correct %>% 
-  filter(categorie_visuelle_cycliste !="Itinérant" & categorie == "Itinérant") %>% 
-  mutate(iti_any = rowSums(across(starts_with("iti"), ~ !is.na(.x))) != 0) %>%  ## check if any response from Q25 to Q27
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir") %>% 
+  transmute(id_quest, categorie, categorie_corrige, categorie_visuelle_cycliste,
+         nb_vae, nb_total_velo, km_sortie,
+         autre_activite = !is.na(activites) & activites != "Aucune")
+
+cat_to_correct %>% 
+  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir") %>% 
+  mutate(autre_activite = !is.na(activites) & activites != "Aucune",
+         vae = !is.na(nb_vae) & nb_vae == nb_total_velo) %>% 
   mutate(
-    categorie_corrige = 
-      case_when(
-        iti_any ~ "Itinérant",
-        type_sortie == "Plusieurs jours" & dms > 1 ~ "Itinérant",
-        TRUE ~ categorie_visuelle_cycliste
-      ))  
+    categorie_corrige = case_when(
+      is.na(km_sortie) ~ "Loisir",
+      km_sortie > 50 & autre_activite == FALSE & vae == FALSE ~ "Sportif",
+      TRUE ~ "Loisir"))
 
 ```
+
+#### Cas 12
+
+
+```{r cas 12}
+cat_to_correct %>% 
+  filter(categorie == "Utilitaire" & categorie_visuelle_cycliste == "Loisir") %>% 
+  select(id_quest, categorie_corrige, activite_motiv, activites)
+
+cat_to_correct %>% 
+  filter(categorie == "Utilitaire" & categorie_visuelle_cycliste == "Loisir") %>% 
+  mutate(
+    categorie_corrige = case_when(
+      is.na(activite_motiv) ~ "Loisir",
+      stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
+      TRUE ~"Loisir"
+    ))
+
+
+
+```
+
+
+### Regroupement d'algorithmes
+La plupart des algorithmes sont utilisés plusieurs fois. Nous pouvons les regrouper pour plus de simplicité.
+Seul les cas 5 et 8 sont uniques. Ils correpondent au cas "Sportif/Utilitaire" ou "Utilitaire/Sportif".
 
 #### Cas 1,2,3,4,7 & 10
 
@@ -453,35 +457,8 @@ cat_to_correct %>%
         TRUE ~ other_cat
       )
   )
-   
   
-  
-  
-
-
 ```
-#### Cas 11
-Le cas 11 est l'inverse du cas 6 avec le même algorithme
-
-```{r cas 11}
-cat_to_correct %>% 
-  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir") %>% 
-  transmute(id_quest, categorie, categorie_corrige, categorie_visuelle_cycliste,
-         nb_vae, nb_total_velo, km_sortie,
-         autre_activite = !is.na(activites) & activites != "Aucune")
-
-cat_to_correct %>% 
-  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir") %>% 
-  mutate(autre_activite = !is.na(activites) & activites != "Aucune",
-         vae = !is.na(nb_vae) & nb_vae == nb_total_velo) %>% 
-  mutate(
-    categorie_corrige = case_when(
-      is.na(km_sortie) ~ "Loisir",
-      km_sortie > 50 & autre_activite == FALSE & vae == FALSE ~ "Sportif",
-      TRUE ~ "Loisir"))
-
-```
-
 #### Cas 6 & 11
 
 Les cas 6 et 11 sont quasiment identique et peuvent être regroupés dans le même algorithme
@@ -489,7 +466,8 @@ Les cas 6 et 11 sont quasiment identique et peuvent être regroupés dans le mê
 ```{r}
 
 cat_to_correct %>% 
-  filter(categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir" |
+  filter(
+    categorie == "Sportif" & categorie_visuelle_cycliste =="Loisir" |
            categorie == "Loisir" & categorie_visuelle_cycliste =="Sportif") %>% 
   transmute(id_quest, categorie, categorie_corrige, categorie_visuelle_cycliste,
          nb_vae, nb_total_velo, km_sortie,
@@ -508,4 +486,29 @@ cat_to_correct %>%
 
 
 ```
+
+#### Cas 9 & 12
+
+Algorithmes identiques pour les cas 9 et 12
+
+```{r}
+
+cat_to_correct %>% 
+  filter(categorie == "Utilitaire" & categorie_visuelle_cycliste == "Loisir" |
+           categorie == "Loisir" & categorie_visuelle_cycliste == "Utilitaire" ) %>% 
+  select(id_quest, categorie_corrige, activite_motiv, activites)
+
+cat_to_correct %>% 
+  filter(categorie == "Utilitaire" & categorie_visuelle_cycliste == "Loisir" |
+           categorie == "Loisir" & categorie_visuelle_cycliste == "Utilitaire" ) %>% 
+  mutate(
+    categorie_corrige = case_when(
+      is.na(activite_motiv) ~ "Loisir",
+      stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
+      TRUE ~"Loisir"
+    ))
+
+```
+
+
 
