@@ -88,3 +88,43 @@ test_that("correct_spor_lois works", {
                corrected_df$categorie_corrige)
 
 })
+
+# Test choices between Utilitaire and Loisir------------------------------------------------------
+
+test_that("correct_util_lois works", {
+  ## Input data.frame
+  df <- tibble::tribble(
+    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~activite_motiv,
+    "1","Loisir", "Utilitaire","empty", "Je fais cette activité à l'occasion de ma randonnée", # Loisir
+    "2","Utilitaire", "Loisir","empty", "Je fais cette activité à l'occasion de ma randonnée", # Loisir
+    "3","Loisir", "Utilitaire","empty", "Cette activité est le but de ma randonnée",           # Utilitaire
+    "4","Utilitaire", "Loisir","empty", "Cette activité est le but de ma randonnée",           # Utilitaire
+    "5","Loisir", "Utilitaire","empty", NA,                                                    # Utilitaire
+    "6","Utilitaire", "Loisir","empty", NA,                                                    # Loisir
+    "10","Sportif", "Sportif", "Sportif",  "Cette activité est le but de ma randonnée" # no changes
+  )
+
+  ## Expected categorie_corrige
+  expected_out <- c("Loisir",
+                    "Loisir",
+                    "Utilitaire",
+                    "Utilitaire",
+                    "Utilitaire",
+                    "Loisir",
+                    "Sportif")
+
+  ## Test that applying function creates no error
+  expect_error(corrected_df <- correct_util_lois(df),
+               regexp = NA)
+  ## Test that the output is a data.frame
+  expect_s3_class(corrected_df, "data.frame")
+
+  ## Test that nothing as changed except for "categorie_corrige"
+  expect_equal(select(df, -categorie_corrige),
+               select(corrected_df, -categorie_corrige))
+
+  ## Test that output is as expected
+  expect_equal(expected_out,
+               corrected_df$categorie_corrige)
+
+})

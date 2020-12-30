@@ -420,7 +420,7 @@ cat_to_correct %>%
   filter(categorie == "Utilitaire" & categorie_visuelle_cycliste == "Loisir") %>% 
   mutate(
     categorie_corrige = case_when(
-      is.na(activite_motiv) ~ "Loisir",
+      is.na(activite_motiv) ~ "Utilitaire",
       stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
       TRUE ~"Loisir"
     ))
@@ -505,7 +505,7 @@ cat_to_correct %>%
            categorie == "Loisir" & categorie_visuelle_cycliste == "Utilitaire" ) %>% 
   mutate(
     categorie_corrige = case_when(
-      is.na(activite_motiv) ~ "Loisir",
+      is.na(activite_motiv) ~ categorie_visuelle_cycliste,
       stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
       TRUE ~"Loisir"
     ))

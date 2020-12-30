@@ -65,6 +65,10 @@ correct_categ <- function(comptage,
 }
 
 
+# Individual cases functions ------------------------------------------------------------------
+
+
+
 #' Apply categorie_corrige methodology when Itinerant is present in the answer
 #'
 #' In Chapter 3.1.11 , this corresponds to cases 1 2 3 4 7 10
@@ -143,4 +147,35 @@ correct_spor_lois <- function(data){
                               .data$id_quest, .data$categorie_corrige),
                        by = "id_quest")
 
+}
+
+#' Apply categorie_corrigee Methodology to decide between Utilitaire and Loisir
+#'
+#' In Chapter 3.1.11, this corresponds to cases 9 12
+#'
+#' this function can be used inside pipe operator and is compatible with dplyr
+#'
+#' @param data a data.frame
+#'
+#' @importFrom rlang .data
+#'
+#' @return a data.frame the same size of data with updated categorie_corrige values.
+#' @export
+correct_util_lois <- function(data){
+
+  rows_to_update <- data %>%
+    dplyr::filter(.data$categorie == "Utilitaire" & .data$categorie_visuelle_cycliste == "Loisir" |
+                    .data$categorie == "Loisir" & .data$categorie_visuelle_cycliste == "Utilitaire"
+    ) %>%
+    dplyr::mutate(
+      categorie_corrige = dplyr::case_when(
+        is.na(activite_motiv) ~ categorie_visuelle_cycliste,
+        stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
+        TRUE ~"Loisir"
+      ))
+  ## Update rows
+  data %>%
+    dplyr::rows_update(select(rows_to_update,
+                              .data$id_quest, .data$categorie_corrige),
+                       by = "id_quest")
 }

@@ -15,13 +15,13 @@ BugReports: https://github.com/JMPivette/evavelo/issues
 Imports: 
     dplyr,
     magrittr,
-    rlang
+    rlang,
+    stringr
 Suggests: 
     janitor,
     knitr,
     openxlsx,
     rmarkdown,
-    stringr,
     testthat (>= 3.0.0),
     tibble
 VignetteBuilder: 
