@@ -8,6 +8,7 @@
 #'
 #' @import magrittr
 #' @importFrom dplyr mutate filter select left_join starts_with
+#' @importFrom rlang .data
 #'
 #' @return a vector the same length as the number of rows in comptage with the new `categorie` value
 #' @export
@@ -42,21 +43,21 @@ correct_categ <- function(comptage,
 
   ## Add comptage information to enquete
   enquete <- enquete %>%
-    select(id_quest, categorie, categorie_corrige,
-           type_sortie, dms, starts_with("iti_"),
-           km_sortie, type_trajet, # used for Case 5
-           nb_vae, nb_total_velo, activites, ## Used for Case 6
-           activite_motiv # USed for Case 9
+    select(.data$id_quest, .data$categorie, .data$categorie_corrige,
+           .data$type_sortie, .data$dms, starts_with("iti_"),
+           .data$km_sortie, .data$type_trajet, # used for Case 5
+           .data$nb_vae, .data$nb_total_velo, .data$activites, ## Used for Case 6
+           .data$activite_motiv # USed for Case 9
     ) %>%
-    left_join(select(comptage_post,
-                     id_quest, categorie_visuelle_cycliste),
+    left_join(select(comptage,
+                     .data$id_quest, .data$categorie_visuelle_cycliste),
               by = "id_quest") %>%
-    filter(!is.na(categorie_visuelle_cycliste)) ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
+    filter(!is.na(.data$categorie_visuelle_cycliste)) ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
 
   ## Deal with differences in categorie and categorie_visuelle
 
   enquete %>%
-    filter(categorie != categorie_visuelle_cycliste) %>%
+    filter(.data$categorie != .data$categorie_visuelle_cycliste) %>%
     ## Apply case 1 2 3 4 7 10 algorithm
     correct_itinerant()
 }
@@ -89,14 +90,15 @@ correct_itinerant <- function(data){
     dplyr::mutate(
       categorie_corrige =
         dplyr::case_when(
-          .data$iti_any ~ "Itin\u00e9rant",
-          .data$type_sortie == "Plusieurs jours" & dms > 1 ~ "Itin\u00e9rant",
+          iti_any ~ "Itin\u00e9rant",
+          type_sortie == "Plusieurs jours" & dms > 1 ~ "Itin\u00e9rant",
           TRUE ~ other_cat
         )
     )
   ## Update rows
   data %>%
-    dplyr::rows_update(select(rows_to_update, id_quest, categorie_corrige),
+    dplyr::rows_update(select(rows_to_update,
+                              .data$id_quest, .data$categorie_corrige),
                        by = "id_quest")
 
 }

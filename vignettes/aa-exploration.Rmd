@@ -33,9 +33,9 @@ Se référer au chapitre 3.1.11 de la méthodologie EVA-Velo:
 ## Import du fichier Excel
 ```{r import and clean data}
 # Full data
-xlsx_path <- system.file("example-data/01_all.xlsx", package = "evavelo")
+#xlsx_path <- system.file("example-data/01_all.xlsx", package = "evavelo")
 # Reduced size data
-#xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
+xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 #xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
 
 ## List of expected values 

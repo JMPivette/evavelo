@@ -9,3 +9,4 @@ devtools::check()
 usethis::use_vignette("aa-exploration")
 
 usethis::use_github()
+usethis::use_test()
