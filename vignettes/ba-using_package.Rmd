@@ -1,0 +1,105 @@
+---
+title: "ba-using_package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ba-using_package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, include = FALSE}
+library(evavelo)
+library(magrittr)
+library(dplyr)
+```
+
+## Import and clean file
+Importation et nettoyage des données.
+
+```{r import files}
+# Full data
+xlsx_path <- system.file("example-data/01_all.xlsx", package = "evavelo")
+# Reduced size data
+#xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
+#xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
+
+
+## Sheet: Comptage Post Traitements-------------
+comptage <- openxlsx::read.xlsx(xlsx_path,
+                                     sheet = "comptages_man_post_traitements")
+
+comptage <- comptage %>% 
+  select(starts_with("[")) %>%  ## Don't take in account "old" col names that could create duplicated entries
+  janitor::clean_names() %>% 
+  mutate(categorie_breve = as.character(categorie_breve)) %>% 
+  mutate(categorie_visuelle_cycliste = stringr::str_remove(categorie_visuelle_cycliste,
+                                                           "s$"))
+
+## Sheet: Enquetes Post Traitements-----------
+enquete <- openxlsx::read.xlsx(xlsx_path,
+                                    sheet = "enquetes_post_traitement")
+enquete <- enquete %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    type_sortie = case_when(
+      type_sortie == "Demi journée" ~ "Demi-journée",
+      type_sortie == "La journée" ~ "Journée",
+      TRUE ~ type_sortie)
+    ) %>% 
+    mutate(
+    type_trajet = case_when(
+      stringr::str_detect(type_trajet, "simple") ~ "Trajet simple",
+      stringr::str_detect(type_trajet, "retour") ~ "Aller-retour",
+      TRUE ~ type_trajet)
+  )
+
+
+
+```
+
+### Test id_quest values
+
+```{r test}
+anyDuplicated(comptage$id_quest)
+anyDuplicated(enquete$id_quest)
+
+# Find duplicated
+comptage %>% 
+  select(id_quest) %>% 
+  filter(!is.na(id_quest)) %>% 
+  filter(duplicated(id_quest))
+
+# Find id_quest with no relationship
+setdiff(comptage$id_quest, enquete$id_quest)
+setdiff(enquete$id_quest, comptage$id_quest)
+
+enquete %>% 
+  anti_join(comptage, by = "id_quest") %>% 
+  select(id_quest, id_site_enq, id_section, nom_site_enq)
+
+```
+Il y a des doublons dans le id_quest au niveau des comptages manuels (https://github.com/JMPivette/evavelo/issues/13). 
+Il faudra probablement régler le problème dans la vérification du fichier xlsx.
+
+Certains id_quest des enquêtes n'apparaissent pas dans le comptages manuels. (https://github.com/JMPivette/evavelo/issues/14) 
+
+
+## Correction categorie
+
+Utilisation de la function `evavelo::correct_categ()` pour afficher les catégories corrigées.
+
+```{r correct_categorie}
+correct_categ(comptage, enquete)
+
+
+```
+
+
+
