@@ -7,7 +7,7 @@
 #' @param enquete a data.frame that must contain the following columns: .....
 #'
 #' @import magrittr
-#' @importFrom dplyr mutate filter select left_join starts_with
+#' @importFrom dplyr mutate filter select left_join starts_with coalesce rows_update rename
 #' @importFrom rlang .data
 #'
 #' @return a vector the same length as the number of rows in comptage with the new `categorie` value
@@ -27,6 +27,7 @@ correct_categ <- function(comptage,
                 "nb_vae", "nb_total_velo", "activites", "activite_motiv")) ## don't forget iti_....
 
   ## TODO: add test for id_quest check in both df
+  ## TODO: test for duplicated id_quest values.
 
 
 
@@ -39,7 +40,7 @@ correct_categ <- function(comptage,
 
 
 
-# Combine result to the ouput -----------------------------------------------------------------
+# Combine result to the output -----------------------------------------------------------------
 
   ## Add comptage information to enquete
   enquete <- enquete %>%
@@ -51,12 +52,12 @@ correct_categ <- function(comptage,
     ) %>%
     left_join(select(comptage,
                      .data$id_quest, .data$categorie_visuelle_cycliste),
-              by = "id_quest") %>%
-    filter(!is.na(.data$categorie_visuelle_cycliste)) ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
+              by = "id_quest")
 
   ## Deal with differences in categorie and categorie_visuelle
 
-  enquete %>%
+  cat_to_correct <- enquete %>%
+    filter(!is.na(.data$categorie_visuelle_cycliste)) %>%  ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
     filter(.data$categorie != .data$categorie_visuelle_cycliste) %>%
     ## Apply case 1 2 3 4 7 10 algorithm
     correct_itinerant() %>%
@@ -65,7 +66,33 @@ correct_categ <- function(comptage,
     ## Apply case 9 12 algorithm
     correct_util_lois() %>%
     ## Apply case 5 8
-    correct_util_sport()
+    correct_util_sport() %>%
+    select(.data$id_quest,
+           .data$categorie_corrige)
+
+  ## Update comptage values (categorie_visuelle_cycliste_corrige)
+  comptage <- comptage %>%
+    select(.data$id_quest, .data$categorie_visuelle_cycliste, .data$categorie_breve) %>%
+    left_join(cat_to_correct, ## TODO add left join since we have NAs in id_quest
+              by = "id_quest"
+    ) %>%
+    dplyr::transmute(.data$id_quest,
+                     categorie_visuelle_cycliste_corrige = coalesce(
+                       .data$categorie_corrige,
+                       .data$categorie_breve, ## chapter 3.1.12.2 categorie_breve override categorie_visuelle_cycliste
+                       .data$categorie_visuelle_cycliste)
+    )
+
+
+  ## Update enquete values (categorie_corrige)
+  enquete <- enquete %>%
+    select(.data$id_quest, .data$categorie_corrige) %>%
+    rows_update(cat_to_correct, by = "id_quest")
+
+  ## Return a list with all information.
+  list(comptage = comptage,
+       enquete = enquete)
+
 }
 
 

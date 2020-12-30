@@ -1,4 +1,43 @@
 
+# Test Global function ------------------------------------------------------------------------
+
+test_that("correct_categ works", {
+  ## Import and clean data (temporary waiting for functions to do it automaticaly)
+  xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
+  #xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
+  ## Sheet: Comptage Post Traitements-------------
+  comptage <- openxlsx::read.xlsx(xlsx_path,
+                                  sheet = "comptages_man_post_traitements")
+
+  comptage <- comptage %>%
+    dplyr::select(starts_with("[")) %>%  ## Don't take in account "old" col names that could create duplicated entries
+    janitor::clean_names() %>%
+    dplyr::mutate(categorie_breve = as.character(categorie_breve)) %>%
+    dplyr::mutate(categorie_visuelle_cycliste = stringr::str_remove(categorie_visuelle_cycliste,
+                                                             "s$"))
+
+  ## Sheet: Enquetes Post Traitements-----------
+  enquete <- openxlsx::read.xlsx(xlsx_path,
+                                 sheet = "enquetes_post_traitement")
+  enquete <- enquete %>%
+    janitor::clean_names() %>%
+    dplyr::mutate(
+      type_sortie = dplyr::case_when(
+        type_sortie == "Demi journée" ~ "Demi-journée",
+        type_sortie == "La journée" ~ "Journée",
+        TRUE ~ type_sortie)
+    ) %>%
+    dplyr::mutate(
+      type_trajet = dplyr::case_when(
+        stringr::str_detect(type_trajet, "simple") ~ "Trajet simple",
+        stringr::str_detect(type_trajet, "retour") ~ "Aller-retour",
+        TRUE ~ type_trajet)
+    )
+
+  expect_type(correct_categ(comptage, enquete),
+              "list")
+
+})
 
 
 
