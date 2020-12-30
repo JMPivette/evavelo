@@ -73,19 +73,21 @@ correct_categ <- function(comptage,
 #'
 #' @importFrom rlang .data
 #'
-#' @return a data.frame with updated categorie_corrige values.
+#' @return a data.frame the same size of data with updated categorie_corrige values.
 #' @export
 correct_itinerant <- function(data){
 
   ## Apply algorithm
   rows_to_update <- data %>%
     dplyr::filter(.data$categorie != .data$categorie_visuelle_cycliste) %>%
-    dplyr::filter(.data$categorie == "Itin\u00e9rant" | .data$categorie_visuelle_cycliste == "Itin\u00e9rant") %>%
+    dplyr::filter(.data$categorie == "Itin\u00e9rant" |
+                    .data$categorie_visuelle_cycliste == "Itin\u00e9rant") %>%
     dplyr::mutate(iti_any = rowSums(dplyr::across(dplyr::starts_with("iti"),
-                                                  ~ !is.na(.x))) != 0,## check if any response from Q25 to Q27
+                                                  ~ !is.na(.x))) != 0,## check if any response from Q25 to Q27. Might change in future methodology version
                   ## Other category than Itinerant
-                  other_cat = dplyr::coalesce(dplyr::na_if(.data$categorie, "Itin\u00e9rant"),
-                                              dplyr::na_if(.data$categorie_visuelle_cycliste, "Itin\u00e9rant"))
+                  other_cat = dplyr::coalesce(
+                    dplyr::na_if(.data$categorie, "Itin\u00e9rant"),
+                    dplyr::na_if(.data$categorie_visuelle_cycliste, "Itin\u00e9rant"))
     ) %>%
     dplyr::mutate(
       categorie_corrige =
