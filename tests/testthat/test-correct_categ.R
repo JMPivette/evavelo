@@ -47,3 +47,44 @@ test_that("correct_intinerant works", {
                corrected_df$categorie_corrige)
 
 })
+
+# Test choices between Sportif and Loisir------------------------------------------------------
+test_that("correct_spor_lois works", {
+  ## Input data.frame
+  df <- tibble::tribble(
+    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~activites, ~km_sortie, ~nb_vae, ~nb_total_velo,
+    "1","Loisir", "Sportif", "empty", "Aucune", 70, 0, 1,   ## Sportif
+    "2","Sportif", "Loisir", "empty", NA, 60, 0, 2,         ## Sportif
+    "3","Loisir", "Sportif", "empty", "Aucune", 70, 1, 1,   ## Loisir (VAE)
+    "4","Sportif", "Loisir", "empty", NA, 40, 0, 2,         ## Loisir (nb_km)
+    "5","Loisir", "Sportif", "empty", "Baignade", 70, 0, 1, ## Loisir (activites)
+    "6","Sportif", "Loisir", "empty", "Visite", 40, 1, 2,   ## Loisir
+    "7","Sportif", "Loisir", "empty", NA, 60, NA, NA,        ## Sportif (no answer to nb_vae assumes that there is none)
+    "10","Itinérant", "Itinérant", "Itinérant",  "Aucune", 70, 0, 1 ## no changes
+  )
+
+  ## Expected categorie_corrige
+  expected_out <- c("Sportif",
+                    "Sportif",
+                    "Loisir",
+                    "Loisir",
+                    "Loisir",
+                    "Loisir",
+                    "Sportif",
+                    "Itinérant")
+
+  ## Test that applying function creates no error
+  expect_error(corrected_df <- correct_spor_lois(df),
+               regexp = NA)
+  ## Test that the output is a data.frame
+  expect_s3_class(corrected_df, "data.frame")
+
+  ## Test that nothing as changed except for "categorie_corrige"
+  expect_equal(select(df, -categorie_corrige),
+               select(corrected_df, -categorie_corrige))
+
+  ## Test that output is as expected
+  expect_equal(expected_out,
+               corrected_df$categorie_corrige)
+
+})

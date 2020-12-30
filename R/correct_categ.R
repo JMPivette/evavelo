@@ -59,7 +59,9 @@ correct_categ <- function(comptage,
   enquete %>%
     filter(.data$categorie != .data$categorie_visuelle_cycliste) %>%
     ## Apply case 1 2 3 4 7 10 algorithm
-    correct_itinerant()
+    correct_itinerant() %>%
+    ## Apply case 6 11 algorithm
+    correct_spor_lois()
 }
 
 
@@ -98,6 +100,44 @@ correct_itinerant <- function(data){
         )
     )
   ## Update rows
+  data %>%
+    dplyr::rows_update(select(rows_to_update,
+                              .data$id_quest, .data$categorie_corrige),
+                       by = "id_quest")
+
+}
+
+
+#' Apply categorie_corrigee Methodology to decide between Sportif and Loisir
+#'
+#' In Chapter 3.1.11, this corresponds to cases 6 11
+#'
+#' this function can be used inside pipe operator and is compatible with dplyr
+#'
+#' @param data a data.frame
+#'
+#' @importFrom rlang .data
+#'
+#' @return a data.frame the same size of data with updated categorie_corrige values.
+#' @export
+
+correct_spor_lois <- function(data){
+  rows_to_update <- data %>%
+    dplyr::filter(.data$categorie == "Sportif" & .data$categorie_visuelle_cycliste =="Loisir" |
+                    .data$categorie == "Loisir" & .data$categorie_visuelle_cycliste =="Sportif"
+    ) %>%
+    dplyr::mutate(
+      autre_activite = !is.na(.data$activites) & .data$activites != "Aucune",
+      ## VAE definition might change in future version of Methodology
+      vae = !is.na(.data$nb_vae) & .data$nb_vae == .data$nb_total_velo
+    ) %>%
+    dplyr::mutate(
+      categorie_corrige = dplyr::case_when(
+        is.na(km_sortie) ~ "Loisir",
+        km_sortie > 50 & autre_activite == FALSE & vae == FALSE ~ "Sportif",
+        TRUE ~ "Loisir")
+    )
+
   data %>%
     dplyr::rows_update(select(rows_to_update,
                               .data$id_quest, .data$categorie_corrige),
