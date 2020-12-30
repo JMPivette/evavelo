@@ -198,25 +198,33 @@ correct_util_lois <- function(data){
 correct_util_sport <- function(data){
   # Cas 5
   cas_5 <- data %>%
-    filter(categorie == "Utilitaire" & categorie_visuelle_cycliste =="Sportif") %>%
-    mutate(
+    dplyr::filter(.data$categorie == "Utilitaire" & .data$categorie_visuelle_cycliste =="Sportif") %>%
+    dplyr::mutate(
       categorie_corrige =
-        case_when(
+        dplyr::case_when(
           km_sortie <= 30 & type_trajet == "Aller-retour" ~ "Utilitaire",
           TRUE ~ "Sportif"
         )
-    )
+    ) %>%
+    dplyr::select(.data$id_quest, .data$categorie_corrige)
 
   # Cas 8
   cas_8 <- data %>%
-    filter(categorie == "Utilitaire" & categorie_visuelle_cycliste == "Loisir") %>%
-    mutate(
-      categorie_corrige = case_when(
-        is.na(activite_motiv) ~ "Utilitaire",
-        stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
-        TRUE ~"Loisir"
-      ))
+    dplyr::filter(.data$categorie == "Sportif" & .data$categorie_visuelle_cycliste =="Utilitaire") %>%
+    dplyr::mutate(vae = !is.na(.data$nb_vae) & .data$nb_vae == .data$nb_total_velo) %>%
+    dplyr::mutate(
+      categorie_corrige = ifelse(
+        .data$km_sortie > 50 & .data$vae == FALSE,
+        "Sportif",
+        "Utilitaire"
+      )
+    ) %>%
+    dplyr::select(.data$id_quest, .data$categorie_corrige)
 
+  ## Update rows
+  data %>%
+    dplyr::rows_update(rbind(cas_5, cas_8),
+                       by = "id_quest")
 
 
 }

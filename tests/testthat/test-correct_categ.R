@@ -128,3 +128,47 @@ test_that("correct_util_lois works", {
                corrected_df$categorie_corrige)
 
 })
+
+# Test choices between Utilitaire and Sportif------------------------------------------------------
+
+test_that("correct_util_sport works", {
+  ## Input data.frame
+  df <- tibble::tribble(
+    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~km_sortie, ~type_trajet, ~nb_vae, ~nb_total_velo,
+    "1","Utilitaire", "Sportif","empty", 80, "Aller-retour", 0, 1, # Sportif
+    "2","Sportif", "Utilitaire","empty", 80, "Aller-retour", 0, 1, # Sportif
+    "3","Utilitaire", "Sportif","empty", 20, "Aller-retour", 1, 1, # Utilitaire
+    "4","Sportif", "Utilitaire","empty", 20, "Aller-retour", 1, 1, # Utilitaire
+    "5","Utilitaire", "Sportif","empty", 40, "Aller simple", 0, 1, # Sportif
+    "6","Sportif", "Utilitaire","empty", 40, "Aller simple", 0, 1, # Utilitaire
+    "7","Utilitaire", "Sportif","empty", 20, "Aller simple", 1, 1, # Sportif
+    "8","Sportif", "Utilitaire","empty", 100, "Aller simple", 1, 1, # Utilitaire
+    "10","Utilitaire", "Utilitaire", "Utilitaire", 30, "Aller-retour", 0 ,1 # no changes
+  )
+
+  ## Expected categorie_corrige
+  expected_out <- c("Sportif",
+                    "Sportif",
+                    "Utilitaire",
+                    "Utilitaire",
+                    "Sportif",
+                    "Utilitaire",
+                    "Sportif",
+                    "Utilitaire",
+                    "Utilitaire")
+
+  ## Test that applying function creates no error
+  expect_error(corrected_df <- correct_util_sport(df),
+               regexp = NA)
+  ## Test that the output is a data.frame
+  expect_s3_class(corrected_df, "data.frame")
+
+  ## Test that nothing as changed except for "categorie_corrige"
+  expect_equal(select(df, -categorie_corrige),
+               select(corrected_df, -categorie_corrige))
+
+  ## Test that output is as expected
+  expect_equal(expected_out,
+               corrected_df$categorie_corrige)
+
+})
