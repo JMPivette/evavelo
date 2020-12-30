@@ -7,6 +7,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Codecov test
+coverage](https://codecov.io/gh/JMPivette/evavelo/branch/master/graph/badge.svg)](https://codecov.io/gh/JMPivette/evavelo?branch=master)
 <!-- badges: end -->
 
 Le but du package {evavelo} est d’appliquer des traitements automatiques

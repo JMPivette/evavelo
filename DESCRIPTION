@@ -23,7 +23,8 @@ Suggests:
     openxlsx,
     rmarkdown,
     testthat (>= 3.0.0),
-    tibble
+    tibble,
+    covr
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3

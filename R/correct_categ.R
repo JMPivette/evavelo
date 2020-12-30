@@ -61,7 +61,9 @@ correct_categ <- function(comptage,
     ## Apply case 1 2 3 4 7 10 algorithm
     correct_itinerant() %>%
     ## Apply case 6 11 algorithm
-    correct_spor_lois()
+    correct_spor_lois() %>%
+    ## Apply case 9 12 algorithm
+    correct_util_lois()
 }
 
 
@@ -178,4 +180,43 @@ correct_util_lois <- function(data){
     dplyr::rows_update(select(rows_to_update,
                               .data$id_quest, .data$categorie_corrige),
                        by = "id_quest")
+}
+
+
+#' Apply categorie_corrigee Methodology to decide between Utilitaire and Sportif
+#'
+#' In Chapter 3.1.11, this corresponds to cases 5 8
+#'
+#' this function can be used inside pipe operator and is compatible with dplyr
+#'
+#' @param data a data.frame
+#'
+#' @importFrom rlang .data
+#'
+#' @return a data.frame the same size of data with updated categorie_corrige values.
+#' @export
+correct_util_sport <- function(data){
+  # Cas 5
+  cas_5 <- data %>%
+    filter(categorie == "Utilitaire" & categorie_visuelle_cycliste =="Sportif") %>%
+    mutate(
+      categorie_corrige =
+        case_when(
+          km_sortie <= 30 & type_trajet == "Aller-retour" ~ "Utilitaire",
+          TRUE ~ "Sportif"
+        )
+    )
+
+  # Cas 8
+  cas_8 <- data %>%
+    filter(categorie == "Utilitaire" & categorie_visuelle_cycliste == "Loisir") %>%
+    mutate(
+      categorie_corrige = case_when(
+        is.na(activite_motiv) ~ "Utilitaire",
+        stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
+        TRUE ~"Loisir"
+      ))
+
+
+
 }
