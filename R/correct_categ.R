@@ -46,8 +46,8 @@ correct_categ <- function(comptage,
     select(.data$id_quest, .data$categorie, .data$categorie_corrige,
            .data$type_sortie, .data$dms, starts_with("iti_"),
            .data$km_sortie, .data$type_trajet, # used for Case 5
-           .data$nb_vae, .data$nb_total_velo, .data$activites, ## Used for Case 6
-           .data$activite_motiv # USed for Case 9
+           .data$nb_vae, .data$nb_total_velo, .data$activites, ## Used for Case 6 11
+           .data$activite_motiv # USed for Case 9 12
     ) %>%
     left_join(select(comptage,
                      .data$id_quest, .data$categorie_visuelle_cycliste),
@@ -63,7 +63,9 @@ correct_categ <- function(comptage,
     ## Apply case 6 11 algorithm
     correct_spor_lois() %>%
     ## Apply case 9 12 algorithm
-    correct_util_lois()
+    correct_util_lois() %>%
+    ## Apply case 5 8
+    correct_util_sport()
 }
 
 

@@ -172,3 +172,31 @@ test_that("correct_util_sport works", {
                corrected_df$categorie_corrige)
 
 })
+
+
+# Empty actions -------------------------------------------------------------------------------
+
+test_that("df with no choices to be made don't throw an error ", {
+  ## Create a df with no value to update
+  df <- tibble::tibble(
+    id_quest = 1:10,
+    categorie = "Utilitaire", categorie_visuelle_cycliste = "Utilitaire",
+    categorie_corrige = "Uilitaire",
+    type_sortie = NA, dms = 5, iti_km = 100, km_sortie = 20, type_trajet = NA, nb_vae = 0,
+    nb_total_velo = 1, activites = NA, activite_motiv = NA
+    )
+
+  expect_equal(df,
+               correct_itinerant(df))
+
+  expect_equal(df,
+               correct_spor_lois(df))
+
+  expect_equal(df,
+               correct_util_lois(df))
+
+  expect_equal(df,
+               correct_util_sport(df))
+
+
+})
