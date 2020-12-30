@@ -10,3 +10,6 @@ usethis::use_vignette("aa-exploration")
 
 usethis::use_github()
 usethis::use_test()
+
+usethis::use_vignette("ba-using_package")
+usethis::use_coverage()
