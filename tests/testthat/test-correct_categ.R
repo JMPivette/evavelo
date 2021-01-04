@@ -39,6 +39,12 @@ test_that("correct_categ works", {
 
 })
 
+test_that("wrong column names gives an error", {
+  ## Lots of missing columns
+  expect_error(correct_categ(comptage = data.frame(id_quest = 1:3),
+                             enquete = data.frame(id_quest = 1:2)))
+
+})
 
 
 
