@@ -15,4 +15,4 @@ usethis::use_vignette("ba-using_package")
 usethis::use_coverage()
 
 # Update code coverage
-covr::codecov(token=Sys.getenv("COVR_TOKEN"))
+covr::codecov()
