@@ -12,7 +12,8 @@
 mod_load_file_ui <- function(id){
   ns <- NS(id)
   tagList(
-    fileInput(ns("file1"), "Choose XLSX File", accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+    fileInput(ns("file1"), "Choose XLSX File",
+              accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
     br(),
     verbatimTextOutput(ns("fileName")) %>%
       withSpinner()
@@ -29,6 +30,7 @@ mod_load_file_server <- function(input, output, session, r){
 
 ## Import and treat files and update log messago
   observeEvent(input$file1,{
+    r$processed <- NULL
     r$filename <- input$file1$name
     r$log <- paste("[1] Opening file", input$file1$name, "...")
     tryCatch(

@@ -11,19 +11,11 @@ app_server <- function( input, output, session ) {
   r <- reactiveValues()
   # List the first level callModules here
   callModule(mod_load_file_server, "load_file_ui_1", r = r)
+  callModule(mod_download_result_server, "download_result_ui_1", r =r)
 
   observeEvent(input$browser, {
     browser()
   })
-
-  output$download <- downloadHandler(
-    filename = function() {
-      paste("data-", Sys.Date(), ".xlsx", sep="")
-    },
-    content = function(file) {
-      openxlsx::write.xlsx(r$processed, file)
-    }
-  )
 
 
 }

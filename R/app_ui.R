@@ -9,10 +9,11 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     # List the first level UI elements here
     fluidPage(
+      shinyjs::useShinyjs(),
       h1("Eva-Velo"),
       mod_load_file_ui("load_file_ui_1"),
 
-      downloadButton("download", "Download Result"),
+      mod_download_result_ui("download_result_ui_1"),
       br(),br(),
       actionButton("browser", "Browser")
     )

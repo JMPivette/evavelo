@@ -20,9 +20,9 @@ Imports:
     rlang,
     shiny,
     shinycssloaders,
+    shinyjs,
     stringr
 Suggests: 
-    here,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
