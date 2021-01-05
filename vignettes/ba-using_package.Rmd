@@ -25,11 +25,11 @@ Importation et nettoyage des données.
 
 ```{r import files}
 # Full data
-#xlsx_path <- system.file("example-data/01_all.xlsx", package = "evavelo")
+xlsx_path <- system.file("example-data/01_all.xlsx", package = "evavelo")
 # Corrected data
 #xlsx_path <- here::here("inst", "example-data", "01a_all_correct.xlsx")
 # Reduced size data
-xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
+#xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 #xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
 
 
@@ -98,7 +98,10 @@ Certains id_quest des enquêtes n'apparaissent pas dans le comptages manuels. (h
 Utilisation de la function `evavelo::correct_categ()` pour afficher les catégories corrigées.
 
 ```{r correct_categorie}
-correct_categ(comptage, enquete)
+check_evavelo(comptage = comptage,
+              enquete = enquete)
+
+##correct_categ(comptage, enquete)
 
 
 ```

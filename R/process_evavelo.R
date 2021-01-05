@@ -30,7 +30,7 @@ process_evavelo <- function(file){
 #' @importFrom rlang .data
 #'
 #' @return a data.frame
-#'
+#' @export
 read_comptage <- function(file, sheet = "comptages_man_post_traitements"){
 
   comptage <- openxlsx::read.xlsx(file, sheet)
@@ -54,7 +54,7 @@ read_comptage <- function(file, sheet = "comptages_man_post_traitements"){
 #' @param sheet Name of the worksheet caontaining "enquete" information.
 #'
 #' @return a data.frame
-#'
+#' @export
 read_enquete <- function(file, sheet = "enquetes_post_traitement") {
 
   enquete <- openxlsx::read.xlsx(file, sheet)

@@ -64,26 +64,55 @@ mod_load_file_server <- function(input, output, session, r){
                           status = "warning", value = 2, total = 3)
       }
     )
+    ## Checking file correctness -------------------
     updateProgressBar(session = session, id = "load_progress",
-                      title = "Correcting category", value = 2, total = 3)
+                      title = "Checking file", value = 2, total = 3)
+    r$log <- paste(r$log, "\n\n[2] Checking file...")
+    tryCatch(
+      {
+        comptage <- read_comptage(r$data)
+        enquete <- read_enquete(r$data)
+        check_result <- check_evavelo(comptage, enquete)
+        if (check_result$error) r$process_error <- TRUE
+        r$log <- paste(r$log, check_result$log)
+      },
+      error = function(e){
+        r$log <- paste(r$log, "\n[2] ERROR during file check:\n", e)
+        r$process_error <- TRUE
+        updateProgressBar(session = session, id = "load_progress",
+                          status = "danger", value = 2, total = 3)
+      },
+      warning = function(w){
+        r$log <- paste(r$log, "\n[2] Warnings during file check:\n", w)
+        updateProgressBar(session = session, id = "load_progress",
+                          status = "warning", value = 2, total = 3)
+      }
+
+    )
+
+
+
     ## Correcting category-------------------
+    updateProgressBar(session = session, id = "load_progress",
+                      title = "Correcting category", value = 3, total = 3)
+
     if(r$process_error == FALSE){
-      r$log <- paste(r$log, "\n\n[2] Correcting Category...")
+      r$log <- paste(r$log, "\n\n[3] Correcting Category...")
       tryCatch(
         {
           r$processed <- process_evavelo(r$data)
-          r$log <- paste(r$log, "\n[2] Category corrected!")
+          r$log <- paste(r$log, "\n[3] Category corrected!")
           updateProgressBar(session = session, id = "load_progress",
                             title = "Category corrected", value = 3, total = 3)
         },
         error = function(e){
-          r$log <- paste(r$log, "\n[2] ERROR during category check:\n", e)
+          r$log <- paste(r$log, "\n[3] ERROR during category correction:\n", e)
           r$process_error <- TRUE
           updateProgressBar(session = session, id = "load_progress",
                             status = "danger", value = 3, total = 3)
         },
         warning = function(w){
-          r$log <- paste(r$log, "\n[2] Warnings during category check:\n", w)
+          r$log <- paste(r$log, "\n[3] Warnings during category correction:\n", w)
           updateProgressBar(session = session, id = "load_progress",
                             status = "warning", value = 3, total = 3)
         }
