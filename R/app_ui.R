@@ -11,6 +11,9 @@ app_ui <- function(request) {
     fluidPage(
       h1("Eva-Velo"),
       mod_load_file_ui("load_file_ui_1"),
+
+      downloadButton("download", "Download Result"),
+      br(),br(),
       actionButton("browser", "Browser")
     )
   )

@@ -12,6 +12,8 @@ process_evavelo <- function(file){
   comptage <- read_comptage(file)
   ## Sheet: Enquetes Post Traitements-----------
   enquete <- read_enquete(file)
+  ## Check values
+
 
   correct_categ(comptage, enquete)
 

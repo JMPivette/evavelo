@@ -19,8 +19,10 @@ Imports:
     openxlsx,
     rlang,
     shiny,
+    shinycssloaders,
     stringr
 Suggests: 
+    here,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
