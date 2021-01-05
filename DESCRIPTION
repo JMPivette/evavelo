@@ -21,6 +21,7 @@ Imports:
     shiny,
     shinycssloaders,
     shinyjs,
+    shinyWidgets,
     stringr
 Suggests: 
     knitr,

@@ -1,5 +1,7 @@
 #' load_file UI Function
 #'
+#' This module is used in the user interface to load and process files with information displayed to the user in a modal and in a log window.
+#'
 #' @description A shiny Module.
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
@@ -8,14 +10,16 @@
 #'
 #' @importFrom shiny NS tagList fileInput
 #' @importFrom shinycssloaders withSpinner
+#' @importFrom shinyWidgets progressSweetAlert useSweetAlert updateProgressBar closeSweetAlert sendSweetAlert
 #'
 mod_load_file_ui <- function(id){
   ns <- NS(id)
   tagList(
+    useSweetAlert(), # /!\ needed with 'progressSweetAlert'
     fileInput(ns("file1"), "Choose XLSX File",
               accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
     br(),
-    verbatimTextOutput(ns("fileName")) %>%
+    verbatimTextOutput(ns("file_name")) %>%
       withSpinner()
   )
 }
@@ -25,15 +29,23 @@ mod_load_file_ui <- function(id){
 #' @noRd
 mod_load_file_server <- function(input, output, session, r){
   ns <- session$ns
-  r$import_steps <- reactiveValues()
-  output$fileName <- renderText(r$log)
 
-## Import and treat files and update log message for user
+  ## Display logs on screen
+  output$file_name <- renderText(r$log)
+
+  ## Import and treat files, update log message and display a modal information for user
   observeEvent(input$file1,{
+    ## Initialize values
     r$processed <- NULL
     r$process_error <- FALSE
     r$filename <- input$file1$name
-    ## Reading File
+    ## Reading File-------------------
+    progressSweetAlert(
+      session = session, id = "load_progress",
+      title = "Reading file",
+      total = 3, value = 1, status = "success"
+    )
+
     r$log <- paste("[1] Reading file", input$file1$name, "...")
     tryCatch(
       {
@@ -43,34 +55,58 @@ mod_load_file_server <- function(input, output, session, r){
       error = function(e){
         r$log <- paste(r$log, "\n[1] ERROR Cannot open file:\n", e)
         r$process_error <- TRUE
+        updateProgressBar(session = session, id = "load_progress",
+                          status = "danger", value = 2, total = 3)
       },
       warning = function(w){
         r$log <- paste(r$log, "\n[1] Warnings during file opening:\n", w)
+        updateProgressBar(session = session, id = "load_progress",
+                          status = "warning", value = 2, total = 3)
       }
     )
-    ## Correcting category
+    updateProgressBar(session = session, id = "load_progress",
+                      title = "Correcting category", value = 2, total = 3)
+    ## Correcting category-------------------
     if(r$process_error == FALSE){
       r$log <- paste(r$log, "\n\n[2] Correcting Category...")
       tryCatch(
         {
           r$processed <- process_evavelo(r$data)
           r$log <- paste(r$log, "\n[2] Category corrected!")
+          updateProgressBar(session = session, id = "load_progress",
+                            title = "Category corrected", value = 3, total = 3)
         },
         error = function(e){
           r$log <- paste(r$log, "\n[2] ERROR during category check:\n", e)
           r$process_error <- TRUE
+          updateProgressBar(session = session, id = "load_progress",
+                            status = "danger", value = 3, total = 3)
         },
         warning = function(w){
           r$log <- paste(r$log, "\n[2] Warnings during category check:\n", w)
+          updateProgressBar(session = session, id = "load_progress",
+                            status = "warning", value = 3, total = 3)
         }
       )
     }
+    closeSweetAlert(session = session)
 
-    ## End message
-    if (r$process_error)
+
+    ## End message------------------------------
+    if (r$process_error){
       r$log <- paste(r$log, "\n\n ERROR. File cannot be processed")
-    else
+      sendSweetAlert(
+        session = session,
+        title =" Error during process",
+        type = "error"
+      )
+    }else{
       r$log <- paste(r$log, "\n\n OK! You can now download the result")
+      sendSweetAlert(
+        session = session,
+        title =" Calculation completed !",
+        type = "success"
+      )}
 
 
   })
