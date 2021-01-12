@@ -42,9 +42,15 @@ read_comptage <- function(file, sheet = "comptages_man_post_traitements"){
     janitor::clean_names() %>%
     dplyr::mutate(
       categorie_breve = as.character(.data$categorie_breve),
-      categorie_visuelle_cycliste = stringr::str_remove(.data$categorie_visuelle_cycliste,
-                                                        "s$")
-      ) %>%
+      categorie_visuelle = dplyr::if_else(
+        .data$categorie_visuelle == "Loisirs",
+        "Loisir", .data$categorie_visuelle
+        ),
+      categorie_visuelle_cycliste = dplyr::if_else(
+        .data$categorie_visuelle_cycliste == "Loisirs",
+        "Loisir", .data$categorie_visuelle_cycliste
+        )
+    ) %>%
     dplyr::mutate(
       date_enq = openxlsx::convertToDate(.data$date_enq)
     )

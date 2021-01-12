@@ -16,10 +16,11 @@ check_evavelo <- function(calendrier, comptage, enquete){
   log <- "" ## string to store log information
   err <- FALSE ## boolean output to tell if an error occured
 
-  log <- add_message_log(log, "Checking comptage...")
   ## Check integrity of comptage-------------------------
+  log <- add_message_log(log, "Checking comptage...")
   #Check variable names
-  comptage_names <- c("id_quest", "categorie_visuelle_cycliste", "categorie_breve",
+  comptage_names <- c("id_quest", "categorie_visuelle",
+                      "categorie_visuelle_cycliste", "categorie_breve",
                       "id_site_enq", "date_enq")
   if (!all(comptage_names %in% names(comptage))) {
     not_present <- setdiff(comptage_names, names(comptage))
@@ -39,6 +40,34 @@ check_evavelo <- function(calendrier, comptage, enquete){
                            paste(dupli_id$id_quest, "(", dupli_id$n, "), ", collapse = "")
     )
   }
+
+  # Check values of categorie_visuelle_cycliste
+  wrong_cat <- setdiff(unique(comptage$categorie_visuelle_cycliste),
+          c("Loisir","Sportif","Utilitaire","Itin\u00e9rant", NA))
+  if (length(wrong_cat) != 0 ) {
+    err <- TRUE
+    log <- add_message_log(
+      log,
+      " ERROR: the following non-standard values are in 'categorie_visuelle_cycliste': ",
+      paste(wrong_cat, collapse = ", ")
+    )
+  }
+
+  # Check relationship between categorie_visuelle_cycliste and categorie_visuelle (Not implemented yet)
+  ## Extra check but will need to take in account children
+  # mismatch_categorie_vis <- comptage %>%
+  #   dplyr::transmute(.data$categorie_visuelle,
+  #                    .data$categorie_visuelle_cycliste,
+  #                    index= 1:dplyr::n() + 1) %>%
+  #   filter(!is.na(.data$categorie_visuelle_cycliste) &
+  #            .data$categorie_visuelle != .data$categorie_visuelle_cycliste)
+  # if (length(mismatch_categorie_vis) != 0){
+  #   log <- add_message_log(
+  #     log,
+  #     " Warning: Mismatch between 'categorie_visuelle' and 'categorie_visuelle_cycliste' at line(s): ",
+  #     paste(mismatch_categorie_vis$index, collapse = ", ")
+  #   )
+  # }
 
 
   ## Check integrity of enquete--------------------------
