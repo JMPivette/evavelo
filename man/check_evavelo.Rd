@@ -4,9 +4,11 @@
 \alias{check_evavelo}
 \title{Check input file correcteness (Eva-velo)}
 \usage{
-check_evavelo(comptage, enquete)
+check_evavelo(calendrier, comptage, enquete)
 }
 \arguments{
+\item{calendrier}{a data.frame}
+
 \item{comptage}{a data.frame}
 
 \item{enquete}{a data.frame}
