@@ -70,9 +70,12 @@ mod_load_file_server <- function(input, output, session, r){
     r$log <- paste(r$log, "\n\n[2] Checking file...")
     tryCatch(
       {
+        calendrier <- read_calendrier(r$data)
         comptage <- read_comptage(r$data)
         enquete <- read_enquete(r$data)
-        check_result <- check_evavelo(comptage, enquete)
+        check_result <- check_evavelo(calendrier = calendrier,
+                                      comptage = comptage,
+                                      enquete = enquete)
         if (check_result$error) r$process_error <- TRUE
         r$log <- paste(r$log, check_result$log)
       },

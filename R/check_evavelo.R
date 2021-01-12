@@ -25,7 +25,7 @@ check_evavelo <- function(calendrier, comptage, enquete){
     not_present <- setdiff(comptage_names, names(comptage))
     err <- TRUE
     log <- add_message_log(log,
-                           "Error", paste(not_present, collapse = ", "),
+                           " ERROR:", paste(not_present, collapse = ", "),
                            " missing from comptage")
   }
   # Check uniqueness of id_quest
@@ -35,8 +35,8 @@ check_evavelo <- function(calendrier, comptage, enquete){
     dplyr::filter(!is.na(.data$id_quest) & .data$n > 1)
   if (nrow(dupli_id) != 0) {
     err <- TRUE
-    log <- add_message_log(log, "Error: duplicated id_quest in 'comptage':",
-                           paste(dupli_id$id_quest, "(", dupli_id$n, ")\n", collapse = " ")
+    log <- add_message_log(log, " ERROR: duplicated id_quest in 'comptage':\n",
+                           paste(dupli_id$id_quest, "(", dupli_id$n, "), ", collapse = "")
     )
   }
 
@@ -52,7 +52,7 @@ check_evavelo <- function(calendrier, comptage, enquete){
     not_present <- setdiff(enquete_names, names(enquete))
     err <- TRUE
     log <- add_message_log(log,
-                           "Error", paste(not_present, collapse = ", "),
+                           " ERROR", paste(not_present, collapse = ", "),
                            " missing from enquete")
   }
 
@@ -63,20 +63,20 @@ check_evavelo <- function(calendrier, comptage, enquete){
     dplyr::filter(!is.na(.data$id_quest) & .data$n > 1)
   if (nrow(dupli_id) != 0) {
     err <- TRUE
-    log <- add_message_log(log, "Error: duplicated id_quest in 'enquete':\n",
+    log <- add_message_log(log, " ERROR: duplicated id_quest in 'enquete':\n",
                            paste(dupli_id$id_quest, collapse = ", ")
     )
   }
 
   ## Check integrity of calendrier
   #Check variable names
-  log <- add_message_log(log, "Checking calendrier")
+  log <- add_message_log(log, "Checking calendrier...")
   calendrier_names <- c("id_site_enq", "date_enq")
   if (!all(calendrier_names %in% names(calendrier))) {
     not_present <- setdiff(calendrier_names, names(calendrier))
     err <- TRUE
     log <- add_message_log(log,
-                           "Error", paste(not_present, collapse = ", "),
+                           " ERROR", paste(not_present, collapse = ", "),
                            " missing from calendrier")
   }
 
@@ -92,13 +92,13 @@ check_evavelo <- function(calendrier, comptage, enquete){
   if(length(id_notin_compt) != 0){
     err <- TRUE
     log <- add_message_log(log,
-                           "Error: The following id_quest are not present in 'comptage':\n",
+                           " ERROR: The following id_quest are not present in 'comptage':\n",
                            paste(id_notin_compt, collapse = ", "))
   }
   if(length(id_notin_enq) != 0){
     err <- TRUE
     log <- add_message_log(log,
-                           "Error: The following id_quest are not present in 'enquete':\n",
+                           " ERROR: The following id_quest are not present in 'enquete':\n",
                            paste(id_notin_enq, collapse = ", "))
   }
 
@@ -182,7 +182,7 @@ log_in_x_not_in_y <- function(x, y, name_x, name_y) {
                                    by = c("id_site_enq", "date_enq"))
   if(nrow(in_x_notin_y) != 0){
     log <- paste(
-      "Error:", nrow(in_x_notin_y), "days are in", name_x, "but missing from", name_y,":\n",
+      " ERROR:", nrow(in_x_notin_y), "days are in", name_x, "but missing from", name_y,":\n",
       paste("id_site_enq:", in_x_notin_y$id_site_enq, "\tdate:" ,in_x_notin_y$date_enq, "\n",
             collapse = " ")
     )
