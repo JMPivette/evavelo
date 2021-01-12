@@ -12,6 +12,8 @@ process_evavelo <- function(file){
   comptage <- read_comptage(file)
   ## Sheet: Enquetes Post Traitements-----------
   enquete <- read_enquete(file)
+  ## Sheet: Calendrier--------------------------
+  calendrier <- read_calendrier(file)
   ## Check values
 
 
@@ -96,8 +98,10 @@ read_calendrier <- function(file, sheet = "calendrier_sites"){
 
   calendrier <- openxlsx::read.xlsx(file,
                                     sheet,
-                                    startRow = 2, # We skip the first row that contains global information and not data.
-                                    detectDates = TRUE) %>%
+                                    startRow = 2) %>%  # We skip the first row that contains global information and not data.
+    dplyr::mutate(
+      date_enq = openxlsx::convertToDate(.data$date_enq)
+    ) %>%
     janitor::clean_names()
 
 }

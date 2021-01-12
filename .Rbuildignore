@@ -6,3 +6,4 @@
 ^codecov\.yml$
 ^app\.R$
 ^rsconnect$
+^data-raw$

@@ -12,6 +12,8 @@ Description: Applique differents traitement automatique en lien
 License: MIT + file LICENSE
 URL: https://github.com/JMPivette/evavelo
 BugReports: https://github.com/JMPivette/evavelo/issues
+Depends: 
+    R (>= 2.10)
 Imports: 
     dplyr,
     janitor,

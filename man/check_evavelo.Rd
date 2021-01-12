@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_evavelo.R
 \name{check_evavelo}
 \alias{check_evavelo}
-\title{Check input file correcteness (Eva-velo)}
+\title{Check input file correctness (Eva-velo)}
 \usage{
 check_evavelo(calendrier, comptage, enquete)
 }
@@ -17,5 +17,5 @@ check_evavelo(calendrier, comptage, enquete)
 a list of two values: error (a boolean) and log (a string)
 }
 \description{
-Check input file correcteness (Eva-velo)
+Check input file correctness (Eva-velo)
 }
