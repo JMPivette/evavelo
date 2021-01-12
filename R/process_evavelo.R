@@ -42,7 +42,10 @@ read_comptage <- function(file, sheet = "comptages_man_post_traitements"){
       categorie_breve = as.character(.data$categorie_breve),
       categorie_visuelle_cycliste = stringr::str_remove(.data$categorie_visuelle_cycliste,
                                                         "s$")
-      )
+      ) %>%
+    dplyr::mutate(
+      date_enq = openxlsx::convertToDate(.data$date_enq)
+    )
 
 }
 
@@ -52,6 +55,8 @@ read_comptage <- function(file, sheet = "comptages_man_post_traitements"){
 #'
 #' @param file xlsx file, Workbook object or URL to xlsx file
 #' @param sheet Name of the worksheet caontaining "enquete" information.
+#'
+#' @importFrom rlang .data
 #'
 #' @return a data.frame
 #' @export
@@ -72,5 +77,27 @@ read_enquete <- function(file, sheet = "enquetes_post_traitement") {
         stringr::str_detect(type_trajet, "simple") ~ "Trajet simple",
         stringr::str_detect(type_trajet, "retour") ~ "Aller-retour",
         TRUE ~ type_trajet)
+    ) %>%
+    dplyr::mutate(
+      date_enq = openxlsx::convertToDate(.data$date_enq)
     )
+}
+
+#' Read and clean "calendrier" information
+#'
+#' Read a specific sheet of an xlsx object and perform some basic cleaning.
+#'
+#' @param file xlsx file, Workbook object or URL to xlsx file
+#' @param sheet Name of the worksheet caontaining "calendrier" information.
+#'
+#' @return a data.frame
+#' @export
+read_calendrier <- function(file, sheet = "calendrier_sites"){
+
+  calendrier <- openxlsx::read.xlsx(file,
+                                    sheet,
+                                    startRow = 2, # We skip the first row that contains global information and not data.
+                                    detectDates = TRUE) %>%
+    janitor::clean_names()
+
 }

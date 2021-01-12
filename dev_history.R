@@ -12,7 +12,8 @@ usethis::use_coverage()
 
 
 # Document functions and dependencies
-attachment::att_to_description()
+##attachment::att_to_description()
+attachment::att_amend_desc()
 # Check the package
 devtools::check()
 # don't forget to commit

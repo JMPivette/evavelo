@@ -97,14 +97,6 @@ Certains id_quest des enquêtes n'apparaissent pas dans le comptages manuels. (h
 
 Utilisation de la function `evavelo::correct_categ()` pour afficher les catégories corrigées.
 
-```{r correct_categorie}
-check_evavelo(comptage = comptage,
-              enquete = enquete)
-
-##correct_categ(comptage, enquete)
-
-
-```
-
+TODO
 
 
