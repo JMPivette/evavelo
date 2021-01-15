@@ -1,0 +1,58 @@
+---
+title: "ac-group-exploration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ac-group-exploration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(evavelo)
+library(magrittr)
+library(dplyr)
+```
+
+```{r import data}
+xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
+```
+
+```{r}
+comptage <- read_comptage(xlsx_path)
+enquete <- read_enquete(xlsx_path)
+
+### Find grouped enquete and keep only this ones:
+mult_enquete <- enquete %>% 
+  mutate(
+    id_quest_ind = id_quest,
+    id_quest = stringr::str_remove(id_quest, "-\\d+$")
+    ) %>% 
+  group_by(id_quest) %>% 
+  filter(n()>1)
+
+mult_enquete %>% 
+  select(id_quest, id_quest_ind, taille_totale_groupe_corrige, nb_repondant_groupe, tx_repondant_groupe
+         ) %>% 
+  left_join(select(comptage, id_quest, volume_manuel, volume_manuel_valide),
+            by = "id_quest")
+
+```
+
+Il existe 4 cas de figure:
+  - Volume_manuel = somme des taille_total_gropue_corrige
+    Rien a faire, on reporte volume_manuel dans colume_manuel_valide
+  - Volume_manuel = taille_totale_groupe_corrige dans chaque cas:
+    On ne fait rien
+  - taille_totale_groupe egale partout mais différente de volume_manuel
+    on reporte taille_totale_group dans volume_manuel
+  - taille_totale_group différe mais somme n'est pas égale à volume_manuel
+    on reporte la somme des taille_totale_groupe
+    
+  
