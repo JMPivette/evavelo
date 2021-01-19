@@ -1,0 +1,70 @@
+---
+title: "ad-affectation_section"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ad-affectation_section}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(evavelo)
+library(dplyr)
+```
+Dans le chapitre 3.1.30:
+
+Dans le cadre des extrapolations à conduire, il sera nécessaire de disposer d’une matrice des origines et destinations des itinérants. Celle-ci permettra de recomposer la répartition spatiale de la fréquentation itinérante sur l’itinéraire ou le réseau. La construction de cette matrice sera faite à partir des numéros des sections correspondant (id) aux communes de départ sur l’itinéraire [iti_depart_iti_valide] et d’arrivée sur l’itinéraire [iti_arrivee_iti_valide] déclarées par les répondants à la question 26. Pour réaliser cette matrice, il faut tout d’abord créer les champs [id_section_origine] et [id_section_dest]. Ensuite, l’affectation des « id » de section est faite en utilisant une fonction recherche entre la base de réponse et la table des communes de l’itinéraire [table_communes].
+
+Il faut donc que je remplisse les champs **id_section_origine** et **id_section_dest** qui sont dans enquetes_post_traitement
+
+```{r}
+xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
+enquete <- read_enquete(xlsx_path)
+
+table_com <- openxlsx::read.xlsx(xlsx_path, sheet = "table_communes", startRow = 2)
+```
+
+
+```{r}
+enquete %>% 
+  select(id_quest, iti_depart_itineraire) %>% 
+  count(iti_depart_itineraire)
+
+```
+
+Il va falloir faire de la reconnaissance de site
+
+```{r}
+enquete %>% 
+  select(ville_res, cp_res)
+
+enquete %>% 
+  select(ville_res, cp_res) %>% 
+  mutate(ville_res = iconv(ville_res,from="UTF-8",to="ASCII//TRANSLIT"))
+
+enquete %>% 
+  select(ville_res, cp_res) %>% 
+  mutate(ville_res = stringi::stri_trans_general(
+    str = ville_res, 
+    id = "Latin-ASCII")
+    ) %>% 
+  geocode_tbl(adresse = ville_res, code_postal = cp_res)
+
+
+```
+```{r}
+banR::geocode("Angoulins") %>% filter(type == "municipality")
+banR::geocode("La Rochelle")
+enq
+find_city
+
+
+```
+
