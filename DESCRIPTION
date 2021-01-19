@@ -26,9 +26,11 @@ Imports:
     shinyWidgets,
     stringr
 Suggests: 
+    banR,
     here,
     knitr,
     rmarkdown,
+    stringi,
     testthat (>= 3.0.0),
     tibble
 VignetteBuilder: 

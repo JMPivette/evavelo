@@ -19,12 +19,10 @@ correct_categ <- function(comptage,
 # Test input data.frames ----------------------------------------------------------------------
 
   df_has_cols(comptage,
-              c("id_quest", "categorie_visuelle_cycliste", "categorie_breve"))
+              comptage_colnames)
 
   df_has_cols(enquete,
-              c("id_quest", "categorie", "categorie_corrige",
-                "type_sortie", "dms", "km_sortie", "type_trajet",
-                "nb_vae", "nb_total_velo", "activites", "activite_motiv")) ## don't forget iti_....
+              enquete_colnames)
 
   ## TODO: add test for id_quest check in both df
   ## TODO: test for duplicated id_quest values.
