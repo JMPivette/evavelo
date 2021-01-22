@@ -6,6 +6,11 @@ test_that("wrong column names gives an error", {
   expect_error(correct_categ(comptage = data.frame(id_quest = 1:3),
                              enquete = data.frame(id_quest = 1:2)))
 
+  ## No errors:
+  expect_type(correct_categ(comptage = evavelo_example$comptage,
+                            enquete = evavelo_example$enquete),
+              "list")
+
 })
 
 

@@ -31,7 +31,6 @@ correct_categ <- function(comptage,
  ## TODO
 
 # Combine result to the output -----------------------------------------------------------------
-
   ## Add comptage information to enquete
   enquete <- enquete %>%
     select(.data$id_quest, .data$categorie, .data$categorie_corrige,
@@ -40,9 +39,10 @@ correct_categ <- function(comptage,
            .data$nb_vae, .data$nb_total_velo, .data$activites, ## Used for Case 6 11
            .data$activite_motiv # USed for Case 9 12
     ) %>%
+    mutate(main_id_quest = radical_quest(id_quest)) %>% # Deal with multiple quest by group
     left_join(select(comptage,
                      .data$id_quest, .data$categorie_visuelle_cycliste),
-              by = "id_quest")
+              by = c("main_id_quest" = "id_quest"))
 
   ## Deal with differences in categorie and categorie_visuelle
 
@@ -62,6 +62,7 @@ correct_categ <- function(comptage,
            .data$categorie_corrige)
 
   ## Update comptage values (categorie_visuelle_cycliste_corrige)
+  ## TODO add check on multiple answers
   comptage <- comptage %>%
     select(.data$id_quest, .data$categorie_visuelle_cycliste, .data$categorie_breve) %>%
     left_join(cat_to_correct, ## TODO add left join since we have NAs in id_quest
