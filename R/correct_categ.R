@@ -27,16 +27,8 @@ correct_categ <- function(comptage,
   ## TODO: add test for id_quest check in both df
   ## TODO: test for duplicated id_quest values.
 
-
-
-
 # Test input for unexpected values ------------------------------------------------------------
  ## TODO
-
-
-
-
-
 
 # Combine result to the output -----------------------------------------------------------------
 
@@ -55,7 +47,8 @@ correct_categ <- function(comptage,
   ## Deal with differences in categorie and categorie_visuelle
 
   cat_to_correct <- enquete %>%
-    filter(!is.na(.data$categorie_visuelle_cycliste)) %>%  ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
+    ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
+    filter(!is.na(.data$categorie_visuelle_cycliste)) %>%
     filter(.data$categorie != .data$categorie_visuelle_cycliste) %>%
     ## Apply case 1 2 3 4 7 10 algorithm
     correct_itinerant() %>%
@@ -90,7 +83,6 @@ correct_categ <- function(comptage,
   ## Return a list with all information.
   list(comptage = comptage,
        enquete = enquete)
-
 }
 
 
@@ -111,23 +103,23 @@ correct_categ <- function(comptage,
 #' @return a data.frame the same size of data with updated categorie_corrige values.
 #' @export
 correct_itinerant <- function(data){
-
   ## Apply algorithm
   rows_to_update <- data %>%
     dplyr::filter(.data$categorie != .data$categorie_visuelle_cycliste) %>%
     dplyr::filter(.data$categorie == "Itin\u00e9rant" |
                     .data$categorie_visuelle_cycliste == "Itin\u00e9rant") %>%
-    dplyr::mutate(iti_any = rowSums(dplyr::across(dplyr::starts_with("iti"),
-                                                  ~ !is.na(.x))) != 0,## check if any response from Q25 to Q27. Might change in future methodology version
-                  ## Other category than Itinerant
-                  other_cat = dplyr::coalesce(
-                    dplyr::na_if(.data$categorie, "Itin\u00e9rant"),
-                    dplyr::na_if(.data$categorie_visuelle_cycliste, "Itin\u00e9rant"))
+    ## check coherence of itinerant answers ('coherent' column)
+    add_coherence() %>%
+    dplyr::mutate(
+      ## Other category than Itinerant
+      other_cat = dplyr::coalesce(
+        dplyr::na_if(.data$categorie, "Itin\u00e9rant"),
+        dplyr::na_if(.data$categorie_visuelle_cycliste, "Itin\u00e9rant"))
     ) %>%
     dplyr::mutate(
       categorie_corrige =
         dplyr::case_when(
-          iti_any ~ "Itin\u00e9rant",
+          coherent ~ "Itin\u00e9rant",
           type_sortie == "Plusieurs jours" & dms > 1 ~ "Itin\u00e9rant",
           TRUE ~ other_cat
         )
@@ -137,7 +129,6 @@ correct_itinerant <- function(data){
     dplyr::rows_update(select(rows_to_update,
                               .data$id_quest, .data$categorie_corrige),
                        by = "id_quest")
-
 }
 
 
@@ -175,7 +166,6 @@ correct_spor_lois <- function(data){
     dplyr::rows_update(select(rows_to_update,
                               .data$id_quest, .data$categorie_corrige),
                        by = "id_quest")
-
 }
 
 #' Apply categorie_corrigee Methodology to decide between Utilitaire and Loisir
@@ -252,6 +242,68 @@ correct_util_sport <- function(data){
   data %>%
     dplyr::rows_update(rbind(cas_5, cas_8),
                        by = "id_quest")
+}
 
 
+
+#' Add a column with 'coherence' information to a data.frame
+#'
+#' Internal function that calls is_iti_coherent
+#'
+#' data should have the following columns: dms, iti_km_voyage, iti_experience,
+#' iti_depart_itineraire, iti_arrivee_itineraire,
+#' iti_depart_initial, iti_arrivee_final
+#'
+#' @param data a data.frame. Some columns are mandatory. See details for more information
+#' @param col_name name of the new column created
+#'
+#' @importFrom rlang .data
+#'
+#' @return 'data' data.frame with a new logical column name after 'col_name'
+
+add_coherence <- function(data,
+                          col_name = "coherent") {
+  data %>%
+    dplyr::mutate(
+      ## check coherence of itinerant answers
+      !!col_name := is_iti_coherent(.data$dms, .data$iti_km_voyage, .data$iti_experience,
+                                    .data$iti_depart_itineraire, .data$iti_arrivee_itineraire,
+                                    .data$iti_depart_initial, .data$iti_arrivee_final)
+    )
+}
+
+#' Helper function to control "coherence" of specific "itinerance" answers:
+#'
+#'  https://github.com/JMPivette/evavelo/discussions/7
+#'
+#' @param dms
+#' @param iti_km_voyage
+#' @param iti_experience
+#' @param iti_depart_itineraire
+#' @param iti_arrivee_itineraire
+#' @param ... other answers to iti_* questions
+#'
+#' @return a boolean vector indicating if answer is coherent
+is_iti_coherent <- function (dms,
+                             iti_km_voyage,
+                             iti_experience,
+                             iti_depart_itineraire,
+                             iti_arrivee_itineraire,...){
+  ## Check distance
+  coher_dist <-  iti_km_voyage/dms
+  coher_dist[is.na(coher_dist)] <- 0 # Remove NA
+  coher_dist <- coher_dist > 40
+
+  ## Check iti_depart_itineraire & iti_arrivee_itineraire
+  coher_commune <- !is.na(iti_depart_itineraire) & !is.na(iti_arrivee_itineraire)
+  # TODO Create a function that contains names of communes
+
+  ## Check iti_other has all answers (no NAs)
+  #(We don't need iti_depart_itineraire and iti_arrivee_itineraire that are already tested)
+  coher_iti_other <- lapply(list(...), is.na)
+  coher_iti_other <- Reduce(`+`, coher_iti_other) == 0
+  ## Check that we have at least 2 answers out of three
+  coher_2_3 <- ((!is.na(iti_km_voyage)) + coher_iti_other + (!is.na(iti_experience))) >= 2
+
+  return(coher_dist | (coher_commune & coher_2_3))
 }
