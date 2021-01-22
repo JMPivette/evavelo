@@ -31,7 +31,7 @@ correct_categ <- function(comptage,
  ## TODO
 
 # Combine result to the output -----------------------------------------------------------------
-  ## Add comptage information to enquete
+  ## Add `comptage` information to enquete
   enquete <- enquete %>%
     select(.data$id_quest, .data$categorie, .data$categorie_corrige,
            .data$type_sortie, .data$dms, starts_with("iti_"),
@@ -39,13 +39,12 @@ correct_categ <- function(comptage,
            .data$nb_vae, .data$nb_total_velo, .data$activites, ## Used for Case 6 11
            .data$activite_motiv # USed for Case 9 12
     ) %>%
-    mutate(main_id_quest = radical_quest(id_quest)) %>% # Deal with multiple quest by group
+    mutate(main_id_quest = radical_quest(.data$id_quest)) %>% # Deal with multiple quest by group
     left_join(select(comptage,
                      .data$id_quest, .data$categorie_visuelle_cycliste),
               by = c("main_id_quest" = "id_quest"))
 
   ## Deal with differences in categorie and categorie_visuelle
-
   cat_to_correct <- enquete %>%
     ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
     filter(!is.na(.data$categorie_visuelle_cycliste)) %>%
@@ -58,28 +57,56 @@ correct_categ <- function(comptage,
     correct_util_lois() %>%
     ## Apply case 5 8
     correct_util_sport() %>%
-    select(.data$id_quest,
+    select(.data$main_id_quest,
+           .data$id_quest,
            .data$categorie_corrige)
 
+  ## Check for multiple "categorie_corrige" in the same group
+  quest_multiple_cat <- cat_to_correct %>%
+    dplyr::distinct(.data$main_id_quest, .data$categorie_corrige) %>%
+    dplyr::count(.data$main_id_quest) %>%
+    dplyr::filter(.data$n>1) %>%
+    dplyr::pull(.data$main_id_quest)
+  if(length(quest_multiple_cat) != 0){
+    warning(
+      "Les questionnaires multiples suivants ont plusieurs valeurs de categorie corrigees:\n\t",
+      quest_multiple_cat,
+      call. = FALSE
+            )
+  }
+
+
   ## Update comptage values (categorie_visuelle_cycliste_corrige)
-  ## TODO add check on multiple answers
   comptage <- comptage %>%
     select(.data$id_quest, .data$categorie_visuelle_cycliste, .data$categorie_breve) %>%
-    left_join(cat_to_correct, ## TODO add left join since we have NAs in id_quest
-              by = "id_quest"
+    left_join(## use left join since we have NAs in id_quest
+      cat_to_correct %>%
+        dplyr::select(.data$main_id_quest, .data$categorie_corrige) %>%
+        dplyr::group_by(.data$main_id_quest) %>%
+        dplyr::slice_head(), ## Remove multiple cat per questionary to avoid adding rows
+      by = c("id_quest" = "main_id_quest")
     ) %>%
-    dplyr::transmute(.data$id_quest,
-                     categorie_visuelle_cycliste_corrige = coalesce(
-                       .data$categorie_corrige,
-                       .data$categorie_breve, ## chapter 3.1.12.2 categorie_breve override categorie_visuelle_cycliste
-                       .data$categorie_visuelle_cycliste)
+    dplyr::transmute(
+      .data$id_quest,
+      categorie_visuelle_cycliste_corrige = coalesce(
+        .data$categorie_corrige,
+        .data$categorie_breve, ## chapter 3.1.12.2 categorie_breve override categorie_visuelle_cycliste
+        .data$categorie_visuelle_cycliste)
+    ) %>%
+    dplyr::mutate(
+      categorie_visuelle_cycliste_corrige = dplyr::if_else(
+        .data$id_quest %in% quest_multiple_cat,
+        NA_character_,
+        .data$categorie_visuelle_cycliste_corrige)
     )
 
 
   ## Update enquete values (categorie_corrige)
+  ## TODO check that we only need to update and not rewrite all the values
   enquete <- enquete %>%
     select(.data$id_quest, .data$categorie_corrige) %>%
-    rows_update(cat_to_correct, by = "id_quest")
+    rows_update(select(cat_to_correct, -.data$main_id_quest),
+                by = "id_quest")
 
   ## Return a list with all information.
   list(comptage = comptage,
@@ -258,7 +285,7 @@ correct_util_sport <- function(data){
 #' @param data a data.frame. Some columns are mandatory. See details for more information
 #' @param col_name name of the new column created
 #'
-#' @importFrom rlang .data
+#' @importFrom rlang .data :=
 #'
 #' @return 'data' data.frame with a new logical column name after 'col_name'
 
@@ -277,11 +304,11 @@ add_coherence <- function(data,
 #'
 #'  https://github.com/JMPivette/evavelo/discussions/7
 #'
-#' @param dms
-#' @param iti_km_voyage
-#' @param iti_experience
-#' @param iti_depart_itineraire
-#' @param iti_arrivee_itineraire
+#' @param dms numeric vector: 'duree moyenne de sejour'
+#' @param iti_km_voyage numeric vector
+#' @param iti_experience character vector
+#' @param iti_depart_itineraire character vector
+#' @param iti_arrivee_itineraire character vector
 #' @param ... other answers to iti_* questions
 #'
 #' @return a boolean vector indicating if answer is coherent

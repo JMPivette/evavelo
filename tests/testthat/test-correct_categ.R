@@ -1,15 +1,32 @@
-
+library(dplyr)
 # Test Global function ------------------------------------------------------------------------
 
 test_that("wrong column names gives an error", {
+  ## No errors:
+  expect_type(out <- correct_categ(comptage = evavelo_example$comptage,
+                                   enquete = evavelo_example$enquete),
+              "list")
+
+  # Check that number of rows hasn't changed and that id_quest are in the same order
+  expect_equal(out$comptage$id_quest,
+               evavelo_example$comptage$id_quest)
+  expect_equal(out$enquete$id_quest,
+               evavelo_example$enquete$id_quest)
+
+
   ## Lots of missing columns
   expect_error(correct_categ(comptage = data.frame(id_quest = 1:3),
                              enquete = data.frame(id_quest = 1:2)))
 
-  ## No errors:
-  expect_type(correct_categ(comptage = evavelo_example$comptage,
-                            enquete = evavelo_example$enquete),
-              "list")
+  ## Warning if categories corrige are different in the same group
+  enquete_modified <- evavelo_example$enquete %>%
+    mutate(
+      activite_motiv = if_else(id_quest == "106aA16-2",
+                               "Cette activité est le but de ma randonnée", # Will change from Loisir to Utilitaire
+                               activite_motiv))
+
+  expect_warning(correct_categ(comptage = evavelo_example$comptage,
+                               enquete = enquete_modified))
 
 })
 

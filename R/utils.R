@@ -30,3 +30,6 @@ radical_quest <- function(id_quest){
   stringr::str_remove(id_quest,
                       "-\\d+$")
 }
+
+## Helper function for "not in"
+`%ni%` = Negate(`%in%`)
