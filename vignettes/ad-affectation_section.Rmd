@@ -49,21 +49,19 @@ enquete %>%
   select(ville_res, cp_res) %>% 
   mutate(ville_res = iconv(ville_res,from="UTF-8",to="ASCII//TRANSLIT"))
 
-enquete %>% 
-  select(ville_res, cp_res) %>% 
-  mutate(ville_res = stringi::stri_trans_general(
-    str = ville_res, 
-    id = "Latin-ASCII")
-    ) %>% 
-  geocode_tbl(adresse = ville_res, code_postal = cp_res)
+# enquete %>% 
+#   select(ville_res, cp_res) %>% 
+#   mutate(ville_res = stringi::stri_trans_general(
+#     str = ville_res, 
+#     id = "Latin-ASCII")
+#     ) %>% 
+#   geocode_tbl(adresse = ville_res, code_postal = cp_res)
 
 
 ```
 ```{r}
 banR::geocode("Angoulins") %>% filter(type == "municipality")
 banR::geocode("La Rochelle")
-enq
-find_city
 
 
 ```

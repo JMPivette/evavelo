@@ -1,30 +1,53 @@
-
+library(dplyr)
 # Test Global function ------------------------------------------------------------------------
 
 test_that("wrong column names gives an error", {
+  ## No errors:
+  expect_type(out <- correct_categ(comptage = evavelo_example$comptage,
+                                   enquete = evavelo_example$enquete),
+              "list")
+
+  # Check that number of rows hasn't changed and that id_quest are in the same order
+  expect_equal(out$comptage$id_quest,
+               evavelo_example$comptage$id_quest)
+  expect_equal(out$enquete$id_quest,
+               evavelo_example$enquete$id_quest)
+
+
   ## Lots of missing columns
   expect_error(correct_categ(comptage = data.frame(id_quest = 1:3),
                              enquete = data.frame(id_quest = 1:2)))
+
+  ## Warning if categories corrige are different in the same group
+  enquete_modified <- evavelo_example$enquete %>%
+    mutate(
+      activite_motiv = if_else(id_quest == "106aA16-2",
+                               "Cette activité est le but de ma randonnée", # Will change from Loisir to Utilitaire
+                               activite_motiv))
+
+  expect_warning(correct_categ(comptage = evavelo_example$comptage,
+                               enquete = enquete_modified))
 
 })
 
 
 
 # Test Itinerant category ---------------------------------------------------------------------
-test_that("correct_intinerant works", {
+test_that("correct_itinerant works", {
   ## Input data.frame
   df <- tibble::tribble(
-    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~type_sortie, ~dms, ~iti_km,
-    "1","Itinérant", "Sportif", "empty", "Plusieurs jours", 1, NA,   ## Sportif
-    "2","Itinérant", "Loisir", "empty", "Plusieurs jours", 1, 120,   ## Itinerant
-    "3","Loisir", "Itinérant", "empty", "Plusieurs jours", 3 , NA,   ## Itinerant
-    "4","Loisir", "Itinérant", "empty", "Plusieurs jours", 5, 200,   ## Itinerant
-    "5","Utilitaire", "Itinérant", "empty", "journée", 1, 120,       ## Itinerant
-    "6","Utilitaire", "Itinérant", "empty", "journée", 3, NA,        ## Utilitaire
-    "7","Sportif", "Sportif", "Sportif", "journée", 4, NA,           ## no change
-    "8","Loisir", "Itinérant", "empty", "journée", 1, NA,            ## Loisir
-    "9","Loisir", "Itinérant", "empty", "Plusieurs jours", NA, 200,  ## Itinerant (dms NA)
-    "10","Itinérant", "Sportif", "empty", "Plusieurs jours", NA, NA  ## Sportif (dms NA)
+    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~type_sortie, ~dms, ~iti_km_voyage, ~iti_experience, ~iti_depart_itineraire, ~iti_arrivee_itineraire, ~iti_depart_initial, ~iti_arrivee_final,
+    "1","Itinérant", "Sportif", "empty", "Plusieurs jours", 1, NA, NA, NA, NA, NA, NA,  ## Sportif
+    "2","Itinérant", "Loisir", "empty", "Plusieurs jours", 1, 120, "answer", "answer", "answer", "answer", "answer",   ## Itinerant
+    "3","Loisir", "Itinérant", "empty", "Plusieurs jours", 3 , NA, NA, NA, NA, NA, NA,   ## Itinerant
+    "4","Loisir", "Itinérant", "empty", "Plusieurs jours", 5, 200, NA, NA, NA, NA, NA,   ## Itinerant
+    "5","Utilitaire", "Itinérant", "empty", "journée", 1, 120, NA, NA, NA, NA, NA,       ## Itinerant
+    "6","Utilitaire", "Itinérant", "empty", "journée", 3, NA, NA, NA, NA, NA, NA,        ## Utilitaire
+    "7","Sportif", "Sportif", "Sportif", "journée", 4, NA, NA, NA, NA, NA, NA,           ## no change
+    "8","Loisir", "Itinérant", "empty", "journée", 1, NA, NA, NA, NA, NA, NA,            ## Loisir
+    "9","Loisir", "Itinérant", "empty", "Plusieurs jours", NA, 200, "answer", "answer", "answer", NA, NA,  ## Itinerant (dms NA)
+    "10","Itinérant", "Sportif", "empty", "Plusieurs jours", NA, NA, NA, NA, NA, NA, NA,  ## Sportif (dms NA)
+    "11", "Itinérant", "Sportif", "empty", "journée", 4, 120, "answer", "answer", "answer", NA, NA ## Itinérant ()
   )
 
   ## Expected categorie_corrige
@@ -37,7 +60,8 @@ test_that("correct_intinerant works", {
                     "Sportif",
                     "Loisir",
                     "Itinérant",
-                    "Sportif")
+                    "Sportif",
+                    "Itinérant")
 
   ## Test that applying function creates no error
   expect_error(corrected_df <- correct_itinerant(df),
@@ -50,9 +74,29 @@ test_that("correct_intinerant works", {
                select(corrected_df, -categorie_corrige))
 
   ## Test that output is as expected
-  expect_equal(expected_out,
-               corrected_df$categorie_corrige)
+  expect_equal(corrected_df$categorie_corrige,
+               expected_out)
 
+})
+
+test_that("isi_iti_coherent helper function works", {
+
+  out <- is_iti_coherent(dms = c(5,5,2,NA,3),
+                         iti_km_voyage = c(250, 250,70, 300, NA) ,
+                         iti_experience =c("a",NA, NA, "a", "a" ) ,
+                         iti_depart_itineraire = c("a",NA, "a", NA, "a") ,
+                         iti_arrivee_itineraire = c("a",NA, "a", NA,"a") ,
+                         iti_depart_initial = c("a",NA, NA, NA, "a") ,
+                         iti_arrivee_final = c("a",NA, NA, NA, "a") )
+
+  expected_out <- c(
+    TRUE, # [iti_km_voyage] / [dms] > 40 km
+    TRUE, # [iti_km_voyage] / [dms] > 40 km
+    FALSE, # [iti_km_voyage] / [dms] < 40 km and missing iti_*_initial and iti_experience
+    FALSE, # ([iti_km_voyage]) / [dms] unavailable and missing [iti_depart_itineraire], [iti_arrivee_itineraire]
+    TRUE # ([iti_km_voyage]) / [dms] unavailable but all the rest is available
+  )
+  expect_equal(out, expected_out)
 })
 
 # Test choices between Sportif and Loisir------------------------------------------------------
@@ -189,8 +233,10 @@ test_that("df with no choices to be made don't throw an error ", {
     id_quest = 1:10,
     categorie = "Utilitaire", categorie_visuelle_cycliste = "Utilitaire",
     categorie_corrige = "Uilitaire",
-    type_sortie = NA, dms = 5, iti_km = 100, km_sortie = 20, type_trajet = NA, nb_vae = 0,
-    nb_total_velo = 1, activites = NA, activite_motiv = NA
+    type_sortie = NA, dms = 5, iti_km_voyage = 100, km_sortie = 20, type_trajet = NA, nb_vae = 0,
+    nb_total_velo = 1, activites = NA, activite_motiv = NA, iti_experience = NA,
+    iti_depart_itineraire = NA, iti_arrivee_itineraire = NA, iti_depart_initial = NA,
+    iti_arrivee_final = NA
     )
 
   expect_equal(df,

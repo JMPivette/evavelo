@@ -9,7 +9,7 @@ usethis::use_test()
 usethis::use_vignette("ba-using_package")
 usethis::use_coverage()
 
-
+usethis::use_news_md()
 
 # Document functions and dependencies
 ##attachment::att_to_description()
@@ -19,3 +19,7 @@ devtools::check()
 # don't forget to commit
 # Update code coverage
 covr::codecov()
+
+
+#Update version
+usethis::use_version()

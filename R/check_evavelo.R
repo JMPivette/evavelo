@@ -10,20 +10,17 @@
 #' @export
 #'
 check_evavelo <- function(calendrier, comptage, enquete){
-  ## fonction that returns a status and log information. not really clear for the moment but will be later
+  ## function that returns a status and log information. not really clear for the moment but will be later
 
   # initialize outputs
   log <- "" ## string to store log information
-  err <- FALSE ## boolean output to tell if an error occured
+  err <- FALSE ## boolean output to tell if an error occurred
 
   ## Check integrity of comptage-------------------------
   log <- add_message_log(log, "Checking comptage...")
   #Check variable names
-  comptage_names <- c("id_quest", "categorie_visuelle",
-                      "categorie_visuelle_cycliste", "categorie_breve",
-                      "id_site_enq", "date_enq")
-  if (!all(comptage_names %in% names(comptage))) {
-    not_present <- setdiff(comptage_names, names(comptage))
+  if (!all(comptage_colnames %in% names(comptage))) {
+    not_present <- setdiff(comptage_colnames, names(comptage))
     err <- TRUE
     log <- add_message_log(log,
                            " ERROR:", paste(not_present, collapse = ", "),
@@ -73,12 +70,9 @@ check_evavelo <- function(calendrier, comptage, enquete){
   ## Check integrity of enquete--------------------------
   #Check variable names
   log <- add_message_log(log, "Checking enquete...")
-  enquete_names <- c("id_quest", "categorie", "categorie_corrige",
-                     "type_sortie", "dms", "km_sortie", "type_trajet",
-                     "nb_vae", "nb_total_velo", "activites", "activite_motiv",
-                     "id_site_enq", "date_enq")
-  if (!all(enquete_names %in% names(enquete))) {
-    not_present <- setdiff(enquete_names, names(enquete))
+
+  if (!all(enquete_colnames %in% names(enquete))) {
+    not_present <- setdiff(enquete_colnames, names(enquete))
     err <- TRUE
     log <- add_message_log(log,
                            " ERROR", paste(not_present, collapse = ", "),
@@ -100,9 +94,8 @@ check_evavelo <- function(calendrier, comptage, enquete){
   ## Check integrity of calendrier
   #Check variable names
   log <- add_message_log(log, "Checking calendrier...")
-  calendrier_names <- c("id_site_enq", "date_enq")
-  if (!all(calendrier_names %in% names(calendrier))) {
-    not_present <- setdiff(calendrier_names, names(calendrier))
+  if (!all(calendrier_colnames %in% names(calendrier))) {
+    not_present <- setdiff(calendrier_colnames, names(calendrier))
     err <- TRUE
     log <- add_message_log(log,
                            " ERROR", paste(not_present, collapse = ", "),
@@ -114,8 +107,7 @@ check_evavelo <- function(calendrier, comptage, enquete){
   ## Check relationship between comptage and enquete-------------------------------
   log <- add_message_log(log, "Checking relationship between comptage and enquete...")
   # Find id_quest with no relationship
-  enquete_id_quest <- stringr::str_remove(comptage$id_quest,
-                                          "-\\d+$") %>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
+  enquete_id_quest <- radical_quest(comptage$id_quest)%>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
     unique()
   id_notin_enq <- setdiff(comptage$id_quest,
                           c(enquete_id_quest, NA))
