@@ -2,7 +2,7 @@
 
 - Fix issue #22 on `correct_categ.R` with identical responses in `categorie`
 
-- Fix issue #23
+- Fix issues #23, #25
 
 # evavelo 0.1.0
  

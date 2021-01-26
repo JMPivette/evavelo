@@ -108,8 +108,8 @@ correct_categ <- function(comptage,
                        by = "id_quest")
 
   ## Return a list with all information.
-  list(comptage = comptage,
-       enquete = enquete)
+  list(comptages_man_post_traitements = comptage,
+       enquetes_post_traitement = enquete)
 }
 
 
