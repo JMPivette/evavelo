@@ -2,6 +2,8 @@
 
 - Fix issue #22 on `correct_categ.R` with identical responses in `categorie`
 
+- Fix issue #23
+
 # evavelo 0.1.0
  
 - Add "coherence" in category correction

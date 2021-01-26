@@ -38,7 +38,8 @@ mod_load_file_server <- function(input, output, session, r){
     ## Initialize values
     r$processed <- NULL
     r$process_error <- FALSE
-    r$filename <- input$file1$name
+    r$filename <- paste0(stringr::str_remove(input$file1$name, ".xlsx$"),
+                         "_scan.xlsx")
     ## Reading File-------------------
     progressSweetAlert(
       session = session, id = "load_progress",
