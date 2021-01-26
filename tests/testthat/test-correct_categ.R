@@ -18,7 +18,7 @@ test_that("wrong column names gives an error", {
   expect_error(correct_categ(comptage = data.frame(id_quest = 1:3),
                              enquete = data.frame(id_quest = 1:2)))
 
-  ## Warning if categories corrige are different in the same group
+  ## Warning if categorie_corrige are different in the same group
   enquete_modified <- evavelo_example$enquete %>%
     mutate(
       activite_motiv = if_else(id_quest == "106aA16-2",
@@ -27,6 +27,19 @@ test_that("wrong column names gives an error", {
 
   expect_warning(correct_categ(comptage = evavelo_example$comptage,
                                enquete = enquete_modified))
+
+  ## Test that inital "categorie_corrige" from input file is not taken in account (Issue #22)
+  # empty columns `categorie_corrige`(normal situation)
+  out_blank <- correct_categ(comptage = evavelo_example$comptage,
+                             enquete = evavelo_example$enquete %>%
+                               mutate(categorie_corrige = NA_character_))
+  # full columns `categorie_corrige`(if passing an already processed file)
+  out_loisir <- correct_categ(comptage = evavelo_example$comptage,
+                              enquete = evavelo_example$enquete %>%
+                                mutate(categorie_corrige = "Loisir"))
+
+  expect_equal(out_blank, out)
+  expect_equal(out_loisir, out)
 
 })
 

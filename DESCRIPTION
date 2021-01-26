@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
@@ -34,6 +34,9 @@ Suggests:
     tibble
 VignetteBuilder: 
     knitr
+Remotes:
+    JMPivette/banR,
+    ycphs/openxlsx
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
