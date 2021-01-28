@@ -19,12 +19,15 @@ Imports:
     janitor,
     magrittr,
     openxlsx,
+    purrr,
     rlang,
+    scales,
     shiny,
     shinycssloaders,
     shinyjs,
     shinyWidgets,
-    stringr
+    stringr,
+    tidyr
 Suggests: 
     banR,
     here,

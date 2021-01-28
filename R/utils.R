@@ -33,3 +33,82 @@ radical_quest <- function(id_quest){
 
 ## Helper function for "not in"
 `%ni%` = Negate(`%in%`)
+
+
+#' Test equality between vectors including NA values
+#'
+#' This function is a variant of == that takes in account NAs.
+#' By default NA == NA returns FALSE in R
+#' With this fonction, NAs can be compared
+#'
+#' @param a a vector
+#' @param b a vector
+#'
+#' @return a boolean vector with element wise comparison
+#'
+equal_with_na <- function(a,b){
+  result <- a == b
+  nas <- is.na(a) & is.na(b)
+  dplyr::coalesce(result, nas)
+}
+
+
+
+#' Compare 2 data.frames
+#'
+#' This function compares 2 data.frames element_wise and returns a logical data.frame
+#' NA values are also compared (as opposed to base R `==`)
+#' Comparison is done columns by columns so both date.frames should be ordered.
+#'
+#' @param x a data.frame
+#' @param y a data.frame
+#' @param verbose boolean to add warning when there is a mismatch
+#'
+#' @return a logical data.frame
+#'
+#' @examples
+df_compare <- function(x, y, verbose = TRUE) {
+  compare_lgl <- purrr::map2_df(x, y, equal_with_na)
+
+  if (verbose){
+    perc_equal <- purrr::map_df(compare_lgl,
+                                ~ sum(.x)/length(.x)) %>%
+      tidyr::pivot_longer(tidyr::everything(), values_to = "perc_equal") %>%
+      filter(perc_equal != 1)
+    if(nrow(perc_equal) != 0){
+      perc_equal <- perc_equal %>%
+        mutate(
+          n_mismatch = round((1 - perc_equal) * nrow(compare_lgl)),
+          perc_equal = scales::percent(.data$perc_equal, accuracy = 0.01)
+        )
+      warning("The following columns are not 100% identical:\n",
+              paste("\t",perc_equal$name, " : \t",
+                    perc_equal$perc_equal,
+                    "(", perc_equal$n_mismatch, "mismatch)","\n"),
+              call. = FALSE)
+    }
+  }
+
+  return(compare_lgl)
+}
+
+
+compare_init_post <- function(init, post_trait){
+  post_trait <- post_trait %>%
+    select(names(init))
+
+  mismatch_col <- janitor::compare_df_cols(
+    post = post_trait,
+    init = init
+  ) %>%
+    dplyr::filter(.data$init != .data$post) %>%
+    dplyr::pull(.data$column_name)
+
+  if(length(mismatch_col != 0))
+    warning("The following columns are different: \n\t", paste(mismatch_col, collapse = ", "),
+            call. = FALSE)
+  df_compare(select(init, -dplyr::all_of(mismatch_col)),
+             select(post_trait, -dplyr::all_of(mismatch_col)))
+
+
+}

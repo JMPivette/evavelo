@@ -4,14 +4,18 @@
 \alias{check_evavelo}
 \title{Check input file correctness (Eva-velo)}
 \usage{
-check_evavelo(calendrier, comptage, enquete)
+check_evavelo(calendrier, comptage, enquete, comptage_init, enquete_init)
 }
 \arguments{
-\item{calendrier}{a data.frame}
+\item{calendrier}{a data.frame corresponding to sheet "calendrier_sites"}
 
-\item{comptage}{a data.frame}
+\item{comptage}{a data.frame corresponding to sheet "comptages_man_post_traitements"}
 
-\item{enquete}{a data.frame}
+\item{enquete}{a data.frame corresponding to sheet "enquetes_post_traitement"}
+
+\item{comptage_init}{a data.frame corresponding to sheet "comptages_manuels"}
+
+\item{enquete_init}{a data.frame corresponding to sheet "enquetes_saisies"}
 }
 \value{
 a list of two values: error (a boolean) and log (a string)

@@ -74,9 +74,14 @@ mod_load_file_server <- function(input, output, session, r){
         calendrier <- read_calendrier(r$data)
         comptage <- read_comptage(r$data)
         enquete <- read_enquete(r$data)
+        comptage_init <- read_comptage(r$data, init = TRUE)
+        enquete_init <- read_enquete(r$data, init = TRUE)
+
         check_result <- check_evavelo(calendrier = calendrier,
                                       comptage = comptage,
-                                      enquete = enquete)
+                                      enquete = enquete,
+                                      comptage_init = comptage_init,
+                                      enquete_init = enquete_init)
         if (check_result$error) r$process_error <- TRUE
         r$log <- paste(r$log, check_result$log)
       },
