@@ -1,4 +1,6 @@
-# evavelo (development version)
+# evavelo 0.2.0
+
+- #21 Add check on similarity between sheets and their _post_traitement equivalent.
 
 - Fix issue #22 on `correct_categ.R` with identical responses in `categorie`
 
