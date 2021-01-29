@@ -48,8 +48,7 @@ calendrier <- evavelo::read_calendrier(xlsx_path)
 ### Test input values
 
 ```{r test}
-check <- evavelo::check_evavelo(calendrier,comptage, enquete)
-message(check)
+process_evavelo(xlsx_path)
 
 ```
 Il y a des doublons dans le id_quest au niveau des comptages manuels (https://github.com/JMPivette/evavelo/issues/13). 

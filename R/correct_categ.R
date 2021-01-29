@@ -89,7 +89,6 @@ correct_categ <- function(comptage,
     dplyr::transmute(
       .data$id_quest,
       categorie_visuelle_cycliste_corrige = coalesce(
-        .data$categorie_corrige,
         .data$categorie_breve, ## chapter 3.1.12.2 categorie_breve override categorie_visuelle_cycliste
         .data$categorie_visuelle_cycliste)
     ) %>%
@@ -100,17 +99,17 @@ correct_categ <- function(comptage,
         .data$categorie_visuelle_cycliste_corrige)
     )
 
-
   ## Update enquete values (categorie_corrige)
-  ## TODO check that we only need to update and not rewrite all the values
+
   enquete <- enquete %>%
-    select(.data$id_quest, .data$categorie_corrige) %>%
-    rows_update(select(cat_to_correct, -.data$main_id_quest),
-                by = "id_quest")
+    dplyr::transmute(.data$id_quest,
+                     categorie_corrige = .data$categorie) %>% ## initialize with response from cyclist
+    dplyr::rows_update(select(cat_to_correct, -.data$main_id_quest),
+                       by = "id_quest")
 
   ## Return a list with all information.
-  list(comptage = comptage,
-       enquete = enquete)
+  list(comptages_man_post_traitements = comptage,
+       enquetes_post_traitement = enquete)
 }
 
 

@@ -4,10 +4,13 @@
 \alias{process_evavelo}
 \title{Read and process a eva-velo file}
 \usage{
-process_evavelo(file)
+process_evavelo(file, check = TRUE)
 }
 \arguments{
-\item{file}{An xlsx file, Workbook object or URL to xlsx file}
+\item{file}{an xlsx file, Workbook object or URL to xlsx file}
+
+\item{check}{a boolean. Is data checked before being processed.
+This value can be set to FALSE if you already ised check_evavelo() and don't want to reun it twice}
 }
 \value{
 a list of corrected categories

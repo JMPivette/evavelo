@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
@@ -19,12 +19,15 @@ Imports:
     janitor,
     magrittr,
     openxlsx,
+    purrr,
     rlang,
+    scales,
     shiny,
     shinycssloaders,
     shinyjs,
     shinyWidgets,
-    stringr
+    stringr,
+    tidyr
 Suggests: 
     banR,
     here,
@@ -34,6 +37,9 @@ Suggests:
     tibble
 VignetteBuilder: 
     knitr
+Remotes:
+    JMPivette/banR,
+    ycphs/openxlsx
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true

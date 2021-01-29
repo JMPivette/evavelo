@@ -1,0 +1,32 @@
+---
+title: "checking_input"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{checking_input}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(evavelo)
+```
+
+## Introduction
+
+Ce document décrit les différentes étapes de vérification de fichier d'input réalisé par la fonction `check_evavelo()`
+
+### Vérification des onglets avec leurs équivalents "post-traitement"
+
+Les onglets enquetes_saisies et comptages_manuels sont respectivement reportés à l'identique dans les onglets enquetes_post_traitement et comptages_man_post_traitements.
+Nous vérifions donc d'abord que c'est le cas et qu'il n'y pas de différences entre les données présentes dans les 2 onglets.
+
+### Onglet comptages_man_post_traitements
+
+### Onglet  enquetes_post_traitement

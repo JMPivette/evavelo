@@ -4,12 +4,12 @@
 \alias{read_comptage}
 \title{Read and clean "comptage" information}
 \usage{
-read_comptage(file, sheet = "comptages_man_post_traitements")
+read_comptage(file, init = FALSE)
 }
 \arguments{
 \item{file}{xlsx file, Workbook object or URL to xlsx file}
 
-\item{sheet}{Name of the worksheet caontaining "comptage" information.}
+\item{init}{boolean to import the initial sheet instead of the _post_traitement}
 }
 \value{
 a data.frame

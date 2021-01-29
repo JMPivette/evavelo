@@ -4,12 +4,12 @@
 \alias{read_enquete}
 \title{Read and clean "enquete" information}
 \usage{
-read_enquete(file, sheet = "enquetes_post_traitement")
+read_enquete(file, init = FALSE)
 }
 \arguments{
 \item{file}{xlsx file, Workbook object or URL to xlsx file}
 
-\item{sheet}{Name of the worksheet caontaining "enquete" information.}
+\item{init}{boolean to import the initial sheet instead of the _post_traitement}
 }
 \value{
 a data.frame

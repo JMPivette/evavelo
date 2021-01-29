@@ -1,20 +1,47 @@
 #' Check input file correctness (Eva-velo)
 #'
-#' @param calendrier a data.frame
-#' @param comptage a data.frame
-#' @param enquete a data.frame
+#' @param calendrier a data.frame corresponding to sheet "calendrier_sites"
+#' @param comptage a data.frame corresponding to sheet "comptages_man_post_traitements"
+#' @param enquete a data.frame corresponding to sheet "enquetes_post_traitement"
+#' @param comptage_init a data.frame corresponding to sheet "comptages_manuels"
+#' @param enquete_init a data.frame corresponding to sheet "enquetes_saisies"
 #'
 #' @return a list of two values: error (a boolean) and log (a string)
 #'
 #' @importFrom rlang .data
 #' @export
 #'
-check_evavelo <- function(calendrier, comptage, enquete){
+check_evavelo <- function(calendrier,
+                          comptage,
+                          enquete,
+                          comptage_init,
+                          enquete_init){
   ## function that returns a status and log information. not really clear for the moment but will be later
 
   # initialize outputs
   log <- "" ## string to store log information
   err <- FALSE ## boolean output to tell if an error occurred
+
+
+  ## Check sheets with their associated post_traitement----------------------
+
+  log <- add_message_log(log, "Comparing enquetes_saisies and enquetes_post_traitement...")
+  withCallingHandlers(enq_diff <- compare_init_post(init = enquete_init,
+                                             post_trait = enquete),
+                      warning = function(w) {
+                        log <<- add_message_log(log, w$message)
+                        err <<- TRUE
+                      }) %>%
+    suppressWarnings()
+
+  log <- add_message_log(log, "Comparing comptages_manuels and comptages_man_post_traitements...")
+  withCallingHandlers(compt_diff <- compare_init_post(init = comptage_init,
+                                             post_trait = comptage),
+                      warning = function(w) {
+                        log <<- add_message_log(log, w$message)
+                        err <<- TRUE
+                      }) %>%
+    suppressWarnings()
 
   ## Check integrity of comptage-------------------------
   log <- add_message_log(log, "Checking comptage...")

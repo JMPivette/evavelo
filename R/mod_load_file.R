@@ -38,7 +38,8 @@ mod_load_file_server <- function(input, output, session, r){
     ## Initialize values
     r$processed <- NULL
     r$process_error <- FALSE
-    r$filename <- input$file1$name
+    r$filename <- paste0(stringr::str_remove(input$file1$name, ".xlsx$"),
+                         "_scan.xlsx")
     ## Reading File-------------------
     progressSweetAlert(
       session = session, id = "load_progress",
@@ -73,9 +74,14 @@ mod_load_file_server <- function(input, output, session, r){
         calendrier <- read_calendrier(r$data)
         comptage <- read_comptage(r$data)
         enquete <- read_enquete(r$data)
+        comptage_init <- read_comptage(r$data, init = TRUE)
+        enquete_init <- read_enquete(r$data, init = TRUE)
+
         check_result <- check_evavelo(calendrier = calendrier,
                                       comptage = comptage,
-                                      enquete = enquete)
+                                      enquete = enquete,
+                                      comptage_init = comptage_init,
+                                      enquete_init = enquete_init)
         if (check_result$error) r$process_error <- TRUE
         r$log <- paste(r$log, check_result$log)
       },
