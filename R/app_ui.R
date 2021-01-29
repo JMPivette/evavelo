@@ -15,7 +15,11 @@ app_ui <- function(request) {
 
       mod_download_result_ui("download_result_ui_1"),
       br(),br(),
-      actionButton("browser", "Browser")
+
+      ##Debuging button To show it, open your web browser JavaScript console
+      ##And run $('#browser').show();
+      actionButton("browser", "Browser"),
+      tags$script("$('#browser').hide();")
     )
   )
 }
