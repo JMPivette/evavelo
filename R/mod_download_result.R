@@ -13,8 +13,13 @@ mod_download_result_ui <- function(id){
   tagList(
     shinyjs::useShinyjs(),
     shinyjs::disabled(
-      downloadButton(ns("download"), "Download Result")
-    )
+      downloadButton(ns("download_light"), "Download Modified Columns")
+    ),
+    shinyjs::disabled(
+      downloadButton(ns("download_full"), "Download Complete File (experimental)")
+    ),
+    br(),br(),
+    downloadButton(ns("download_logs"), "Download logs")
   )
 }
 
@@ -24,18 +29,45 @@ mod_download_result_ui <- function(id){
 mod_download_result_server <- function(input, output, session, r){
   ns <- session$ns
 
-  output$download <- downloadHandler(
+  output$download_light <- downloadHandler(
     filename = function() r$filename,
     content = function(file) {
       openxlsx::write.xlsx(r$processed, file)
     }
   )
 
+  output$download_full <- downloadHandler(
+    filename = function() r$filename,
+    content = function(file) {
+      sendSweetAlert(
+        session = session,
+        title = "Creating output file.",
+        text = "Please wait...",
+        btn_labels = NA,
+        closeOnClickOutside = FALSE
+      )
+      evavelo::update_wb(r$data, r$processed)
+      openxlsx::saveWorkbook(r$data, file)
+      closeSweetAlert()
+    }
+  )
+
+  output$download_logs <- downloadHandler(
+    filename = "log.txt",
+    content = function(file) {
+      cat(r$log, file = file)
+    }
+  )
+
+
   observeEvent(r$processed,{
-    if(is.null(r$processed))
-      shinyjs::disable("download")
-    else
-      shinyjs::enable("download")
+    if(is.null(r$processed)){
+      shinyjs::disable("download_light")
+      shinyjs::disable("download_full")
+    }else {
+      shinyjs::enable("download_light")
+      shinyjs::enable("download_full")
+    }
   },
   ignoreNULL = FALSE)
 }
