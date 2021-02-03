@@ -66,7 +66,6 @@ equal_with_na <- function(a,b){
 #'
 #' @return a logical data.frame
 #'
-#' @examples
 df_compare <- function(x, y, verbose = TRUE) {
   compare_lgl <- purrr::map2_df(x, y, equal_with_na)
 

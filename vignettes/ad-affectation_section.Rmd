@@ -17,7 +17,10 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(evavelo)
 library(dplyr)
+library(banR)
 ```
+## Intro
+
 Dans le chapitre 3.1.30:
 
 Dans le cadre des extrapolations à conduire, il sera nécessaire de disposer d’une matrice des origines et destinations des itinérants. Celle-ci permettra de recomposer la répartition spatiale de la fréquentation itinérante sur l’itinéraire ou le réseau. La construction de cette matrice sera faite à partir des numéros des sections correspondant (id) aux communes de départ sur l’itinéraire [iti_depart_iti_valide] et d’arrivée sur l’itinéraire [iti_arrivee_iti_valide] déclarées par les répondants à la question 26. Pour réaliser cette matrice, il faut tout d’abord créer les champs [id_section_origine] et [id_section_dest]. Ensuite, l’affectation des « id » de section est faite en utilisant une fonction recherche entre la base de réponse et la table des communes de l’itinéraire [table_communes].
@@ -39,30 +42,47 @@ enquete %>%
 
 ```
 
-Il va falloir faire de la reconnaissance de site
+## Detetion de communes
+
+Il va falloir faire de la reconnaissance de site.
+J'utilise le package banR que j'ai légèrement modifié pour filtrer les communes.
+Si jamais ma PR (https://github.com/joelgombin/banR/pull/32) n'est pas incorporée au package, il faudra que je redeveloppe la fonctionalté ici.
+
+La fonction geocode_tbl() est beaucoup plus rapide que la fonction geocode. Je peux en plus préciser un code Insee.
+Je vais utiiser cette fonction pour vérifier la table des communes. 
+
+
+
 
 ```{r}
-enquete %>% 
-  select(ville_res, cp_res)
-
-enquete %>% 
-  select(ville_res, cp_res) %>% 
-  mutate(ville_res = iconv(ville_res,from="UTF-8",to="ASCII//TRANSLIT"))
-
-# enquete %>% 
-#   select(ville_res, cp_res) %>% 
-#   mutate(ville_res = stringi::stri_trans_general(
-#     str = ville_res, 
-#     id = "Latin-ASCII")
-#     ) %>% 
-#   geocode_tbl(adresse = ville_res, code_postal = cp_res)
+## example of BanR use:
+banR::geocode("perros", limit = 1, type = "municipality")
 
 
-```
-```{r}
-banR::geocode("Angoulins") %>% filter(type == "municipality")
-banR::geocode("La Rochelle")
+villes <- c("perros", "evron", "trezeny", "st brieuc", "zzz")
+table_communes <- openxlsx::read.xlsx(xlsx_path, sheet = "table_communes", startRow = 2)
+villes_itineraire <- table_communes$nom_commune
 
+## Modify input to create an error
+table_communes[1,"nom_commune"]<- "TREZENY"
+
+evavelo::geocode_table_communes(table_communes)
+
+
+## Try to create a function that treat a vector as input
+geocode_cities <- function(cities){
+  purrr::map_df(cities,
+             geocode_city)
+  
+}
+
+geocode_city <- function(city_name){
+  res <- banR::geocode(city_name, limit = 1, type = "municipality") %>% 
+    suppressMessages()
+  if(nrow(res) == 0)
+    return(data.frame(label = NA))
+  res
+}
 
 ```
 
