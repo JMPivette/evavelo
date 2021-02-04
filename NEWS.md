@@ -1,3 +1,7 @@
+# evavelo 0.4.0
+
+- Create geocoding functions `geocode_table_communes()` and `geocode_cities_cp()`
+
 # evavelo 0.3.0
 
 - Add button in the UI to download full file and logs
