@@ -1,16 +1,16 @@
-#' geocode a tibble with french cities
+#' geocode a tibble with french cities and postcode
 #'
 #' @param .data a dataframe that needs to be updated
 #' @param city_col column name containing the city name in .data
 #' This value will also be used to name the new columns.
-#' @param cp_col optional postcode columns
+#' @param cp_col  postcode columns
 #' @param country_col optional contry_col (to avoid geocoding non-french cities)
 #'
 #' @return a the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
 #' @export
 #'
 
-geocode_cities <- function(.data, city_col, cp_col = NULL, country_col = NULL){
+geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
   ## enquo col_names
   city_col <- rlang::enquo(city_col)
   cp_col <- rlang::enquo(cp_col)
@@ -27,7 +27,6 @@ geocode_cities <- function(.data, city_col, cp_col = NULL, country_col = NULL){
       dplyr::transmute(!!city_col, !!cp_col,
                        french = TRUE)
   }
-## TODO Add a step to add leading zeros to postcode.
 
   ## Detecting cities with postcode ---------------
   city_list_cp <- data %>%
@@ -69,7 +68,7 @@ geocode_cities <- function(.data, city_col, cp_col = NULL, country_col = NULL){
       city = !!city_col, postcode = !!cp_col,
       .data$result_type, .data$result_score, .data$result_label, .data$result_postcode) %>%
     dplyr::distinct() %>%
-    check_warn_cities()
+    check_warn_cities_cp()
 
   ## Return result ---------------------
   result
@@ -87,7 +86,7 @@ geocode_cities <- function(.data, city_col, cp_col = NULL, country_col = NULL){
 #'
 #' @return invisible(0)
 
-check_warn_cities <- function(data){
+check_warn_cities_cp <- function(data){
 
   # Checking for "name" mispelling (wrong name with correct postcode)
   ## . Mispelling wih correct postcode -------------------------

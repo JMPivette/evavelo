@@ -98,7 +98,7 @@ enquete <- read_enquete(xlsx_path) %>%
 
 ## Lets' work with ville_res first
 
-enquete_post <- geocode_cities(enquete, city_col = ville_res, cp_col = cp_res)
+enquete_post <- geocode_cities_cp(enquete, city_col = ville_res, cp_col = cp_res)
 
 all.equal(enquete,
           select(enquete_post, 
@@ -110,7 +110,7 @@ enquete_post %>%
 
 ## adding a country information
 
-geocode_cities(enquete, city_col = ville_res, cp_col = cp_res, country_col = pays_res) %>% 
+geocode_cities_cp(enquete, city_col = ville_res, cp_col = cp_res, country_col = pays_res) %>% 
   select(cp_res, starts_with("ville_res")) %>% 
   head(20)
 ```
