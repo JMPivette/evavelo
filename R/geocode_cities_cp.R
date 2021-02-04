@@ -6,7 +6,7 @@
 #' @param cp_col  postcode columns
 #' @param country_col optional contry_col (to avoid geocoding non-french cities)
 #'
-#' @return a the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
+#' @return the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
 #' @export
 #'
 
@@ -59,7 +59,8 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
     dplyr::bind_cols(.data, .)
 
   ## Checking wrong results and propose an alternative in warnings-------------------
-
+  warning("\nVerification de ",
+          city_col_name, "......\n")
   city_list_cp %>%
     filter(!is.na(!!city_col)) %>%
     filter(.data$french == TRUE) %>%
@@ -137,7 +138,7 @@ check_warn_cities_cp <- function(data){
   wrong_no_proposal <- last_search %>%
     filter(is.na(.data$result_label))
 
-  if(nrow(wrong_no_proposal)!=0 & nrow(wrong_with_proposal))
+  if(nrow(wrong_no_proposal)!=0 | nrow(wrong_with_proposal)!=0)
     warning("Des villes n'ont pas pu etre reconnue et seront ignorees: \n",
             call. = FALSE)
 

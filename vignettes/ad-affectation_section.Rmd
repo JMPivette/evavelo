@@ -89,7 +89,7 @@ Finalement, j'ai plusieurs villes à étudier:
 * iti_depart_itineraire
 * iti_arrivee itineraire
 
-
+### Ville_res (associé à cp_res)
 ```{r}
 
 enquete <- read_enquete(xlsx_path) %>% 
@@ -114,3 +114,21 @@ geocode_cities_cp(enquete, city_col = ville_res, cp_col = cp_res, country_col = 
   select(cp_res, starts_with("ville_res")) %>% 
   head(20)
 ```
+
+### Autres villes
+
+```{r}
+
+enquete %>% 
+  geocode_cities(ville_heb) %>% 
+  head(20)
+
+
+enquete %>% 
+  geocode_cities(ville_heb) %>% 
+  geocode_cities(iti_depart_itineraire) %>% 
+  geocode_cities(iti_arrivee_itineraire) %>% 
+  head(20)
+
+```
+
