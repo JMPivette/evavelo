@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, message = FALSE}
 library(evavelo)
 library(dplyr)
 library(banR)
@@ -42,14 +42,14 @@ enquete %>%
 
 ```
 
-## Detetion de communes
+## Detection de communes (table_communes)
 
 Il va falloir faire de la reconnaissance de site.
 J'utilise le package banR que j'ai légèrement modifié pour filtrer les communes.
 Si jamais ma PR (https://github.com/joelgombin/banR/pull/32) n'est pas incorporée au package, il faudra que je redeveloppe la fonctionalté ici.
 
 La fonction geocode_tbl() est beaucoup plus rapide que la fonction geocode. Je peux en plus préciser un code Insee.
-Je vais utiiser cette fonction pour vérifier la table des communes. 
+Je vais utiliser cette fonction pour vérifier la table des communes. 
 
 
 
@@ -66,23 +66,51 @@ villes_itineraire <- table_communes$nom_commune
 ## Modify input to create an error
 table_communes[1,"nom_commune"]<- "TREZENY"
 
-evavelo::geocode_table_communes(table_communes)
+
+## function that uses city names and COG codes to find position
+evavelo::geocode_table_communes(table_communes) %>% 
+  select(COG, nom_commune, latitude, longitude) %>% 
+  head(20)
 
 
-## Try to create a function that treat a vector as input
-geocode_cities <- function(cities){
-  purrr::map_df(cities,
-             geocode_city)
-  
-}
-
-geocode_city <- function(city_name){
-  res <- banR::geocode(city_name, limit = 1, type = "municipality") %>% 
-    suppressMessages()
-  if(nrow(res) == 0)
-    return(data.frame(label = NA))
-  res
-}
 
 ```
 
+## Detection de commune (enquete)
+*3.1.19*	Communes d’hébergement, de départ et d’arrivée, de résidence et code postal
+
+Il est nécessaire d’homogénéiser la saisie des noms et de vérifier la concordance entre le nom de la commune et le code postal. Pour les communes d’hébergement [ville_heb], de départ sur l’itinéraire [iti_depart_itineraire] et d’arrivée sur l’itinéraire [iti_arrivee_itineraire], il est nécessaire de vérifier l’appartenance de ces communes à l’itinéraire ou au réseau évalué.
+
+
+Finalement, j'ai plusieurs villes à étudier:
+
+* ville_heb
+* ville_res (associé à cp_res)
+* iti_depart_itineraire
+* iti_arrivee itineraire
+
+
+```{r}
+
+enquete <- read_enquete(xlsx_path) %>% 
+  select(ville_heb, ville_res, iti_depart_itineraire, iti_arrivee_itineraire, cp_res, pays_res)
+
+
+## Lets' work with ville_res first
+
+enquete_post <- geocode_cities(enquete, city_col = ville_res, cp_col = cp_res)
+
+all.equal(enquete,
+          select(enquete_post, 
+                 names(enquete)))
+
+enquete_post %>% 
+  select(cp_res, starts_with("ville_res")) %>% 
+  head(20)
+
+## adding a country information
+
+geocode_cities(enquete, city_col = ville_res, cp_col = cp_res, country_col = pays_res) %>% 
+  select(cp_res, starts_with("ville_res")) %>% 
+  head(20)
+```
