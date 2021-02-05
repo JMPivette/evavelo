@@ -48,21 +48,18 @@ Il va falloir faire de la reconnaissance de site.
 J'utilise le package banR que j'ai légèrement modifié pour filtrer les communes.
 Si jamais ma PR (https://github.com/joelgombin/banR/pull/32) n'est pas incorporée au package, il faudra que je redeveloppe la fonctionalté ici.
 
-La fonction geocode_tbl() est beaucoup plus rapide que la fonction geocode. Je peux en plus préciser un code Insee.
+La fonction banR::geocode_tbl() est beaucoup plus rapide que la fonction banR::geocode(). Je peux en plus préciser un code Insee.
 Je vais utiliser cette fonction pour vérifier la table des communes. 
 
-
+La fonction `geocode_table_communes()` est créee pour geocoder les informations dans tables_communes
 
 
 ```{r}
 ## example of BanR use:
-banR::geocode("perros", limit = 1, type = "municipality")
+#banR::geocode("perros", limit = 1, type = "municipality")
 
 
-villes <- c("perros", "evron", "trezeny", "st brieuc", "zzz")
 table_communes <- openxlsx::read.xlsx(xlsx_path, sheet = "table_communes", startRow = 2)
-villes_itineraire <- table_communes$nom_commune
-
 ## Modify input to create an error
 table_communes[1,"nom_commune"]<- "TREZENY"
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/geocode_cities_cp.R
 \name{geocode_cities_cp}
 \alias{geocode_cities_cp}
-\title{geocode a tibble with french cities and postcode}
+\title{geocode a data.frame with french cities and postcode}
 \usage{
 geocode_cities_cp(.data, city_col, cp_col, country_col = NULL)
 }
@@ -17,8 +17,9 @@ This value will also be used to name the new columns.}
 \item{country_col}{optional contry_col (to avoid geocoding non-french cities)}
 }
 \value{
-a the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
+the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
 }
 \description{
-geocode a tibble with french cities and postcode
+Since there is a postcode information, this function is stricter than geo_code_cities()
+mispleeing or wrong postcode are not taken in account but an informative warning is created.
 }

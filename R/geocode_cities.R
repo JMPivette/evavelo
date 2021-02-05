@@ -2,6 +2,7 @@
 #'
 #' This function will try to find the best match in case of mispelling.
 #' A warning message will be generated indicating the city that has been chosen in case of doubt.
+#' This function is much more permissive to mispleeing errors than geocode_cities_cp()
 #'
 #' @param .data a dataframe that needs to be updated
 #' @param city_col column name containing the city name in .data

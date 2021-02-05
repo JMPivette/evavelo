@@ -1,4 +1,7 @@
-#' geocode a tibble with french cities and postcode
+#' geocode a data.frame with french cities and postcode
+#'
+#' Since there is a postcode information, this function is stricter than geo_code_cities()
+#' mispleeing or wrong postcode are not taken in account but an informative warning is created.
 #'
 #' @param .data a dataframe that needs to be updated
 #' @param city_col column name containing the city name in .data
