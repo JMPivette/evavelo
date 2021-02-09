@@ -1,21 +1,13 @@
 #' Check input file correctness (Eva-velo)
 #'
-#' @param calendrier a data.frame corresponding to sheet "calendrier_sites"
-#' @param comptage a data.frame corresponding to sheet "comptages_man_post_traitements"
-#' @param enquete a data.frame corresponding to sheet "enquetes_post_traitement"
-#' @param comptage_init a data.frame corresponding to sheet "comptages_manuels"
-#' @param enquete_init a data.frame corresponding to sheet "enquetes_saisies"
+#' @param eva_data a named list of data.frames obtained with read_evavelo()
 #'
 #' @return a list of two values: error (a boolean) and log (a string)
 #'
 #' @importFrom rlang .data
 #' @export
 #'
-check_evavelo <- function(calendrier,
-                          comptage,
-                          enquete,
-                          comptage_init,
-                          enquete_init){
+check_evavelo <- function(eva_data){
   ## function that returns a status and log information. not really clear for the moment but will be later
 
   # initialize outputs
@@ -26,8 +18,8 @@ check_evavelo <- function(calendrier,
   ## Check sheets with their associated post_traitement----------------------
 
   log <- add_message_log(log, "Comparing enquetes_saisies and enquetes_post_traitement...")
-  withCallingHandlers(enq_diff <- compare_init_post(init = enquete_init,
-                                             post_trait = enquete),
+  withCallingHandlers(enq_diff <- compare_init_post(init = eva_data$enquete_init,
+                                             post_trait = eva_data$enquete),
                       warning = function(w) {
                         log <<- add_message_log(log, w$message)
                         err <<- TRUE
@@ -35,8 +27,8 @@ check_evavelo <- function(calendrier,
     suppressWarnings()
 
   log <- add_message_log(log, "Comparing comptages_manuels and comptages_man_post_traitements...")
-  withCallingHandlers(compt_diff <- compare_init_post(init = comptage_init,
-                                             post_trait = comptage),
+  withCallingHandlers(compt_diff <- compare_init_post(init = eva_data$comptage_init,
+                                             post_trait = eva_data$comptage),
                       warning = function(w) {
                         log <<- add_message_log(log, w$message)
                         err <<- TRUE
@@ -46,15 +38,15 @@ check_evavelo <- function(calendrier,
   ## Check integrity of comptage-------------------------
   log <- add_message_log(log, "Checking comptage...")
   #Check variable names
-  if (!all(comptage_colnames %in% names(comptage))) {
-    not_present <- setdiff(comptage_colnames, names(comptage))
+  if (!all(comptage_colnames %in% names(eva_data$comptage))) {
+    not_present <- setdiff(comptage_colnames, names(eva_data$comptage))
     err <- TRUE
     log <- add_message_log(log,
                            " ERROR:", paste(not_present, collapse = ", "),
                            " missing from comptage")
   }
   # Check uniqueness of id_quest
-  dupli_id <- comptage %>%
+  dupli_id <- eva_data$comptage %>%
     dplyr::select(.data$id_quest) %>%
     dplyr::count(.data$id_quest) %>%
     dplyr::filter(!is.na(.data$id_quest) & .data$n > 1)
@@ -66,7 +58,7 @@ check_evavelo <- function(calendrier,
   }
 
   # Check values of categorie_visuelle_cycliste
-  wrong_cat <- setdiff(unique(comptage$categorie_visuelle_cycliste),
+  wrong_cat <- setdiff(unique(eva_data$comptage$categorie_visuelle_cycliste),
           c("Loisir","Sportif","Utilitaire","Itin\u00e9rant", NA))
   if (length(wrong_cat) != 0 ) {
     err <- TRUE
@@ -98,8 +90,8 @@ check_evavelo <- function(calendrier,
   #Check variable names
   log <- add_message_log(log, "Checking enquete...")
 
-  if (!all(enquete_colnames %in% names(enquete))) {
-    not_present <- setdiff(enquete_colnames, names(enquete))
+  if (!all(enquete_colnames %in% names(eva_data$enquete))) {
+    not_present <- setdiff(enquete_colnames, names(eva_data$enquete))
     err <- TRUE
     log <- add_message_log(log,
                            " ERROR", paste(not_present, collapse = ", "),
@@ -107,7 +99,7 @@ check_evavelo <- function(calendrier,
   }
 
   # Check uniqueness of id_quest
-  dupli_id <- enquete %>%
+  dupli_id <- eva_data$enquete %>%
     dplyr::select(.data$id_quest) %>%
     dplyr::count(.data$id_quest) %>%
     dplyr::filter(!is.na(.data$id_quest) & .data$n > 1)
@@ -121,8 +113,8 @@ check_evavelo <- function(calendrier,
   ## Check integrity of calendrier
   #Check variable names
   log <- add_message_log(log, "Checking calendrier...")
-  if (!all(calendrier_colnames %in% names(calendrier))) {
-    not_present <- setdiff(calendrier_colnames, names(calendrier))
+  if (!all(calendrier_colnames %in% names(eva_data$calendrier))) {
+    not_present <- setdiff(calendrier_colnames, names(eva_data$calendrier))
     err <- TRUE
     log <- add_message_log(log,
                            " ERROR", paste(not_present, collapse = ", "),
@@ -134,12 +126,12 @@ check_evavelo <- function(calendrier,
   ## Check relationship between comptage and enquete-------------------------------
   log <- add_message_log(log, "Checking relationship between comptage and enquete...")
   # Find id_quest with no relationship
-  enquete_id_quest <- radical_quest(comptage$id_quest)%>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
+  enquete_id_quest <- radical_quest(eva_data$comptage$id_quest)%>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
     unique()
-  id_notin_enq <- setdiff(comptage$id_quest,
+  id_notin_enq <- setdiff(eva_data$comptage$id_quest,
                           c(enquete_id_quest, NA))
   id_notin_compt <- setdiff(enquete_id_quest,
-                            c(comptage$id_quest, NA))
+                            c(eva_data$comptage$id_quest, NA))
   if(length(id_notin_compt) != 0){
     err <- TRUE
     log <- add_message_log(log,
@@ -156,9 +148,9 @@ check_evavelo <- function(calendrier,
   ## Check relationship with calendrier_sites-------------------------
   log <- add_message_log(log, "Checking id_site_enq and date from calendrier...")
 
-  cal_enq_difflog <- check_diff(a = calendrier, b = enquete,
+  cal_enq_difflog <- check_diff(a = eva_data$calendrier, b = eva_data$enquete,
                                 name_a = "calendrier", name_b = "enquete")
-  cal_compt_difflog <- check_diff(a = calendrier, b = comptage,
+  cal_compt_difflog <- check_diff(a = eva_data$calendrier, b = eva_data$comptage,
                                   name_a = "calendrier", name_b = "comptage")
 
   if(length(cal_enq_difflog) != 0 | length(cal_compt_difflog) != 0) { ## A difference has been spoted

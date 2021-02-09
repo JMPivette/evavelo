@@ -38,10 +38,9 @@ geocode_table_communes <- function(table_communes){
 
   message("Verification de table_communes.............")
   if(nrow(old_cities) != 0){
-    warning("\nLes communes suivantes n'existent plus et doivent etre remplacees par les communes nouvelles:\n\t",
-            paste0(old_cities$nom_commune,"(", old_cities$cog,") -> ",
-                   old_cities$result_city, "(",old_cities$result_citycode, ")\n\t"),
-            call. = FALSE, immediate. = TRUE)
+    message("Les communes suivantes n'existent plus et doivent etre remplacees par les communes nouvelles:",
+            paste0("\n\t",old_cities$nom_commune,"(", old_cities$cog,") -> ",
+                   old_cities$result_city, "(",old_cities$result_citycode, ")"))
   }
 
   ## Failed to identify
@@ -50,9 +49,8 @@ geocode_table_communes <- function(table_communes){
                      by = names(wrong_result))
 
   if(nrow(other_cities) != 0){
-    warning("\nImpossible de reconnaitre les communes suivantes:\n\t",
-            paste0(other_cities$nom_commune,"(", other_cities$cog, ")\n\t"),
-            call. = FALSE, immediate. = TRUE)
+    message("Impossible de reconnaitre les communes suivantes:\n\t",
+            paste0("\n\t",other_cities$nom_commune,"(", other_cities$cog, ")"))
   }
 
   ## Remove wrong results

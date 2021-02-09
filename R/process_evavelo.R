@@ -11,23 +11,12 @@
 #'
 process_evavelo <- function(file,
                             check = TRUE){
-  ## Sheet: Comptage Post Traitements-------------
-  comptage <- read_comptage(file)
-  ## Sheet: Enquetes Post Traitements-----------
-  enquete <- read_enquete(file)
-  ## Sheet: Calendrier--------------------------
-  calendrier <- read_calendrier(file)
-  ## Sheet before "post_traitement"
-  comptage_init <- read_comptage(file, init = TRUE)
-  enquete_init <- read_enquete(file, init = TRUE)
+  ## Import data
+  eva_data <- read_evavelo(file)
 
   ## Check values
   if (check == TRUE){
-    check_result <- check_evavelo(calendrier = calendrier,
-                                  comptage = comptage,
-                                  enquete = enquete,
-                                  comptage_init = comptage_init,
-                                  enquete_init = enquete_init)
+    check_result <- check_evavelo(eva_data)
     if (check_result$error == TRUE){
       warning("Impossible de traiter le fichier qui comporte des erreurs")
       message(check_result$log)
@@ -35,8 +24,9 @@ process_evavelo <- function(file,
     }
   }
 
-
-    correct_categ(comptage, enquete)
+## Correct Categories
+    correct_categ(eva_data$comptage,
+                  eva_data$enquete)
 
 
 }

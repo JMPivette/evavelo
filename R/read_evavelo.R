@@ -108,6 +108,7 @@ read_enquete <- function(file, init = FALSE) {
       geocode_cities(ville_heb) %>%
       geocode_cities(iti_depart_itineraire) %>%
       geocode_cities(iti_arrivee_itineraire) %>%
+      geocode_cities(nom_site_enq) %>%
       geocode_cities_cp(ville_res,
                         cp_col = cp_res,
                         country_col = pays_res)
