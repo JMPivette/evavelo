@@ -42,7 +42,10 @@ geocode_row_by_row <- function(.data,
 #'
 #' wrapper around banR::geocode() but that limits to one result of type "municipality"
 #'
-#' @param city_name a vector of city names
+#' Contrary to geocode(), if there is no result or if the request is empty we still get a one row data.frame
+#' (that contains only Nas)
+#'
+#' @param city_name a string containing the city name wanted
 #' @param score_limit results below this score will be ignored and replaced by NAs
 #'
 #' @return a one line data.frame
