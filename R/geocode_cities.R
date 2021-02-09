@@ -75,14 +75,14 @@ geocode_cities <- function(.data, city_col){
     dplyr::filter(.data$result_score < 0.9) %>%
     dplyr::rename(city = !!city_col)
 
-  warning("\nVerification de ",
-          city_col_name, "......\n")
+  message("\nVerification de ",
+          city_col_name, "......")
   if(length(errors) != 0)
-    warning("\nImpossible de trouver les communes suivantes:\n\t",
-            paste(errors, "\n\t"))
+    message("\nImpossible de trouver les communes suivantes:\n\t",
+            paste("\t",errors, "\n"))
 
   if(nrow(replaced_to_check) != 0)
-    warning("\nInterpretation de communes mal nommees:\n\t",
+    message("\nInterpretation de communes mal nommees:\n\t",
             paste0(replaced_to_check$city, " -> ",
                    replaced_to_check$result_label, " (",
                    replaced_to_check$result_postcode, ") ",

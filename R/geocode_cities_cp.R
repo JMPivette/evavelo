@@ -62,17 +62,19 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
     dplyr::bind_cols(.data, .)
 
   ## Checking wrong results and propose an alternative in warnings-------------------
-  warning("\nVerification de ",
-          city_col_name, "......\n")
-  city_list_cp %>%
+  message("\nVerification de ",
+          city_col_name, "......")
+  anomaly_to_check <- city_list_cp %>%
     filter(!is.na(!!city_col)) %>%
     filter(.data$french == TRUE) %>%
     filter(is.na(.data$geocode_ok) | .data$geocode_ok == FALSE) %>%
     dplyr::select(
       city = !!city_col, postcode = !!cp_col,
       .data$result_type, .data$result_score, .data$result_label, .data$result_postcode) %>%
-    dplyr::distinct() %>%
-    check_warn_cities_cp()
+    dplyr::distinct()
+
+  if(nrow(anomaly_to_check) !=0)
+    check_warn_cities_cp(anomaly_to_check)
 
   ## Return result ---------------------
   result
@@ -109,7 +111,10 @@ check_warn_cities_cp <- function(data){
   ## . Wrong post code --------------------
   bad_city_nocp <- data %>%
     filter(is.na(.data$result_type) | .data$result_type != "municipality") %>%
-    dplyr::distinct(.data$city, .data$postcode) %>%
+    dplyr::distinct(.data$city, .data$postcode)
+
+  if(nrow(bad_city_nocp)!=0){
+  bad_city_nocp <- bad_city_nocp %>%
     banR::geocode_tbl(tbl = .,
                       adresse = city) %>%
     suppressMessages() %>%
@@ -129,78 +134,43 @@ check_warn_cities_cp <- function(data){
     select(.data$city, .data$postcode) %>%
     geocode_row_by_row(city_col = .data$city) %>%
     select(
-      .data$city, .data$postcode ,.data$result_label, .data$result_postcode, .data$result_score
+      dplyr::any_of(c("city", "postcode", "result_label", "result_postcode", "result_score"))
+      #.data$city, .data$postcode ,.data$result_label, .data$result_postcode, .data$result_score
     )
+  } else{
+    wrong_cp <- data.frame()
+    last_search <- data.frame()
+  }
+
+
+  if(nrow(last_search) != 0){
+    last_search_proposal <- last_search %>%
+      filter(!is.na(.data$result_label))
+    wrong_no_proposal <- last_search %>%
+      filter(is.na(.data$result_label))
+  } else {# empty data.frames to avoid error subsetting non-existing cols
+    last_search_proposal <- data.frame()
+    wrong_no_proposal <- data.frame()
+  }
 
   ## . Send warning---------------------
-  wrong_with_proposal <- last_search %>%
-    filter(!is.na(.data$result_label)) %>%
-    dplyr::bind_rows(mispelling, wrong_cp) %>%
+
+  wrong_with_proposal <- dplyr::bind_rows(last_search_proposal,
+                                          mispelling,
+                                          wrong_cp) %>%
     dplyr::arrange(dplyr::desc(.data$result_score))
 
-  wrong_no_proposal <- last_search %>%
-    filter(is.na(.data$result_label))
-
-  if(nrow(wrong_no_proposal)!=0 | nrow(wrong_with_proposal)!=0)
-    warning("Des villes n'ont pas pu etre reconnue et seront ignorees: \n",
-            call. = FALSE)
-
   if(nrow(wrong_no_proposal)!=0)
-    warning("Villes inconnues:\n",
-            paste0("\t", wrong_no_proposal$city, "(", wrong_no_proposal$postcode, ")\n"),
-            call. = FALSE)
+    message("Villes inconnues:\n",
+            paste0("\t", wrong_no_proposal$city, "(", wrong_no_proposal$postcode, ")\n"))
 
 
   if(nrow(wrong_with_proposal) != 0){
-    warning("\nLes villes suivantes ont peut-etre besoin d'etre corrigees:\n\t",
-            paste0(wrong_with_proposal$city," (", wrong_with_proposal$postcode,") -> \t",
-                   wrong_with_proposal$result_label, " (",wrong_with_proposal$result_postcode, ")\n\t"),
-            call. = FALSE)
+    message("Les villes suivantes ont été ignorees. Propositions de corrections:\n",
+            paste0("\t",wrong_with_proposal$city," (", wrong_with_proposal$postcode,") -> \t",
+                   wrong_with_proposal$result_label, " (",wrong_with_proposal$result_postcode, ")\n"))
   }
   invisible(0)
 }
 
 
-#' Geocode a data.frame of cities
-#'
-#' Equivalent to banR::geocode_tbl() but much slower (one API request per row)
-#' This function is used when we only want "municipality" as result type which is impossible with geocode_tbl().
-#'
-#' @param .data a data.frame containing a columns with city names to geocode
-#' @param city_col column that contains city names
-#' @param score_limit results below this score will be ignored and replaced by NAs
-#'
-#' @return the input data.frame with geocoding infomation.
-
-geocode_row_by_row <- function(.data,
-                               city_col,
-                               score_limit = 0.4){
-  city_col <- rlang::enquo(city_col)
-  .data %>%
-    dplyr::pull(!!city_col) %>%
-    purrr::map_df(~ geocode_city(.x,score_limit = score_limit)) %>%
-    dplyr::bind_cols(.data, .)
-
-}
-
-
-
-#' Geocode one city name
-#'
-#' wrapper around banR::geocode() but that limits to one result of type "municipality"
-#'
-#' @param city_name a vector of city names
-#' @param score_limit results below this score will be ignored and replaced by NAs
-#'
-#' @return a one line data.frame
-
-geocode_city <- function(city_name, score_limit = 0.4){
-  res <- banR::geocode(city_name, limit = 1, type = "municipality") %>%
-    suppressMessages()
-  if(nrow(res) == 0 || res$score < score_limit)
-    return(data.frame(result_label = NA))
-
-  names(res) <- stringr::str_c("result_", names(res))
-  res
-
-}
