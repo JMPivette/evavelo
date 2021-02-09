@@ -59,14 +59,15 @@ La fonction `geocode_table_communes()` est créee pour geocoder les informations
 #banR::geocode("perros", limit = 1, type = "municipality")
 
 
-table_communes <- openxlsx::read.xlsx(xlsx_path, sheet = "table_communes", startRow = 2)
+table_communes <- openxlsx::read.xlsx(xlsx_path, sheet = "table_communes", startRow = 2) %>% 
+  janitor::clean_names()
 ## Modify input to create an error
 table_communes[1,"nom_commune"]<- "TREZENY"
 
 
 ## function that uses city names and COG codes to find position
 evavelo::geocode_table_communes(table_communes) %>% 
-  select(COG, nom_commune, latitude, longitude) %>% 
+  select(cog, nom_commune, latitude, longitude) %>% 
   head(20)
 
 

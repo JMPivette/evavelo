@@ -16,32 +16,35 @@ geocode_cities <- function(.data, city_col){
   city_col <- rlang::enquo(city_col)
   city_col_name <- rlang::as_name(city_col)
 
-
- ## Geocode-------------------
+  ## Geocode-------------------
 
   result <- geocode_df_cities(.data, !!city_col)
 
- ## Warning  and errors -----------------------------------------------
+  ## Warning  and errors -----------------------------------------------
   errors <- result %>%
-    dplyr::filter(is.na(.data$result_lat)) %>%
-    dplyr::pull(!!city_col)
+    dplyr::filter(is.na(.data$result_lat) & !is.na(!!city_col)) %>%
+    dplyr::pull(!!city_col) %>%
+    unique()
 
   replaced_to_check <- result %>%
     dplyr::filter(.data$result_score < 0.9) %>%
-    dplyr::rename(city = !!city_col)
+    dplyr::rename(city = !!city_col) %>%
+    dplyr::distinct(.data$city,
+                    .data$result_name,
+                    .data$result_cog)
 
   message("\nVerification de ",
-          city_col_name, "......")
+          city_col_name, ".............")
   if(length(errors) != 0)
-    message("\nImpossible de trouver les communes suivantes:\n\t",
-            paste("\t",errors, "\n"))
+    message("Impossible de trouver les communes suivantes:",
+            paste("\n\t",errors))
 
   if(nrow(replaced_to_check) != 0)
-    message("\nInterpretation de communes mal nommees:\n\t",
-            paste0(replaced_to_check$city, " -> ",
+    message("Interpretation de communes mal nommees:",
+            paste0("\n\t",replaced_to_check$city, " -> ",
                    replaced_to_check$result_name, " (",
-                   replaced_to_check$result_cog, ") ",
-                   "\n\t"))
+                   replaced_to_check$result_cog, ") ")
+            )
   ## reformat output------------------------------------------
   result %>%
     select(-.data$result_name, -.data$result_score) %>%

@@ -7,12 +7,12 @@
 geocode_table_communes(table_communes)
 }
 \arguments{
-\item{table_communes}{a data.frame containing columns nom_commune and COG}
+\item{table_communes}{a data.frame containing columns nom_commune and cog}
 }
 \value{
 a data.frame similar to table_communes with latitude and longitude added.
 }
 \description{
-THis function check that the municipalities defined in tables_communes are correct
+This function check that the municipalities defined in tables_communes are correct
 and geocodes when possible
 }

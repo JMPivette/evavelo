@@ -63,7 +63,7 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
 
   ## Checking wrong results and propose an alternative in warnings-------------------
   message("\nVerification de ",
-          city_col_name, "......")
+          city_col_name, ".............")
   anomaly_to_check <- city_list_cp %>%
     filter(!is.na(!!city_col)) %>%
     filter(.data$french == TRUE) %>%
@@ -161,14 +161,14 @@ check_warn_cities_cp <- function(data){
     dplyr::arrange(dplyr::desc(.data$result_score))
 
   if(nrow(wrong_no_proposal)!=0)
-    message("Villes inconnues:\n",
-            paste0("\t", wrong_no_proposal$city, "(", wrong_no_proposal$postcode, ")\n"))
+    message("Villes inconnues:",
+            paste0("\n\t", wrong_no_proposal$city, "(", wrong_no_proposal$postcode, ")"))
 
 
   if(nrow(wrong_with_proposal) != 0){
-    message("Les villes suivantes ont ete ignorees. Propositions de corrections:\n",
-            paste0("\t",wrong_with_proposal$city," (", wrong_with_proposal$postcode,") -> \t",
-                   wrong_with_proposal$result_label, " (",wrong_with_proposal$result_postcode, ")\n"))
+    message("Les villes suivantes ont ete ignorees. Propositions de corrections:",
+            paste0("\n\t",wrong_with_proposal$city," (", wrong_with_proposal$postcode,") -> \t",
+                   wrong_with_proposal$result_label, " (",wrong_with_proposal$result_postcode, ")"))
   }
   invisible(0)
 }
