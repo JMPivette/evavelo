@@ -1,5 +1,84 @@
 
-#' Geocode a data.frame of cities
+#' geocode df for cities
+#'
+#' Similar to banR::geocode_tbl() specifically for cities but with improvement:
+#'
+#' Size of the request is reduced by avoiding asking several times the same city.
+#' NA returns NA ansd not cities starting with "na"
+#' Messages are not displayed when there is no error.
+#' input.data is not altered even if contains special characters. Column order is also preserved
+#'
+#' @param .data a data.frame
+#' @param city_col name of the column that contains the city names
+#'
+#' @importFrom rlang .data
+#'
+#' @return .data with additional columns named :
+#' result_name, result_cog, result_lat, result_lon, result_score
+#'
+geocode_df_cities <- function(.data,
+                              city_col){
+  city <- rlang::enquo(city_col)
+  city_col_name <- rlang::as_name(city)
+  ## Create a correspondance table----------------
+  unique_cities <- .data %>%
+    mutate(# In case of logical values (all NAs for example)
+      !!city_col_name := dplyr::if_else(
+        is.na(!!city),
+        "",
+        as.character(!!city))) %>%
+    dplyr::distinct(!!city)
+
+
+  # First round----
+  cor_table <- unique_cities %>%
+    banR::geocode_tbl(!!city) %>%
+    suppressMessages() %>%
+    dplyr::transmute(
+      result_name = .data$result_city,
+      result_cog = .data$result_citycode,
+      result_lat = .data$latitude,
+      result_lon = .data$longitude,
+      .data$result_score,
+      geocode_ok = !is.na(.data$result_cog) &
+        .data$result_score >=0.9 &
+        .data$result_type == "municipality" ) %>%
+    dplyr::bind_cols(unique_cities,.)
+
+  # Second round-----
+  cor_table_second <- cor_table %>%
+    dplyr::filter(!.data$geocode_ok) %>%
+    dplyr::select(!!city) %>%
+    geocode_row_by_row(!!city) %>%
+    dplyr::select(!!city, result_name = .data$result_city, result_cog = .data$result_citycode,
+                  result_lat = .data$result_latitude, result_lon = .data$result_longitude,
+                  .data$result_score)
+
+  # Adding rounds together---------------------
+  cor_table_first <- cor_table %>%
+    dplyr::filter(.data$geocode_ok) %>%
+    dplyr::select(-dplyr::any_of("geocode_ok"))
+
+  cor_table <- dplyr::bind_rows(
+    cor_table_first,
+    cor_table_second
+  )
+  # %>% dplyr::rename_with(
+  #   .fn = ~ paste0(city_col_name, "_",
+  #                  stringr::str_remove(.x, "^result_")),
+  #   .cols = dplyr::starts_with("result_"))
+
+  ## Adding information to original data.frame---------------------
+  .data %>%
+    dplyr::left_join(cor_table,
+              by = city_col_name)
+
+}
+
+
+
+
+#' Geocode a data.frame of cities row by row
 #'
 #' Equivalent to banR::geocode_tbl() but much slower (one API request per row)
 #' This function is used when we only want "municipality" as result type which is impossible with geocode_tbl().
@@ -19,11 +98,21 @@ geocode_row_by_row <- function(.data,
       .data,
       data.frame(
         result_label = character(),
-        result_postcode = character(),
         result_score = numeric(),
-        result_latitude = numeric(),
+        result_id = character(),
+        result_type = character(),
+        result_name = character(),
+        result_postcode = character(),
+        result_citycode = character(),
+        result_x = numeric(),
+        result_y = numeric(),
+        result_population = numeric(),
+        result_city = character(),
+        result_context = character(),
+        result_importance = numeric(),
+        result_type_geo = character(),
         result_longitude = numeric(),
-        result_citycode = character())
+        result_latitude = numeric())
     ))
 
   ## Normal process

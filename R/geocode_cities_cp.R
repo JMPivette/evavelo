@@ -166,7 +166,7 @@ check_warn_cities_cp <- function(data){
 
 
   if(nrow(wrong_with_proposal) != 0){
-    message("Les villes suivantes ont été ignorees. Propositions de corrections:\n",
+    message("Les villes suivantes ont ete ignorees. Propositions de corrections:\n",
             paste0("\t",wrong_with_proposal$city," (", wrong_with_proposal$postcode,") -> \t",
                    wrong_with_proposal$result_label, " (",wrong_with_proposal$result_postcode, ")\n"))
   }

@@ -18,5 +18,5 @@ the input data.frame with 3 new columns with a name based on city_col (_lat, _lo
 \description{
 This function will try to find the best match in case of mispelling.
 A warning message will be generated indicating the city that has been chosen in case of doubt.
-This function is much more permissive to mispleeing errors than geocode_cities_cp()
+This function is much more permissive to mispelling errors than geocode_cities_cp()
 }
