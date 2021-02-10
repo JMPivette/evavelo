@@ -30,9 +30,13 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
       dplyr::transmute(!!city_col, !!cp_col,
                        french = TRUE)
   }
-
+  cp_col_name <- rlang::as_name(cp_col)
   ## Detecting cities with postcode ---------------
   city_list_cp <- data %>%
+    dplyr::mutate(!!cp_col_name := stringr::str_pad(!!cp_col,### converting postcode that have less than 5 digits.
+                                                            5L,
+                                                            side = "left",
+                                                            pad ="0")) %>%
     banR::geocode_tbl(tbl = .,
                       adresse = !!city_col,
                       code_postal = !!cp_col) %>%
