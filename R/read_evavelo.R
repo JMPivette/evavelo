@@ -106,7 +106,15 @@ read_enquete <- function(file, init = FALSE) {
     ) %>%
     dplyr::mutate(
       date_enq = openxlsx::convertToDate(.data$date_enq)
+    ) %>%
+    dplyr::mutate( ## Avoid leading or trailing whitespaces.
+      dplyr::across(
+        dplyr::all_of(c("nom_site_enq", "iti_arrivee_itineraire", "iti_depart_itineraire",
+                        "ville_heb", "ville_res")),
+        stringr::str_trim
+      )
     )
+
 
   if(init == FALSE){ ## check cities and add columns
     enquete <- enquete %>%

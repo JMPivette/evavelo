@@ -21,6 +21,8 @@ geocode_cities <- function(.data, city_col){
   result <- geocode_df_cities(.data, !!city_col)
 
   ## Warning  and errors -----------------------------------------------
+  message("\n...Verification de ",
+          city_col_name, ".............")
   errors <- result %>%
     dplyr::filter(is.na(.data$result_lat) & !is.na(!!city_col)) %>%
     dplyr::pull(!!city_col) %>%
@@ -35,8 +37,7 @@ geocode_cities <- function(.data, city_col){
                     .data$result_cog) %>%
     dplyr::arrange(.data$city)
 
-  message("\n...Verification de ",
-          city_col_name, ".............")
+
   if(length(errors) != 0)
     message("Impossible de trouver les communes suivantes:",
             paste("\n\t",errors))
