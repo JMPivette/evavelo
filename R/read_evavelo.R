@@ -9,7 +9,9 @@
 #' @export
 
 read_evavelo <- function(file){
-  list(
+  message("V\u00e9rification des noms de communes")
+  message("---------------------------------")
+  out <- list(
     calendrier = read_calendrier(file),
     table_communes = read_table_communes(file),
     comptage_init = read_comptage(file, init = TRUE),
@@ -17,6 +19,9 @@ read_evavelo <- function(file){
     enquete_init = read_enquete(file, init = TRUE),
     enquete = read_enquete(file)
   )
+
+  class(out) <- c("evadata", class(out))
+  out
 
 }
 

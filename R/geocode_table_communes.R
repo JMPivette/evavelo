@@ -36,7 +36,7 @@ geocode_table_communes <- function(table_communes){
   old_cities <- wrong_result %>%
     dplyr::filter(.data$cog == .data$result_oldcitycode)
 
-  message("Verification de table_communes.............")
+  message("...Verification de table_communes.............")
   if(nrow(old_cities) != 0){
     message("Les communes suivantes n'existent plus et doivent etre remplacees par les communes nouvelles:",
             paste0("\n\t",old_cities$nom_commune,"(", old_cities$cog,") -> ",

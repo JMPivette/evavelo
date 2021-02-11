@@ -66,7 +66,7 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
     dplyr::bind_cols(.data, .)
 
   ## Checking wrong results and propose an alternative in warnings-------------------
-  message("\nVerification de ",
+  message("\n...Verification de ",
           city_col_name, ".............")
   anomaly_to_check <- city_list_cp %>%
     filter(!is.na(!!city_col)) %>%
@@ -151,7 +151,8 @@ check_warn_cities_cp <- function(data){
     last_search_proposal <- last_search %>%
       filter(!is.na(.data$result_label))
     wrong_no_proposal <- last_search %>%
-      filter(is.na(.data$result_label))
+      filter(is.na(.data$result_label)) %>%
+      dplyr::arrange(.data$city)
   } else {# empty data.frames to avoid error subsetting non-existing cols
     last_search_proposal <- data.frame()
     wrong_no_proposal <- data.frame()
@@ -162,7 +163,7 @@ check_warn_cities_cp <- function(data){
   wrong_with_proposal <- dplyr::bind_rows(last_search_proposal,
                                           mispelling,
                                           wrong_cp) %>%
-    dplyr::arrange(dplyr::desc(.data$result_score))
+    dplyr::arrange(.data$city)
 
   if(nrow(wrong_no_proposal)!=0)
     message("Villes inconnues:",

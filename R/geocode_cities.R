@@ -24,16 +24,18 @@ geocode_cities <- function(.data, city_col){
   errors <- result %>%
     dplyr::filter(is.na(.data$result_lat) & !is.na(!!city_col)) %>%
     dplyr::pull(!!city_col) %>%
-    unique()
+    unique() %>%
+    sort()
 
   replaced_to_check <- result %>%
     dplyr::filter(.data$result_score < 0.9) %>%
     dplyr::rename(city = !!city_col) %>%
     dplyr::distinct(.data$city,
                     .data$result_name,
-                    .data$result_cog)
+                    .data$result_cog) %>%
+    dplyr::arrange(.data$city)
 
-  message("\nVerification de ",
+  message("\n...Verification de ",
           city_col_name, ".............")
   if(length(errors) != 0)
     message("Impossible de trouver les communes suivantes:",

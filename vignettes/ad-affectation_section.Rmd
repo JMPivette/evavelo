@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 library(evavelo)
 library(dplyr)
 library(banR)
+library(geodist)
 ```
 ## Intro
 
@@ -122,11 +123,102 @@ enquete %>%
   head(20)
 
 
-enquete %>% 
+enquete_geocoded <- enquete %>% 
   geocode_cities(ville_heb) %>% 
   geocode_cities(iti_depart_itineraire) %>% 
-  geocode_cities(iti_arrivee_itineraire) %>% 
+  geocode_cities(iti_arrivee_itineraire)
+
+enquete_geocoded %>% 
   head(20)
+
+```
+
+## Calcul de distance
+
+
+Test de différents package de mesure de distances
+
+Je commence par {geodist} qui est sans dépendances avec une implémentation en C++
+
+### Mesure de distance point à point
+```{r}
+enquete_geocoded <- enquete_geocoded %>% 
+  select(starts_with("iti")) %>% 
+  tidyr::drop_na() 
+
+enquete_geocoded%>% 
+  mutate(
+    dist_cheap = geodist_vec(
+      x1 = iti_depart_itineraire_lon,
+      y1 = iti_depart_itineraire_lat,
+      x2 = iti_arrivee_itineraire_lon,
+      y2 = iti_arrivee_itineraire_lat,
+      paired = TRUE
+  )) %>% 
+  mutate(
+    dist_haversine = geodist_vec(
+      x1 = iti_depart_itineraire_lon,
+      y1 = iti_depart_itineraire_lat,
+      x2 = iti_arrivee_itineraire_lon,
+      y2 = iti_arrivee_itineraire_lat,
+      paired = TRUE,
+      measure = "haversine"
+  )) %>% 
+  mutate(
+    dist_geodesic = geodist_vec(
+      x1 = iti_depart_itineraire_lon,
+      y1 = iti_depart_itineraire_lat,
+      x2 = iti_arrivee_itineraire_lon,
+      y2 = iti_arrivee_itineraire_lat,
+      paired = TRUE,
+      measure = "geodesic"
+  )) 
+  
+  
+  
+
+```
+
+La methode "cheap" est la plus rapide mais n'est pas recommendé pour les distances de plus de 100 km. "Geodesic" est la plus fiable mais demande plus de calcul. "Haversine" semble être un bon compromis
+
+### Mesure de distance en matrix
+
+
+```{r}
+## Distance matrix
+geodist_matrix <- geodist_vec(
+      x1 = enquete_geocoded$iti_depart_itineraire_lon,
+      y1 = enquete_geocoded$iti_depart_itineraire_lat,
+      x2 = c(0.9, 1, 1.1),
+      y2 = c(46, 44, 48)
+      )
+
+geodist_matrix
+## find closest value
+apply(geodist_matrix, 1, which.min)
+
+# x1 y1: position of sites
+# x2 y2: reference position
+# id : id of of references for output
+
+get_closest_point <- function(x1, y1, x2, y2, id, ...){
+  dist_matrix <- geodist::geodist_vec(x1,y1,x2,y2,...)
+  idx_min <- apply(dist_matrix, 1, which.min)
+  id[idx_min]
+}
+
+point <- data.frame(city = c("Perros", "Brest", "Lille", "Rennes")) %>% 
+  geocode_cities(city)
+ref <- data.frame(city = c("Nantes", "Paris")) %>% 
+  geocode_cities(city)
+
+get_closest_point(point$city_lon,
+                  point$city_lat,
+                  ref$city_lon,
+                  ref$city_lat,
+                  ref$city,
+                  measure = "haversine")
+
 
 ```
 

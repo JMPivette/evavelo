@@ -30,6 +30,7 @@ Imports:
     stringr,
     tidyr
 Suggests: 
+    geodist,
     here,
     knitr,
     rmarkdown,

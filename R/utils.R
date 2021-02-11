@@ -111,3 +111,5 @@ compare_init_post <- function(init, post_trait){
 
 
 }
+
+is.evadata <- function(x) inherits(x, "evadata")
