@@ -113,3 +113,15 @@ compare_init_post <- function(init, post_trait){
 }
 
 is.evadata <- function(x) inherits(x, "evadata")
+
+#' An improved version of base R which.min that returns NA is all are Nas (instead of empty integer)
+#'
+#' @param x numeric vector whose min is searched for
+#'
+#' @return
+which_min <- function(x){
+  if(all(is.na(x)))
+    NA_integer_
+  else
+    which.min(x)
+}

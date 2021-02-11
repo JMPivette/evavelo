@@ -17,6 +17,7 @@ Depends:
 Imports: 
     banR,
     dplyr,
+    geodist,
     janitor,
     magrittr,
     openxlsx,
@@ -30,7 +31,6 @@ Imports:
     stringr,
     tidyr
 Suggests: 
-    geodist,
     here,
     knitr,
     rmarkdown,
