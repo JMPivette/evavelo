@@ -17,7 +17,10 @@ enquete_colnames <- c(
   "type_sortie", "dms", "km_sortie", "type_trajet",
   "nb_vae", "nb_total_velo", "activites", "activite_motiv", "id_site_enq", "date_enq",
   "iti_km_voyage", "iti_depart_initial", "iti_depart_itineraire", "iti_arrivee_itineraire",
-  "iti_arrivee_final", "iti_experience")
+  "iti_arrivee_final", "iti_experience",
+  "distance_domicile_enq", "distance_heb_enq","distance_dom_enq_relle", "distance_heb_enq_reelle",
+  "iti_dep_iti_valide", "iti_arr_iti_valide",
+  "ville_heb_cog_lau", "ville_res_cog_lau")
 
 calendrier_colnames <- c("id_site_enq", "date_enq")
 

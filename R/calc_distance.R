@@ -5,10 +5,6 @@
 #' * Assign COG codes to ville_heb_cog_lau and ville_res_cog_lau
 #' * Fill  iti_dep_iti_valide and iti_arr_iti_valide with the closest city on itinary
 #' * Compute distances distance_domicile_enq distance_dom_enq_reelle distance_heb_enq and distance_heb_enq_reelle
-##' \itemize{
-##'  \item{"parameter 1"}{Stuff}
-##'  \item{"parameter 2"}{Stuff}
-##' }
 #' @param eva_data an evadata object obtained using evavelo::read_evavelo()
 #'
 #' @return a list of data.frames with modified columns from the original xlsx file

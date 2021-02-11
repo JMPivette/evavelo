@@ -118,10 +118,35 @@ is.evadata <- function(x) inherits(x, "evadata")
 #'
 #' @param x numeric vector whose min is searched for
 #'
-#' @return
+#' @return an integer vector with position of minimum value
 which_min <- function(x){
   if(all(is.na(x)))
     NA_integer_
   else
     which.min(x)
+}
+
+
+#' Column binds list of data.frames element by element
+#'
+#' This function will look at each element of the list y name (not by position) and will cbind the one with the same names
+#' It returns one list with names of all the input lists
+#'
+#' @param ... several named lists of data.frames
+#'
+#' @return a list of data.frames
+#'
+bind_list_df <- function(...){
+  lst_df <- list(...)
+
+  df_names <- purrr::map(lst_df, names) %>%
+    unlist() %>%
+    unique()
+
+  purrr::map(df_names,
+             .f = ~ dplyr::bind_cols(
+               purrr::map(lst_df,
+                          function(x) x[[.x]]))
+  ) %>%
+    setNames(df_names)
 }

@@ -25,9 +25,13 @@ process_evavelo <- function(file,
     }
   }
 
-  ## Correct Categories
-  correct_categ(file$comptage,
-                file$enquete)
+  ## process
+
+  bind_list_df(
+    correct_categ(file$comptage,
+                  file$enquete),
+    calc_distance(file)
+  )
 
 
 }
