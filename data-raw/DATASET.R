@@ -3,11 +3,8 @@
 
 ## Dataset example for tests
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
-evavelo_example <- list(comptage = evavelo::read_comptage(xlsx_path),
-                        enquete = evavelo::read_enquete(xlsx_path),
-                        calendrier = evavelo::read_enquete(xlsx_path),
-                        enquete_init = evavelo::read_enquete(xlsx_path, init = TRUE),
-                        comptage_init = evavelo::read_comptage(xlsx_path, init = TRUE))
+evavelo_example <- read_evavelo(xlsx_path)
+
 
 ## Minimal expected column names for each worksheet
 comptage_colnames <- c(
