@@ -18,7 +18,7 @@ enquete_colnames <- c(
   "nb_vae", "nb_total_velo", "activites", "activite_motiv", "id_site_enq", "date_enq",
   "iti_km_voyage", "iti_depart_initial", "iti_depart_itineraire", "iti_arrivee_itineraire",
   "iti_arrivee_final", "iti_experience",
-  "distance_domicile_enq", "distance_heb_enq","distance_dom_enq_relle", "distance_heb_enq_reelle",
+  "distance_domicile_enq", "distance_heb_enq","distance_dom_enq_reelle", "distance_heb_enq_reelle",
   "iti_dep_iti_valide", "iti_arr_iti_valide",
   "ville_heb_cog_lau", "ville_res_cog_lau",
   "id_section_origine", "id_section_dest")

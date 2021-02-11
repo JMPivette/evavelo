@@ -19,7 +19,7 @@ get_closest_point(lon_a, lat_a, lon_b, lat_b, id_b, max_dist = 30, ...)
 
 \item{max_dist}{distances greater than this value in kilometers will be discarded and result will have NAs}
 
-\item{...}{additionae arguments passed to geodist::geodist_vec()}
+\item{...}{additional arguments passed to geodist::geodist_vec()}
 }
 \value{
 a vector the same size as lon_a and lat_a
