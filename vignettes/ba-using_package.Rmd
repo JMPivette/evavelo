@@ -33,37 +33,14 @@ xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 #xlsx_path <- here::here("inst", "example-data", "02_simplified.xlsx")
 
 
-## Sheet: Comptage Post Traitements-------------
-comptage <- evavelo::read_comptage(xlsx_path)
-
-## Sheet: Enquetes Post Traitements-----------
-enquete <- evavelo::read_enquete(xlsx_path)
-
-## Sheet: Calendrier-----------
-calendrier <- evavelo::read_calendrier(xlsx_path)
-
+eva_data <- evavelo::read_evavelo(xlsx_path)
 
 ```
 
 ### Test input values
 
 ```{r test}
-process_evavelo(xlsx_path)
-
-```
-Il y a des doublons dans le id_quest au niveau des comptages manuels (https://github.com/JMPivette/evavelo/issues/13). 
-Il faudra probablement régler le problème dans la vérification du fichier xlsx.
-
-Certains id_quest des enquêtes n'apparaissent pas dans le comptages manuels. (https://github.com/JMPivette/evavelo/issues/14) 
-
-
-## Correction categorie
-
-Utilisation de la function `evavelo::correct_categ()` pour afficher les catégories corrigées.
-
-```{r correct_categ}
-evavelo::correct_categ(comptage, enquete)
-
+process_evavelo(eva_data)
 
 ```
 
