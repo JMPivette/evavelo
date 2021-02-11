@@ -148,5 +148,5 @@ bind_list_df <- function(...){
                purrr::map(lst_df,
                           function(x) x[[.x]]))
   ) %>%
-    setNames(df_names)
+    stats::setNames(df_names)
 }

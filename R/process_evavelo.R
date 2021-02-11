@@ -14,7 +14,6 @@ process_evavelo <- function(file,
   ## Import data
   if(!is.evadata(file))
     file <- read_evavelo(file)
-
   ## Check values
   if (check == TRUE){
     check_result <- check_evavelo(file)
@@ -25,12 +24,17 @@ process_evavelo <- function(file,
     }
   }
 
-  ## process
+  ## process file
+  distances_calculated <- calc_distance(file)
+
+  ## Update computed variables that are going to be used by correct_categ()
+  file$enquete$iti_dep_iti_valide <- distances_calculated$enquetes_post_traitement$iti_dep_iti_valide
+  file$enquete$iti_arr_iti_valide <- distances_calculated$enquetes_post_traitement$iti_arr_iti_valide
 
   bind_list_df(
     correct_categ(file$comptage,
                   file$enquete),
-    calc_distance(file)
+    distances_calculated
   )
 
 

@@ -28,6 +28,7 @@ Imports:
     shinycssloaders,
     shinyjs,
     shinyWidgets,
+    stats,
     stringr,
     tidyr
 Suggests: 
