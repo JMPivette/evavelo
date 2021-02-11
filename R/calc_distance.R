@@ -13,6 +13,7 @@
 calc_distance <- function(eva_data){
 
   enquete <- eva_data$enquete
+
   ## Update COG values-------------------------
   enquete_cog <- enquete %>% dplyr::select(
     ville_heb_cog_lau = .data$ville_heb_cog,
@@ -32,6 +33,14 @@ calc_distance <- function(eva_data){
         lat_b = eva_data$table_communes$latitude,
         id_b = eva_data$table_communes$nom_commune,
       )
+    ) %>%
+    dplyr::left_join(
+      select(eva_data$table_communes,
+             .data$nom_commune, .data$id_section),
+      by = c("iti_dep_iti_valide" = "nom_commune")
+    ) %>%
+    dplyr::rename(
+      id_section_origine = .data$id_section
     )
 
   iti_arrivee <- enquete %>%
@@ -45,7 +54,16 @@ calc_distance <- function(eva_data){
         lat_b = eva_data$table_communes$latitude,
         id_b = eva_data$table_communes$nom_commune,
       )
+    ) %>%
+    dplyr::left_join(
+      select(eva_data$table_communes,
+             .data$nom_commune, .data$id_section),
+      by = c("iti_arr_iti_valide" = "nom_commune")
+    ) %>%
+    dplyr::rename(
+      id_section_dest = .data$id_section
     )
+
 
   ## Compute distance from Point_enquete---------------------
   dist_point_enq <- enquete %>%
@@ -94,7 +112,7 @@ calc_distance <- function(eva_data){
 #' @param lat_b points b latitude
 #' @param id_b b ids used in the output. Should have the same size as lon_b and lat_b
 #' @param max_dist distances greater than this value in kilometers will be discarded and result will have NAs
-#' @param ... additionae arguments passed to geodist::geodist_vec()
+#' @param ... additional arguments passed to geodist::geodist_vec()
 #'
 #' @return a vector the same size as lon_a and lat_a
 
