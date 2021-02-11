@@ -3,11 +3,8 @@
 
 ## Dataset example for tests
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
-evavelo_example <- list(comptage = evavelo::read_comptage(xlsx_path),
-                        enquete = evavelo::read_enquete(xlsx_path),
-                        calendrier = evavelo::read_enquete(xlsx_path),
-                        enquete_init = evavelo::read_enquete(xlsx_path, init = TRUE),
-                        comptage_init = evavelo::read_comptage(xlsx_path, init = TRUE))
+evavelo_example <- read_evavelo(xlsx_path)
+
 
 ## Minimal expected column names for each worksheet
 comptage_colnames <- c(
@@ -20,7 +17,11 @@ enquete_colnames <- c(
   "type_sortie", "dms", "km_sortie", "type_trajet",
   "nb_vae", "nb_total_velo", "activites", "activite_motiv", "id_site_enq", "date_enq",
   "iti_km_voyage", "iti_depart_initial", "iti_depart_itineraire", "iti_arrivee_itineraire",
-  "iti_arrivee_final", "iti_experience")
+  "iti_arrivee_final", "iti_experience",
+  "distance_domicile_enq", "distance_heb_enq","distance_dom_enq_reelle", "distance_heb_enq_reelle",
+  "iti_dep_iti_valide", "iti_arr_iti_valide",
+  "ville_heb_cog_lau", "ville_res_cog_lau",
+  "id_section_origine", "id_section_dest")
 
 calendrier_colnames <- c("id_site_enq", "date_enq")
 

@@ -24,8 +24,6 @@ correct_categ <- function(comptage,
   df_has_cols(enquete,
               enquete_colnames)
 
-  ## TODO: add test for id_quest check in both df
-  ## TODO: test for duplicated id_quest values.
 
 # Test input for unexpected values ------------------------------------------------------------
  ## TODO
@@ -294,7 +292,7 @@ add_coherence <- function(data,
     dplyr::mutate(
       ## check coherence of itinerant answers
       !!col_name := is_iti_coherent(.data$dms, .data$iti_km_voyage, .data$iti_experience,
-                                    .data$iti_depart_itineraire, .data$iti_arrivee_itineraire,
+                                    .data$iti_dep_iti_valide, .data$iti_arr_iti_valide,
                                     .data$iti_depart_initial, .data$iti_arrivee_final)
     )
 }
@@ -306,27 +304,26 @@ add_coherence <- function(data,
 #' @param dms numeric vector: 'duree moyenne de sejour'
 #' @param iti_km_voyage numeric vector
 #' @param iti_experience character vector
-#' @param iti_depart_itineraire character vector
-#' @param iti_arrivee_itineraire character vector
+#' @param iti_dep_iti_valide character vector
+#' @param iti_arr_iti_valide character vector
 #' @param ... other answers to iti_* questions
 #'
 #' @return a boolean vector indicating if answer is coherent
 is_iti_coherent <- function (dms,
                              iti_km_voyage,
                              iti_experience,
-                             iti_depart_itineraire,
-                             iti_arrivee_itineraire,...){
+                             iti_dep_iti_valide,
+                             iti_arr_iti_valide,...){
   ## Check distance
   coher_dist <-  iti_km_voyage/dms
   coher_dist[is.na(coher_dist)] <- 0 # Remove NA
   coher_dist <- coher_dist > 40
 
-  ## Check iti_depart_itineraire & iti_arrivee_itineraire
-  coher_commune <- !is.na(iti_depart_itineraire) & !is.na(iti_arrivee_itineraire)
-  # TODO Create a function that contains names of communes
+  ## Check iti_dep_iti_valide & iti_arr_iti_valide
+  coher_commune <- !is.na(iti_dep_iti_valide) & !is.na(iti_arr_iti_valide)
 
   ## Check iti_other has all answers (no NAs)
-  #(We don't need iti_depart_itineraire and iti_arrivee_itineraire that are already tested)
+  #(We don't need iti_dep_iti_valide and iti_arr_iti_valide that are already tested)
   coher_iti_other <- lapply(list(...), is.na)
   coher_iti_other <- Reduce(`+`, coher_iti_other) == 0
   ## Check that we have at least 2 answers out of three

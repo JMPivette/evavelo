@@ -1,3 +1,9 @@
+# evavelo 0.4.0
+
+- Create geocoding functions `geocode_table_communes()`, `geocode_cities` and `geocode_cities_cp()`
+
+- Create distance computation function `calc_distance()` and include in `process_evavelo()`
+
 # evavelo 0.3.0
 
 - Add button in the UI to download full file and logs

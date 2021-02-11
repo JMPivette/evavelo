@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
@@ -15,7 +15,9 @@ BugReports: https://github.com/JMPivette/evavelo/issues
 Depends: 
     R (>= 2.10)
 Imports: 
+    banR,
     dplyr,
+    geodist,
     janitor,
     magrittr,
     openxlsx,
@@ -26,10 +28,10 @@ Imports:
     shinycssloaders,
     shinyjs,
     shinyWidgets,
+    stats,
     stringr,
     tidyr
 Suggests: 
-    banR,
     here,
     knitr,
     rmarkdown,

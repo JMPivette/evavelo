@@ -49,7 +49,7 @@ test_that("wrong column names gives an error", {
 test_that("correct_itinerant works", {
   ## Input data.frame
   df <- tibble::tribble(
-    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~type_sortie, ~dms, ~iti_km_voyage, ~iti_experience, ~iti_depart_itineraire, ~iti_arrivee_itineraire, ~iti_depart_initial, ~iti_arrivee_final,
+    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~type_sortie, ~dms, ~iti_km_voyage, ~iti_experience, ~iti_dep_iti_valide, ~iti_arr_iti_valide, ~iti_depart_initial, ~iti_arrivee_final,
     "1","Itinérant", "Sportif", "empty", "Plusieurs jours", 1, NA, NA, NA, NA, NA, NA,  ## Sportif
     "2","Itinérant", "Loisir", "empty", "Plusieurs jours", 1, 120, "answer", "answer", "answer", "answer", "answer",   ## Itinerant
     "3","Loisir", "Itinérant", "empty", "Plusieurs jours", 3 , NA, NA, NA, NA, NA, NA,   ## Itinerant
@@ -97,8 +97,8 @@ test_that("isi_iti_coherent helper function works", {
   out <- is_iti_coherent(dms = c(5,5,2,NA,3),
                          iti_km_voyage = c(250, 250,70, 300, NA) ,
                          iti_experience =c("a",NA, NA, "a", "a" ) ,
-                         iti_depart_itineraire = c("a",NA, "a", NA, "a") ,
-                         iti_arrivee_itineraire = c("a",NA, "a", NA,"a") ,
+                         iti_dep_iti_valide = c("a",NA, "a", NA, "a") ,
+                         iti_arr_iti_valide = c("a",NA, "a", NA,"a") ,
                          iti_depart_initial = c("a",NA, NA, NA, "a") ,
                          iti_arrivee_final = c("a",NA, NA, NA, "a") )
 
@@ -106,7 +106,7 @@ test_that("isi_iti_coherent helper function works", {
     TRUE, # [iti_km_voyage] / [dms] > 40 km
     TRUE, # [iti_km_voyage] / [dms] > 40 km
     FALSE, # [iti_km_voyage] / [dms] < 40 km and missing iti_*_initial and iti_experience
-    FALSE, # ([iti_km_voyage]) / [dms] unavailable and missing [iti_depart_itineraire], [iti_arrivee_itineraire]
+    FALSE, # ([iti_km_voyage]) / [dms] unavailable and missing [iti_dep_iti_valide], [iti_arr_iti_valide]
     TRUE # ([iti_km_voyage]) / [dms] unavailable but all the rest is available
   )
   expect_equal(out, expected_out)
@@ -248,7 +248,7 @@ test_that("df with no choices to be made don't throw an error ", {
     categorie_corrige = "Uilitaire",
     type_sortie = NA, dms = 5, iti_km_voyage = 100, km_sortie = 20, type_trajet = NA, nb_vae = 0,
     nb_total_velo = 1, activites = NA, activite_motiv = NA, iti_experience = NA,
-    iti_depart_itineraire = NA, iti_arrivee_itineraire = NA, iti_depart_initial = NA,
+    iti_dep_iti_valide = NA, iti_arr_iti_valide = NA, iti_depart_initial = NA,
     iti_arrivee_final = NA
     )
 

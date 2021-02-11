@@ -7,10 +7,10 @@
 process_evavelo(file, check = TRUE)
 }
 \arguments{
-\item{file}{an xlsx file, Workbook object or URL to xlsx file}
+\item{file}{an evadata object obtained with read_evavelo() or an xlsx file, Workbook object or URL to xlsx file}
 
 \item{check}{a boolean. Is data checked before being processed.
-This value can be set to FALSE if you already ised check_evavelo() and don't want to reun it twice}
+This value can be set to FALSE if you already used check_evavelo() and don't want to run it twice}
 }
 \value{
 a list of corrected categories

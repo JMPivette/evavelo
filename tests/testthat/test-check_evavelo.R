@@ -1,22 +1,17 @@
 
 
 test_that("check_evavelo works", {
-  expect_type(check <- check_evavelo(calendrier = evavelo_example$calendrier,
-                                      comptage = evavelo_example$comptage,
-                                     enquete = evavelo_example$enquete,
-                                     comptage_init = evavelo_example$comptage_init,
-                                     enquete_init = evavelo_example$enquete_init),
+  expect_type(check <- check_evavelo(evavelo_example),
               "list")
 
   expect_false(check$error)
 
   ## Remove lines from calendrier:
-  expect_type(check <- check_evavelo(calendrier = tail(evavelo_example$calendrier,
-                                                       n =3),
-                                     comptage = evavelo_example$comptage,
-                                     enquete = evavelo_example$enquete,
-                                     comptage_init = evavelo_example$comptage_init,
-                                     enquete_init = evavelo_example$enquete_init),
+  modified_example <- evavelo_example
+  modified_example$calendrier <- tail(modified_example$calendrier,
+                                      n =3)
+
+  expect_type(check <- check_evavelo(modified_example),
               "list")
 
   expect_true(check$error)

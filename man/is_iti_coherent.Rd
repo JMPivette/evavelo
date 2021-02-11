@@ -8,8 +8,8 @@ is_iti_coherent(
   dms,
   iti_km_voyage,
   iti_experience,
-  iti_depart_itineraire,
-  iti_arrivee_itineraire,
+  iti_dep_iti_valide,
+  iti_arr_iti_valide,
   ...
 )
 }
@@ -20,9 +20,9 @@ is_iti_coherent(
 
 \item{iti_experience}{character vector}
 
-\item{iti_depart_itineraire}{character vector}
+\item{iti_dep_iti_valide}{character vector}
 
-\item{iti_arrivee_itineraire}{character vector}
+\item{iti_arr_iti_valide}{character vector}
 
 \item{...}{other answers to iti_* questions}
 }
