@@ -41,7 +41,6 @@ geocode_df_cities <- function(.data,
       result_lon = .data$longitude,
       .data$result_score,
       geocode_ok = !is.na(.data$result_cog) &
-        .data$result_score >=0.9 &
         .data$result_type == "municipality" ) %>%
     dplyr::bind_cols(unique_cities,.)
 
