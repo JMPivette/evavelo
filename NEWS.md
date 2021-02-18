@@ -1,3 +1,5 @@
+# evavelo (development version)
+
 # evavelo 0.4.0
 
 - Create geocoding functions `geocode_table_communes()`, `geocode_cities` and `geocode_cities_cp()`
