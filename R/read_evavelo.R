@@ -90,7 +90,6 @@ read_comptage <- function(file, init = FALSE){
 read_enquete <- function(file, init = FALSE) {
   sheet <- ifelse(init, "enquetes_saisies", "enquetes_post_traitement")
   enquete <- openxlsx::read.xlsx(file, sheet)
-
   enquete <- enquete %>%
     janitor::clean_names() %>%
     dplyr::mutate(
@@ -107,7 +106,8 @@ read_enquete <- function(file, init = FALSE) {
     ) %>%
     dplyr::mutate(
       date_enq = openxlsx::convertToDate(.data$date_enq),
-      id_quest = as.character(.data$id_quest)
+      id_quest = as.character(.data$id_quest),
+      dms = dplyr::if_else(.data$dms != 0,.data$dms, NA_real_) ## Fix issue #44 when dms = 0
     ) %>%
     dplyr::mutate( ## Avoid leading or trailing whitespaces.
       dplyr::across(
