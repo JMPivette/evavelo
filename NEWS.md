@@ -1,6 +1,10 @@
 # evavelo (development version)
 
+## Bug Fixes 
+
 - Fix issue #37 that didn't compare correctly id_quest from `enquete` and `comptage`
+
+- Fix issue #40 where categories were not update in `comptage`
 
 # evavelo 0.4.0
 
