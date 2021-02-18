@@ -70,7 +70,8 @@ read_comptage <- function(file, init = FALSE){
                     ~ dplyr::if_else(.x == "Loisirs", "Loisir", .x)) ## Fix error in test input file
     ) %>%
     dplyr::mutate(
-      date_enq = openxlsx::convertToDate(.data$date_enq)
+      date_enq = openxlsx::convertToDate(.data$date_enq),
+      id_quest = as.character(.data$id_quest)
     )
 
 }
@@ -105,7 +106,8 @@ read_enquete <- function(file, init = FALSE) {
         TRUE ~ type_trajet)
     ) %>%
     dplyr::mutate(
-      date_enq = openxlsx::convertToDate(.data$date_enq)
+      date_enq = openxlsx::convertToDate(.data$date_enq),
+      id_quest = as.character(.data$id_quest)
     ) %>%
     dplyr::mutate( ## Avoid leading or trailing whitespaces.
       dplyr::across(

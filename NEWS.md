@@ -6,6 +6,8 @@
 
 - Fix issue #40 where categories were not update in `comptage`
 
+- Fix issue #42 when id_quest was stored in numeric columns in Excel.
+
 # evavelo 0.4.0
 
 - Create geocoding functions `geocode_table_communes()`, `geocode_cities` and `geocode_cities_cp()`
