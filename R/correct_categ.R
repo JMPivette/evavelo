@@ -86,11 +86,12 @@ correct_categ <- function(comptage,
     ) %>%
     dplyr::transmute(
       .data$id_quest,
-      categorie_visuelle_cycliste_corrige = coalesce(
+      categorie_visuelle_cycliste_corrige = dplyr::coalesce(
+        .data$categorie_corrige,
         .data$categorie_breve, ## chapter 3.1.12.2 categorie_breve override categorie_visuelle_cycliste
         .data$categorie_visuelle_cycliste)
     ) %>%
-    dplyr::mutate(
+    dplyr::mutate( ## Remove answers in case of divergent answers in multiple questionary
       categorie_visuelle_cycliste_corrige = dplyr::if_else(
         .data$id_quest %in% quest_multiple_cat,
         NA_character_,

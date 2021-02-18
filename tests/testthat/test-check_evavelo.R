@@ -16,6 +16,11 @@ test_that("check_evavelo works", {
 
   expect_true(check$error)
 
+})
+
+test_that("Missing id_quest are detected", {
+  check_mismatch <- check_evavelo(quest_mismatch_example)
+  expect_true(check_mismatch$error)
 
 })
 

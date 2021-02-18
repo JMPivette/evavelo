@@ -43,6 +43,16 @@ test_that("wrong column names gives an error", {
 
 })
 
+test_that("Answers are similar in enquete and comptage", {
+  ## Example data where each comptage has a unique enquete
+  out <- correct_categ(all_enquete_example$comptage,
+                       all_enquete_example$enquete)
+  expect_equal(out$comptages_man_post_traitements$categorie_visuelle_cycliste_corrige,
+               out$enquetes_post_traitement$categorie_corrige)
+
+})
+
+
 
 
 # Test Itinerant category ---------------------------------------------------------------------

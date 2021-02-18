@@ -5,6 +5,13 @@
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 evavelo_example <- read_evavelo(xlsx_path)
 
+## id_quest_mismatch
+mismatch_path <- system.file("example-data/03_id_quest_mismatch.xlsx", package = "evavelo")
+quest_mismatch_example <- read_evavelo(mismatch_path)
+
+## All lines have an associated enquete
+all_enquete_path <- system.file("example-data/04_enquete_everywhere.xlsx", package = "evavelo")
+all_enquete_example <- read_evavelo(all_enquete_path)
 
 ## Minimal expected column names for each worksheet
 comptage_colnames <- c(
@@ -26,5 +33,6 @@ enquete_colnames <- c(
 calendrier_colnames <- c("id_site_enq", "date_enq")
 
 
-usethis::use_data(evavelo_example, comptage_colnames, enquete_colnames, calendrier_colnames,
+usethis::use_data(evavelo_example, quest_mismatch_example, all_enquete_example,
+                  comptage_colnames, enquete_colnames, calendrier_colnames,
                   overwrite = TRUE, internal = TRUE)
