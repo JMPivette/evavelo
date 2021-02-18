@@ -1,5 +1,7 @@
 # evavelo (development version)
 
+- Fix issue #37 that didn't compare correctly id_quest from `enquete` and `comptage`
+
 # evavelo 0.4.0
 
 - Create geocoding functions `geocode_table_communes()`, `geocode_cities` and `geocode_cities_cp()`

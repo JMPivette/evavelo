@@ -126,7 +126,7 @@ check_evavelo <- function(eva_data){
   ## Check relationship between comptage and enquete-------------------------------
   log <- add_message_log(log, "Checking relationship between comptage and enquete...")
   # Find id_quest with no relationship
-  enquete_id_quest <- radical_quest(eva_data$comptage$id_quest)%>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
+  enquete_id_quest <- radical_quest(eva_data$enquete$id_quest)%>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
     unique()
   id_notin_enq <- setdiff(eva_data$comptage$id_quest,
                           c(enquete_id_quest, NA))
