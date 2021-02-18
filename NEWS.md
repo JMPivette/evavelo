@@ -1,4 +1,4 @@
-# evavelo (development version)
+# evavelo 0.4.1
 
 ## Bug Fixes 
 
