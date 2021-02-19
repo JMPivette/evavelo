@@ -322,10 +322,13 @@ is_iti_coherent <- function (dms,
                              iti_arr_iti_valide,
                              iti_depart_initial,
                              iti_arrivee_final){
-  ## Check distance
+  ## Check distance and dms
   coher_dist <-  iti_km_voyage/dms
   coher_dist[is.na(coher_dist)] <- 0 # Remove NA
   coher_dist <- coher_dist > 40
+      # add dms >1 as a criteria
+  dms[is.na(dms)] <- 0
+  coher_dist <- coher_dist & dms > 1
 
   ## Check iti depart and arrivee
   coher_commune <- (!is.na(iti_dep_iti_valide) | !is.na(iti_depart_initial)) &

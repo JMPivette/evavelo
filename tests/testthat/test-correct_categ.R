@@ -64,7 +64,7 @@ test_that("correct_itinerant works", {
     "2","Itinérant", "Loisir", "empty", "Plusieurs jours", 1, 120, "answer", "answer", "answer", "answer", "answer",   ## Itinerant
     "3","Loisir", "Itinérant", "empty", "Plusieurs jours", 3 , NA, NA, NA, NA, NA, NA,   ## Itinerant
     "4","Loisir", "Itinérant", "empty", "Plusieurs jours", 5, 200, NA, NA, NA, NA, NA,   ## Itinerant
-    "5","Utilitaire", "Itinérant", "empty", "journée", 1, 120, NA, NA, NA, NA, NA,       ## Itinerant
+    "5","Utilitaire", "Itinérant", "empty", "journée", 1, 120, NA, NA, NA, NA, NA,       ## Utilitaire(dms<=1)
     "6","Utilitaire", "Itinérant", "empty", "journée", 3, NA, NA, NA, NA, NA, NA,        ## Utilitaire
     "7","Sportif", "Sportif", "Sportif", "journée", 4, NA, NA, NA, NA, NA, NA,           ## no change
     "8","Loisir", "Itinérant", "empty", "journée", 1, NA, NA, NA, NA, NA, NA,            ## Loisir
@@ -78,7 +78,7 @@ test_that("correct_itinerant works", {
                     "Itinérant",
                     "Itinérant",
                     "Itinérant",
-                    "Itinérant",
+                    "Utilitaire",
                     "Utilitaire",
                     "Sportif",
                     "Loisir",
