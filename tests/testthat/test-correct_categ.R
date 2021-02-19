@@ -104,20 +104,21 @@ test_that("correct_itinerant works", {
 
 test_that("isi_iti_coherent helper function works", {
 
-  out <- is_iti_coherent(dms = c(5,5,2,NA,3),
-                         iti_km_voyage = c(250, 250,70, 300, NA) ,
-                         iti_experience =c("a",NA, NA, "a", "a" ) ,
-                         iti_dep_iti_valide = c("a",NA, "a", NA, "a") ,
-                         iti_arr_iti_valide = c("a",NA, "a", NA,"a") ,
-                         iti_depart_initial = c("a",NA, NA, NA, "a") ,
-                         iti_arrivee_final = c("a",NA, NA, NA, "a") )
+  out <- is_iti_coherent(dms = c(5,5,2,NA,3,5),
+                         iti_km_voyage = c(250, 250,70, 300, NA, 150) ,
+                         iti_experience =c("a",NA, NA, "a", "a", NA ) ,
+                         iti_dep_iti_valide = c("a",NA, "a", NA, "a", "a") ,
+                         iti_arr_iti_valide = c("a",NA, "a", NA,"a", NA) ,
+                         iti_depart_initial = c("a",NA, NA, NA, "a", "a") ,
+                         iti_arrivee_final = c("a",NA, NA, NA, "a", NA) )
 
   expected_out <- c(
     TRUE, # [iti_km_voyage] / [dms] > 40 km
     TRUE, # [iti_km_voyage] / [dms] > 40 km
-    FALSE, # [iti_km_voyage] / [dms] < 40 km and missing iti_*_initial and iti_experience
-    FALSE, # ([iti_km_voyage]) / [dms] unavailable and missing [iti_dep_iti_valide], [iti_arr_iti_valide]
-    TRUE # ([iti_km_voyage]) / [dms] unavailable but all the rest is available
+    TRUE, # [iti_km_voyage] / [dms] < 40 km and iti_experience with iti_dep_iti_valide and iti_arr_iti_valide
+    TRUE, # ([iti_km_voyage]) / [dms] unavailable with iti_km_voyage and iti_experience available
+    TRUE, # ([iti_km_voyage]) / [dms] unavailable but all the rest is available
+    FALSE # [iti_km_voyage] / [dms] < 40 km iti_km_voyage available but iti_experience missing as well as iti_arr_iti_valide and iti_arrivee_final
   )
   expect_equal(out, expected_out)
 })

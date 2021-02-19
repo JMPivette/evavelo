@@ -292,9 +292,13 @@ add_coherence <- function(data,
   data %>%
     dplyr::mutate(
       ## check coherence of itinerant answers
-      !!col_name := is_iti_coherent(.data$dms, .data$iti_km_voyage, .data$iti_experience,
-                                    .data$iti_dep_iti_valide, .data$iti_arr_iti_valide,
-                                    .data$iti_depart_initial, .data$iti_arrivee_final)
+      !!col_name := is_iti_coherent(dms = .data$dms,
+                                    iti_km_voyage = .data$iti_km_voyage,
+                                    iti_experience = .data$iti_experience,
+                                    iti_dep_iti_valide = .data$iti_dep_iti_valide,
+                                    iti_arr_iti_valide = .data$iti_arr_iti_valide,
+                                    iti_depart_initial = .data$iti_depart_initial,
+                                    iti_arrivee_final = .data$iti_arrivee_final)
     )
 }
 
@@ -307,28 +311,28 @@ add_coherence <- function(data,
 #' @param iti_experience character vector
 #' @param iti_dep_iti_valide character vector
 #' @param iti_arr_iti_valide character vector
-#' @param ... other answers to iti_* questions
+#' @param iti_depart_initial character vector
+#' @param iti_arrivee_final character vector
 #'
 #' @return a boolean vector indicating if answer is coherent
 is_iti_coherent <- function (dms,
                              iti_km_voyage,
                              iti_experience,
                              iti_dep_iti_valide,
-                             iti_arr_iti_valide,...){
+                             iti_arr_iti_valide,
+                             iti_depart_initial,
+                             iti_arrivee_final){
   ## Check distance
   coher_dist <-  iti_km_voyage/dms
   coher_dist[is.na(coher_dist)] <- 0 # Remove NA
   coher_dist <- coher_dist > 40
 
-  ## Check iti_dep_iti_valide & iti_arr_iti_valide
-  coher_commune <- !is.na(iti_dep_iti_valide) & !is.na(iti_arr_iti_valide)
+  ## Check iti depart and arrivee
+  coher_commune <- (!is.na(iti_dep_iti_valide) | !is.na(iti_depart_initial)) &
+    (!is.na(iti_arr_iti_valide) | !is.na(iti_arrivee_final))
 
-  ## Check iti_other has all answers (no NAs)
-  #(We don't need iti_dep_iti_valide and iti_arr_iti_valide that are already tested)
-  coher_iti_other <- lapply(list(...), is.na)
-  coher_iti_other <- Reduce(`+`, coher_iti_other) == 0
   ## Check that we have at least 2 answers out of three
-  coher_2_3 <- ((!is.na(iti_km_voyage)) + coher_iti_other + (!is.na(iti_experience))) >= 2
+  coher_2_3 <- ((!is.na(iti_km_voyage)) + coher_commune + (!is.na(iti_experience))) >= 2
 
-  return(coher_dist | (coher_commune & coher_2_3))
+  return(coher_dist | coher_2_3)
 }
