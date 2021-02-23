@@ -111,29 +111,29 @@ mod_load_file_server <- function(input, output, session, r){
                       title = "Correcting category", value = 4, total = 4)
 
     if(r$process_error == FALSE){
-      r$log <- paste(r$log, "\n\n[3] Correcting Category...")
+      r$log <- paste(r$log, "\n\n[3] Correcting Category...\n")
       tryCatch(
         {
-          r$processed <- process_evavelo(r$eva_data)
-          r$log <- paste(r$log, "\n[3] Category corrected!")
+          withCallingHandlers({
+            r$processed <- process_evavelo(r$eva_data)},
+            message = function(m) r$log<- paste(r$log, m$message))
           updateProgressBar(session = session, id = "load_progress",
                             title = "Category corrected", value = 4, total = 4)
         },
         error = function(e){
-          r$log <- paste(r$log, "\n[3] ERROR during category correction:\n", e)
+          r$log <- paste(r$log, "[3] ERROR during category correction:\n", e)
           r$process_error <- TRUE
           updateProgressBar(session = session, id = "load_progress",
                             status = "danger", value = 4, total = 4)
         },
         warning = function(w){
-          r$log <- paste(r$log, "\n[3] Warnings during category correction:\n", w)
+          r$log <- paste(r$log, "[3] Warnings during category correction:\n", w$message)
           updateProgressBar(session = session, id = "load_progress",
                             status = "warning", value = 4, total = 4)
         }
       )
     }
     closeSweetAlert(session = session)
-
 
     ## End message------------------------------
     if (r$process_error){
@@ -144,7 +144,7 @@ mod_load_file_server <- function(input, output, session, r){
         type = "error"
       )
     }else{
-      r$log <- paste(r$log, "\n\n OK! You can now download the result")
+      r$log <- paste(r$log, "\n[3] Category corrected!\n\n OK! You can now download the result")
       sendSweetAlert(
         session = session,
         title =" Calculation completed !",

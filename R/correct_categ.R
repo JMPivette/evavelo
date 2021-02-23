@@ -59,6 +59,7 @@ correct_categ <- function(comptage,
            .data$id_quest,
            .data$categorie_corrige,
            .data$categorie)
+  message("Correction de categories pour ", nrow(cat_to_correct), " questionnaires ....")
 
 ## Check where decision couldn't be made and replace with answer from enquete.
 
@@ -66,11 +67,14 @@ correct_categ <- function(comptage,
     dplyr::filter(is.na(.data$categorie_corrige)) %>%
     dplyr::pull(.data$id_quest)
 
-  if(length(no_decision) != 0){
+  nb_no_decision <- length(no_decision)
+  if(nb_no_decision != 0){
     warning(
-      "Il n'a pas ete possible de corriger les categories des questionnaires suivants. La categorie de l'enquete sera utilisee:\n\t",
+      "Il n'a pas ete possible de corriger les categories de ",
+      nb_no_decision,
+      " questionnaire(s).\nLa categorie du declarant sera utilisee:\n\t",
       paste(no_decision, collapse = ", "),
-      call. = FALSE
+      call. = FALSE, immediate. = TRUE
     )
   }
 
