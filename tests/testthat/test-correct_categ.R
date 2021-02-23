@@ -187,23 +187,23 @@ test_that("correct_spor_lois works", {
 test_that("correct_util_lois works", {
   ## Input data.frame
   df <- tibble::tribble(
-    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~activite_motiv,
-    "1","Loisir", "Utilitaire","empty", "Je fais cette activité à l'occasion de ma randonnée", # Loisir
-    "2","Utilitaire", "Loisir","empty", "Je fais cette activité à l'occasion de ma randonnée", # Loisir
-    "3","Loisir", "Utilitaire","empty", "Cette activité est le but de ma randonnée",           # Utilitaire
-    "4","Utilitaire", "Loisir","empty", "Cette activité est le but de ma randonnée",           # Utilitaire
-    "5","Loisir", "Utilitaire","empty", NA,                                                    # Utilitaire
-    "6","Utilitaire", "Loisir","empty", NA,                                                    # Loisir
-    "10","Sportif", "Sportif", "Sportif",  "Cette activité est le but de ma randonnée" # no changes
+    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~activite_motiv, ~activites, ~activites_aucune,
+    "1","Loisir", "Utilitaire","empty", "Je fais cette activité à l'occasion de ma randonnée", NA, NA,       # Loisir
+    "2","Utilitaire", "Loisir","empty", "Je fais cette activité à l'occasion de ma randonnée","Baignade", 0, # Loisir
+    "3","Loisir", "Utilitaire","empty", "Cette activité est le but de ma randonnée","Aucune", 1,           # Loisir (declarant)
+    "4","Utilitaire", "Loisir","empty", "Cette activité est le but de ma randonnée", "Baignade", 0,           # Utilitaire
+    "5","Loisir", "Utilitaire","empty", NA, NA, NA,                                                   # Loisir (declarant)
+    "6","Utilitaire", "Loisir","empty", NA, "Baignade", 0,                                                    # NA
+    "10","Sportif", "Sportif", "Sportif",  "Cette activité est le but de ma randonnée", "sport", 0 # no changes
   )
 
   ## Expected categorie_corrige
   expected_out <- c("Loisir",
                     "Loisir",
-                    "Utilitaire",
-                    "Utilitaire",
+                    "Loisir",
                     "Utilitaire",
                     "Loisir",
+                    NA,
                     "Sportif")
 
   ## Test that applying function creates no error
@@ -278,7 +278,7 @@ test_that("df with no choices to be made don't throw an error ", {
     type_sortie = NA, dms = 5, iti_km_voyage = 100, km_sortie = 20, type_trajet = NA, nb_vae = 0,
     nb_total_velo = 1, activites = NA, activite_motiv = NA, iti_experience = NA,
     iti_dep_iti_valide = NA, iti_arr_iti_valide = NA, iti_depart_initial = NA,
-    iti_arrivee_final = NA
+    iti_arrivee_final = NA, activites_aucune = 0
     )
 
   expect_equal(df,

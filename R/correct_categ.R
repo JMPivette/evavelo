@@ -35,7 +35,7 @@ correct_categ <- function(comptage,
            .data$type_sortie, .data$dms, starts_with("iti_"),
            .data$km_sortie, .data$type_trajet, # used for Case 5
            .data$nb_vae, .data$nb_total_velo, .data$activites, ## Used for Case 6 11
-           .data$activite_motiv # USed for Case 9 12
+           .data$activite_motiv, .data$activites, .data$activites_aucune # USed for Case 9 12
     ) %>%
     mutate(main_id_quest = radical_quest(.data$id_quest)) %>% # Deal with multiple quest by group
     left_join(select(comptage,
@@ -241,10 +241,14 @@ correct_util_lois <- function(data){
                     .data$categorie == "Loisir" & .data$categorie_visuelle_cycliste == "Utilitaire"
     ) %>%
     dplyr::mutate(
+      no_activity = is.na(.data$activites) | .data$activites_aucune == 1
+    ) %>%
+    dplyr::mutate(
       categorie_corrige = dplyr::case_when(
-        is.na(activite_motiv) ~ categorie_visuelle_cycliste,
+        no_activity ~ categorie,
         stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
-        TRUE ~"Loisir"
+        stringr::str_detect(activite_motiv, "occasion") ~ "Loisir",
+        TRUE ~ NA_character_
       ))
   ## Update rows
   data %>%
