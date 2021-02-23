@@ -4,7 +4,7 @@ library(dplyr)
 test_that("wrong column names gives an error", {
   ## No errors:
   expect_type(out <- correct_categ(comptage = evavelo_example$comptage,
-                                   enquete = evavelo_example$enquete),
+                                   enquete = evavelo_example$enquete) %>% suppressWarnings(),
               "list")
 
   # Check that number of rows hasn't changed and that id_quest are in the same order
@@ -26,17 +26,21 @@ test_that("wrong column names gives an error", {
                                activite_motiv))
 
   expect_warning(correct_categ(comptage = evavelo_example$comptage,
-                               enquete = enquete_modified))
+                               enquete = enquete_modified),
+                 "Les questionnaires multiples suivants ont plusieurs valeurs de categorie corrigees") %>%
+    suppressWarnings()
 
   ## Test that inital "categorie_corrige" from input file is not taken in account (Issue #22)
   # empty columns `categorie_corrige`(normal situation)
   out_blank <- correct_categ(comptage = evavelo_example$comptage,
                              enquete = evavelo_example$enquete %>%
-                               mutate(categorie_corrige = NA_character_))
+                               mutate(categorie_corrige = NA_character_)) %>%
+    suppressWarnings()
   # full columns `categorie_corrige`(if passing an already processed file)
   out_loisir <- correct_categ(comptage = evavelo_example$comptage,
                               enquete = evavelo_example$enquete %>%
-                                mutate(categorie_corrige = "Loisir"))
+                                mutate(categorie_corrige = "Loisir")) %>%
+    suppressWarnings()
 
   expect_equal(out_blank, out)
   expect_equal(out_loisir, out)
@@ -46,7 +50,8 @@ test_that("wrong column names gives an error", {
 test_that("Answers are similar in enquete and comptage", {
   ## Example data where each comptage has a unique enquete
   out <- correct_categ(all_enquete_example$comptage,
-                       all_enquete_example$enquete)
+                       all_enquete_example$enquete) %>%
+    suppressWarnings()
   expect_equal(out$comptages_man_post_traitements$categorie_visuelle_cycliste_corrige,
                out$enquetes_post_traitement$categorie_corrige)
 
@@ -60,31 +65,45 @@ test_that("correct_itinerant works", {
   ## Input data.frame
   df <- tibble::tribble(
     ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~type_sortie, ~dms, ~iti_km_voyage, ~iti_experience, ~iti_dep_iti_valide, ~iti_arr_iti_valide, ~iti_depart_initial, ~iti_arrivee_final,
-    "1","Itinérant", "Sportif", "empty", "Plusieurs jours", 1, NA, NA, NA, NA, NA, NA,  ## Sportif
-    "2","Itinérant", "Loisir", "empty", "Plusieurs jours", 1, 120, "answer", "answer", "answer", "answer", "answer",   ## Itinerant
-    "3","Loisir", "Itinérant", "empty", "Plusieurs jours", 3 , NA, NA, NA, NA, NA, NA,   ## Itinerant
-    "4","Loisir", "Itinérant", "empty", "Plusieurs jours", 5, 200, NA, NA, NA, NA, NA,   ## Itinerant
-    "5","Utilitaire", "Itinérant", "empty", "journée", 1, 120, NA, NA, NA, NA, NA,       ## Utilitaire(dms<=1)
-    "6","Utilitaire", "Itinérant", "empty", "journée", 3, NA, NA, NA, NA, NA, NA,        ## Utilitaire
-    "7","Sportif", "Sportif", "Sportif", "journée", 4, NA, NA, NA, NA, NA, NA,           ## no change
-    "8","Loisir", "Itinérant", "empty", "journée", 1, NA, NA, NA, NA, NA, NA,            ## Loisir
-    "9","Loisir", "Itinérant", "empty", "Plusieurs jours", NA, 200, "answer", "answer", "answer", NA, NA,  ## Itinerant (dms NA)
-    "10","Itinérant", "Sportif", "empty", "Plusieurs jours", NA, NA, NA, NA, NA, NA, NA,  ## Sportif (dms NA)
-    "11", "Itinérant", "Sportif", "empty", "journée", 4, 120, "answer", "answer", "answer", NA, NA ## Itinérant ()
+    "1","Itinérant", "Sportif", "empty", "journée", 1, 120, "answer", "answer", "answer", "answer", "answer",  ## Sportif
+    "2","Itinérant", "Loisir", "empty", "journée", 1, 120, NA, NA, NA, NA, NA,   ## Loisir
+    "3","Loisir", "Itinérant", "empty", "journée", 3 , 120, "answer", "answer", "answer", NA, NA,    ## Itinerant
+    "4","Loisir", "Itinérant", "empty", "journée", 5, 250 , NA, NA, NA, NA, NA,   ## Itinerant (iti_km/dms > 40)
+    "5","Utilitaire", "Itinérant", "empty", "journée", NA, 120, "answer", NA, NA, NA, NA,       ## NA
+    "6","Utilitaire", "Itinérant", "empty", "journée", NA, NA, NA, NA, NA, NA, NA,       ## NA
+    "7","Sportif", "Itinérant", "Sportif", "Plusieurs jours", 1, 120, NA, "answer", "answer", NA, NA,           ## Itinerant
+    "8","Loisir", "Itinérant", "empty", "Plusieurs jours", 1, 120, NA, NA, NA, NA, NA,            ## Loisir
+    "9","Loisir", "Itinérant", "empty", "Plusieurs jours", 3, 200, "answer", "answer", "answer", NA, NA,  ## Itinerant
+    "10","Itinérant", "Sportif", "empty", "Plusieurs jours", 5, NA, NA, NA, "answer", NA, NA,  ## Itinerant
+    "11", "Itinérant", "Sportif", "empty", "Plusieurs jours", NA, 120, "answer", "answer", "answer", NA, NA, ## Itinerant
+    "12","Utilitaire", "Itinérant", "empty", "Plusieurs jours", NA, 120, NA, NA, NA, NA, NA,       ## NA
+    "13","Utilitaire", "Itinérant", "empty", NA, 1, 120, "answer", "answer", "answer", "answer", "answer",       ## Utilitaire
+    "14","Itinérant", "Sportif", "Sportif", NA, 1, 120, NA, NA, NA, NA, NA,           ## Sportif
+    "15","Loisir", "Itinérant", "empty", NA, 3, 120,"answer", "answer", "answer", "answer", "answer",             ## Itinerant
+    "16","Loisir", "Itinérant", "empty", NA, 5, 200, NA, NA, NA, NA, NA,   ## NA
+    "17","Itinérant", "Sportif", "empty", NA, NA, 120, "answer", "answer", "answer", NA, NA,  ## NA
+    "18", "Itinérant", "Sportif", "empty", NA, NA, 120, NA, NA, NA, NA, NA # NA
   )
 
   ## Expected categorie_corrige
   expected_out <- c("Sportif",
-                    "Itinérant",
-                    "Itinérant",
-                    "Itinérant",
-                    "Utilitaire",
-                    "Utilitaire",
-                    "Sportif",
                     "Loisir",
                     "Itinérant",
+                    "Itinérant",
+                    NA,
+                    NA,
+                    "Itinérant",
+                    "Loisir",
+                    "Itinérant",
+                    "Itinérant",
+                    "Itinérant",
+                    NA,
+                    "Utilitaire",
                     "Sportif",
-                    "Itinérant")
+                    "Itinérant",
+                    NA,
+                    NA,
+                    NA)
 
   ## Test that applying function creates no error
   expect_error(corrected_df <- correct_itinerant(df),
@@ -104,8 +123,7 @@ test_that("correct_itinerant works", {
 
 test_that("isi_iti_coherent helper function works", {
 
-  out <- is_iti_coherent(dms = c(5,5,2,NA,3,5),
-                         iti_km_voyage = c(250, 250,70, 300, NA, 150) ,
+  out <- is_iti_coherent(iti_km_voyage = c(250, 250,70, 300, NA, 150) ,
                          iti_experience =c("a",NA, NA, "a", "a", NA ) ,
                          iti_dep_iti_valide = c("a",NA, "a", NA, "a", "a") ,
                          iti_arr_iti_valide = c("a",NA, "a", NA,"a", NA) ,
@@ -113,12 +131,12 @@ test_that("isi_iti_coherent helper function works", {
                          iti_arrivee_final = c("a",NA, NA, NA, "a", NA) )
 
   expected_out <- c(
-    TRUE, # [iti_km_voyage] / [dms] > 40 km
-    TRUE, # [iti_km_voyage] / [dms] > 40 km
-    TRUE, # [iti_km_voyage] / [dms] < 40 km and iti_experience with iti_dep_iti_valide and iti_arr_iti_valide
-    TRUE, # ([iti_km_voyage]) / [dms] unavailable with iti_km_voyage and iti_experience available
-    TRUE, # ([iti_km_voyage]) / [dms] unavailable but all the rest is available
-    FALSE # [iti_km_voyage] / [dms] < 40 km iti_km_voyage available but iti_experience missing as well as iti_arr_iti_valide and iti_arrivee_final
+    TRUE, #
+    FALSE, # only 1 answer
+    TRUE, #
+    TRUE, #
+    TRUE, #
+    FALSE # no arrival
   )
   expect_equal(out, expected_out)
 })

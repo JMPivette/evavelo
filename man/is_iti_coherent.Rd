@@ -5,7 +5,6 @@
 \title{Helper function to control "coherence" of specific "itinerance" answers:}
 \usage{
 is_iti_coherent(
-  dms,
   iti_km_voyage,
   iti_experience,
   iti_dep_iti_valide,
@@ -15,8 +14,6 @@ is_iti_coherent(
 )
 }
 \arguments{
-\item{dms}{numeric vector: 'duree moyenne de sejour'}
-
 \item{iti_km_voyage}{numeric vector}
 
 \item{iti_experience}{character vector}
@@ -34,4 +31,5 @@ a boolean vector indicating if answer is coherent
 }
 \description{
 https://github.com/JMPivette/evavelo/discussions/7
+ https://github.com/JMPivette/evavelo/issues/39
 }
