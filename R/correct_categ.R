@@ -205,15 +205,17 @@ correct_spor_lois <- function(data){
                     .data$categorie == "Loisir" & .data$categorie_visuelle_cycliste =="Sportif"
     ) %>%
     dplyr::mutate(
-      autre_activite = !is.na(.data$activites) & .data$activites != "Aucune",
+      autre_activite = .data$activites_aucune == 0,
       ## VAE definition might change in future version of Methodology
-      vae = !is.na(.data$nb_vae) & .data$nb_vae == .data$nb_total_velo
+      vae = .data$nb_vae == .data$nb_total_velo
     ) %>%
     dplyr::mutate(
       categorie_corrige = dplyr::case_when(
-        is.na(km_sortie) ~ "Loisir",
-        km_sortie > 50 & autre_activite == FALSE & vae == FALSE ~ "Sportif",
-        TRUE ~ "Loisir")
+        vae ~ "Loisir",
+        km_sortie > 50 & !autre_activite  ~ "Sportif",
+        km_sortie > 50 & autre_activite ~ "Loisir",
+        km_sortie <= 50 ~ "Loisir",
+        TRUE ~ NA_character_)
     )
 
   data %>%

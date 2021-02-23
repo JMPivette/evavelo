@@ -145,20 +145,20 @@ test_that("isi_iti_coherent helper function works", {
 test_that("correct_spor_lois works", {
   ## Input data.frame
   df <- tibble::tribble(
-    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~activites, ~km_sortie, ~nb_vae, ~nb_total_velo,
-    "1","Loisir", "Sportif", "empty", "Aucune", 70, 0, 1,   ## Sportif
-    "2","Sportif", "Loisir", "empty", NA, 60, 0, 2,         ## Sportif
-    "3","Loisir", "Sportif", "empty", "Aucune", 70, 1, 1,   ## Loisir (VAE)
-    "4","Sportif", "Loisir", "empty", NA, 40, 0, 2,         ## Loisir (nb_km)
-    "5","Loisir", "Sportif", "empty", "Baignade", 70, 0, 1, ## Loisir (activites)
-    "6","Sportif", "Loisir", "empty", "Visite", 40, 1, 2,   ## Loisir
-    "7","Sportif", "Loisir", "empty", NA, 60, NA, NA,        ## Sportif (no answer to nb_vae assumes that there is none)
-    "10","Itinérant", "Itinérant", "Itinérant",  "Aucune", 70, 0, 1 ## no changes
+    ~id_quest, ~categorie, ~categorie_visuelle_cycliste, ~categorie_corrige, ~activites, ~activites_aucune,~km_sortie, ~nb_vae, ~nb_total_velo,
+    "1","Loisir", "Sportif", "empty", "Aucune", 1, 70, 0, 1,   ## Sportif
+    "2","Sportif", "Loisir", "empty", NA, NA, 60, 0, 2,         ## NA
+    "3","Loisir", "Sportif", "empty", "Aucune", 1,  70, 1, 1,   ## Loisir (VAE)
+    "4","Sportif", "Loisir", "empty", NA, 0, 40, 0, 2,         ## Loisir (nb_km)
+    "5","Loisir", "Sportif", "empty", "Baignade", 0, 70, 0, 1, ## Loisir (activites)
+    "6","Sportif", "Loisir", "empty", "Visite", 0, 40, 1, 2,   ## Loisir
+    "7","Sportif", "Loisir", "empty", "Aucune", 1, 60, NA, NA,        ## Sportif (no answer to nb_vae)
+    "10","Itinérant", "Itinérant", "Itinérant",  "Aucune", 1, 70, 0, 1 ## no changes
   )
 
   ## Expected categorie_corrige
   expected_out <- c("Sportif",
-                    "Sportif",
+                    NA,
                     "Loisir",
                     "Loisir",
                     "Loisir",
