@@ -1,5 +1,7 @@
 # evavelo 0.4.2
 
+- Fix issue #50 on categories.
+
 - #39 : change `coherence` criteria
 
 # evavelo 0.4.1

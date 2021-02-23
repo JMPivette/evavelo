@@ -282,14 +282,15 @@ correct_util_sport <- function(data){
     dplyr::select(.data$id_quest, .data$categorie_corrige)
 
   # Cas 8
+  # https://github.com/JMPivette/evavelo/issues/50
   cas_8 <- data %>%
     dplyr::filter(.data$categorie == "Sportif" & .data$categorie_visuelle_cycliste =="Utilitaire") %>%
     dplyr::mutate(vae = !is.na(.data$nb_vae) & .data$nb_vae == .data$nb_total_velo) %>%
     dplyr::mutate(
-      categorie_corrige = ifelse(
-        .data$km_sortie > 50 & .data$vae == FALSE,
-        "Sportif",
-        "Utilitaire"
+      categorie_corrige = dplyr::case_when(
+        .data$km_sortie > 50 & .data$vae == FALSE ~ "Sportif",
+        .data$km_sortie <= 50 | .data$vae == TRUE ~ "Utilitaire",
+        TRUE ~ NA_character_
       )
     ) %>%
     dplyr::select(.data$id_quest, .data$categorie_corrige)
