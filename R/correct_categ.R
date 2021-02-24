@@ -69,12 +69,11 @@ correct_categ <- function(comptage,
 
   nb_no_decision <- length(no_decision)
   if(nb_no_decision != 0){
-    warning(
+    message(
       "Il n'a pas ete possible de corriger les categories de ",
       nb_no_decision,
       " questionnaire(s).\nLa categorie du declarant sera utilisee:\n\t",
-      paste(no_decision, collapse = ", "),
-      call. = FALSE, immediate. = TRUE
+      paste(no_decision, collapse = ", ")
     )
   }
 
