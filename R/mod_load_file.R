@@ -1,6 +1,6 @@
 #' load_file UI Function
 #'
-#' This module is used in the user interface to load and process files with information displayed to the user in a modal and in a log window.
+#' This module is used in the user interface to load and process files with information stored in r$log
 #'
 #' @description A shiny Module.
 #'
@@ -16,11 +16,10 @@ mod_load_file_ui <- function(id){
   ns <- NS(id)
   tagList(
     useSweetAlert(), # /!\ needed with 'progressSweetAlert'
-    fileInput(ns("file1"), "Choose XLSX File",
+    fileInput(ns("file1"), "Choisissez un fichier XLSX",
+              buttonLabel = "Parcourir...",
+              placeholder = "Aucun fichier s\u00e9lectionn\u00e9",
               accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-    br(),
-    verbatimTextOutput(ns("file_name")) %>%
-      withSpinner()
   )
 }
 
@@ -29,9 +28,6 @@ mod_load_file_ui <- function(id){
 #' @noRd
 mod_load_file_server <- function(input, output, session, r){
   ns <- session$ns
-
-  ## Display logs on screen
-  output$file_name <- renderText(r$log)
 
   ## Import and treat files, update log message and display a modal information for user
   observeEvent(input$file1,{
@@ -48,20 +44,20 @@ mod_load_file_server <- function(input, output, session, r){
       total = 4, value = 1, status = "success"
     )
 
-    r$log <- paste("[1] Reading file", input$file1$name, "...")
+    r$log <- paste("[1] Lecture du fichier", input$file1$name, "...")
     tryCatch(
       {
         r$data <- openxlsx::loadWorkbook(input$file1$datapath)
-        r$log <- paste(r$log, "\n[1] File Opened!")
+        r$log <- paste(r$log, "\n[1] Fichier ouvert!")
       },
       error = function(e){
-        r$log <- paste(r$log, "\n[1] ERROR Cannot open file:\n", e)
+        r$log <- paste(r$log, "\n[1] ERREUR Impossible d\'ouvrir le fichier:\n", e)
         r$process_error <- TRUE
         updateProgressBar(session = session, id = "load_progress",
                           status = "danger", value = 2, total = 4)
       },
       warning = function(w){
-        r$log <- paste(r$log, "\n[1] Warnings during file opening:\n", w)
+        r$log <- paste(r$log, "\n[1] Warnings pendant l\'ouverture du fichier:\n", w)
         updateProgressBar(session = session, id = "load_progress",
                           status = "warning", value = 2, total = 4)
       }
@@ -69,22 +65,22 @@ mod_load_file_server <- function(input, output, session, r){
 
     ## Checking file correctness -------------------
     updateProgressBar(session = session, id = "load_progress",
-                      title = "Checking cities", value = 2, total = 4)
-    r$log <- paste(r$log, "\n\n[2] Checking file...\n")
+                      title = "V\u00e9rification des villes", value = 2, total = 4)
+    r$log <- paste(r$log, "\n\n[2] V\u00e9rification du fichier...\n")
     ## loading and checking  cities.....
     tryCatch(
       withCallingHandlers(
         r$eva_data <- read_evavelo(r$data),
         message = function(m) r$log<- paste(r$log, m$message)),
       error = function(e){
-        r$log <- paste(r$log, "\n[2] ERROR during file loading:\n", e)
+        r$log <- paste(r$log, "\n[2] ERREUR pendant le chargement du fichier:\n", e)
         r$process_error <- TRUE
         updateProgressBar(session = session, id = "load_progress",
                           status = "danger", value = 2, total = 4)
       }
     )
     updateProgressBar(session = session, id = "load_progress",
-                      title = "Checking file", value = 3, total = 4)
+                      title = "V\u00e9rification du fichier", value = 3, total = 4)
     ## Checking relationships between worksheets.....
     tryCatch(
       {
@@ -93,13 +89,13 @@ mod_load_file_server <- function(input, output, session, r){
         r$log <- paste(r$log, check_result$log)
       },
       error = function(e){
-        r$log <- paste(r$log, "\n[2] ERROR during file check:\n", e)
+        r$log <- paste(r$log, "\n[2] ERREUR pendant la v\u00e9rification du fichier:\n", e)
         r$process_error <- TRUE
         updateProgressBar(session = session, id = "load_progress",
                           status = "danger", value = 3, total = 4)
       },
       warning = function(w){
-        r$log <- paste(r$log, "\n[2] Warnings during file check:\n", w)
+        r$log <- paste(r$log, "\n[2] Warnings pendant la v\u00e9rification du fichier:\n", w)
         updateProgressBar(session = session, id = "load_progress",
                           status = "warning", value = 3, total = 4)
       }
@@ -108,26 +104,26 @@ mod_load_file_server <- function(input, output, session, r){
 
     ## Correcting category-------------------
     updateProgressBar(session = session, id = "load_progress",
-                      title = "Correcting category", value = 4, total = 4)
+                      title = "Correction des cat\u00e9gories", value = 4, total = 4)
 
     if(r$process_error == FALSE){
-      r$log <- paste(r$log, "\n\n[3] Correcting Category...\n")
+      r$log <- paste(r$log, "\n\n[3] Correction des cat\u00e9gories...\n")
       tryCatch(
         {
           withCallingHandlers({
             r$processed <- process_evavelo(r$eva_data)},
             message = function(m) r$log<- paste(r$log, m$message))
           updateProgressBar(session = session, id = "load_progress",
-                            title = "Category corrected", value = 4, total = 4)
+                            title = "Cat\u00e9gories corrig\u00e9es", value = 4, total = 4)
         },
         error = function(e){
-          r$log <- paste(r$log, "[3] ERROR during category correction:\n", e)
+          r$log <- paste(r$log, "[3] ERREUR pendant la correction des cat\u00e9gories:\n", e)
           r$process_error <- TRUE
           updateProgressBar(session = session, id = "load_progress",
                             status = "danger", value = 4, total = 4)
         },
         warning = function(w){
-          r$log <- paste(r$log, "[3] Warnings during category correction:\n", w$message)
+          r$log <- paste(r$log, "[3] Warnings pendant la correction des cat\u00e9gories:\n", w$message)
           updateProgressBar(session = session, id = "load_progress",
                             status = "warning", value = 4, total = 4)
         }
@@ -137,17 +133,17 @@ mod_load_file_server <- function(input, output, session, r){
 
     ## End message------------------------------
     if (r$process_error){
-      r$log <- paste(r$log, "\n\n ERROR. File cannot be processed")
+      r$log <- paste(r$log, "\n\n ERREUR. Le fichier ne peut pas \u00eatre trait\u00e9")
       sendSweetAlert(
         session = session,
-        title =" Error during process",
+        title =" Erreur pendant le traitement",
         type = "error"
       )
     }else{
-      r$log <- paste(r$log, "\n[3] Category corrected!\n\n OK! You can now download the result")
+      r$log <- paste(r$log, "\n[3] Cat\u00e9gories corrig\u00e9es!\n\n OK! Le r\u00e9sultat est t\u00e9l\u00e9chargeable.")
       sendSweetAlert(
         session = session,
-        title =" Calculation completed !",
+        title =" Fin du traitement !",
         type = "success"
       )}
 

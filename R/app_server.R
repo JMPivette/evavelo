@@ -7,11 +7,14 @@
 app_server <- function( input, output, session ) {
   options(shiny.maxRequestSize=30*1024^2) ## Allow file upload up to 30MB To be adjusted if needed
 
+  addResourcePath('img', system.file('app/img', package = 'evavelo'))
+
   ## Small r strategy
   r <- reactiveValues()
   # List the first level callModules here
   callModule(mod_load_file_server, "load_file_ui_1", r = r)
-  callModule(mod_download_result_server, "download_result_ui_1", r =r)
+  callModule(mod_download_result_server, "download_result_ui_1", r = r)
+  callModule(mod_show_log_server, "show_log_ui_1", r = r)
 
   observeEvent(input$browser, {
     browser()

@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.4.2
+Version: 0.5.0
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
@@ -16,6 +16,7 @@ Depends:
     R (>= 2.10)
 Imports: 
     banR,
+    bslib,
     dplyr,
     geodist,
     janitor,
