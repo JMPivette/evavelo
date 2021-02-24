@@ -1,6 +1,6 @@
 #' load_file UI Function
 #'
-#' This module is used in the user interface to load and process files with information displayed to the user in a modal and in a log window.
+#' This module is used in the user interface to load and process files with information stored in r$log
 #'
 #' @description A shiny Module.
 #'
@@ -18,9 +18,6 @@ mod_load_file_ui <- function(id){
     useSweetAlert(), # /!\ needed with 'progressSweetAlert'
     fileInput(ns("file1"), "Choose XLSX File",
               accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-    br(),
-    verbatimTextOutput(ns("file_name")) %>%
-      withSpinner()
   )
 }
 
@@ -29,9 +26,6 @@ mod_load_file_ui <- function(id){
 #' @noRd
 mod_load_file_server <- function(input, output, session, r){
   ns <- session$ns
-
-  ## Display logs on screen
-  output$file_name <- renderText(r$log)
 
   ## Import and treat files, update log message and display a modal information for user
   observeEvent(input$file1,{
