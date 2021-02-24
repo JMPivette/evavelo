@@ -21,15 +21,15 @@ app_ui <- function(request) {
                style = "margin :  auto;"),
         column(8)
       )),
-      titlePanel("EVA-Scan : outil de traitement des données collectées selon la méthode ÉVA-VÉLO"),
-      em("Application développée dans le cadre du projet Interreg AtlanticOnBike et cofinancé par l’Union Européenne"),
+      titlePanel("EVA-Scan : outil de traitement des donn\u00e9es collect\u00e9es selon la m\u00e9thode \u00c9VA-V\u00c9LO"),
+      em("Application d\u00e9velopp\u00e9e dans le cadre du projet Interreg AtlanticOnBike et cofinanc\u00e9 par l\u2019Union Europ\u00e9enne"),
       sidebarLayout(
         sidebarPanel(
           mod_load_file_ui("load_file_ui_1"),
           mod_download_result_ui("download_result_ui_1"),
           br(),br(),
-          p("Développements réalisés sur la base de la ",
-            tags$a( "méthode v1.0",
+          p("D\u00e9veloppements r\u00e9alis\u00e9s sur la base de la ",
+            tags$a( "m\u00e9thode v1.0",
                     href="https://www.velo-territoires.org/resource/eva-velo/",
                     target="_blank"),
             br(),
@@ -46,7 +46,7 @@ app_ui <- function(request) {
       ##Debuging button. To show it, open your web browser JavaScript console
       ##And run $('#browser').show();
       actionButton("browser", "Browser"),
-      tags$script("$('#browser').hide();")
+      tags$script("$(\'#browser\').hide();")
     )
   )
 }
