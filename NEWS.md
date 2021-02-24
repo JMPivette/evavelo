@@ -1,4 +1,8 @@
-# evavelo (development version)
+# evavelo 0.5.0
+
+- User Interface improvement #33
+
+- Logs are now all written in french #20
 
 # evavelo 0.4.2
 

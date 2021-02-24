@@ -4,7 +4,7 @@ library(dplyr)
 test_that("wrong column names gives an error", {
   ## No errors:
   expect_type(out <- correct_categ(comptage = evavelo_example$comptage,
-                                   enquete = evavelo_example$enquete) %>% suppressWarnings(),
+                                   enquete = evavelo_example$enquete) %>% suppressMessages(),
               "list")
 
   # Check that number of rows hasn't changed and that id_quest are in the same order
@@ -27,20 +27,20 @@ test_that("wrong column names gives an error", {
 
   expect_warning(correct_categ(comptage = evavelo_example$comptage,
                                enquete = enquete_modified),
-                 "Les questionnaires multiples suivants ont plusieurs valeurs de categorie corrigees") %>%
-    suppressWarnings()
+                 "Les questionnaires multiples suivants ont plusieurs valeurs de catégorie corrigées") %>%
+    suppressMessages()
 
   ## Test that inital "categorie_corrige" from input file is not taken in account (Issue #22)
   # empty columns `categorie_corrige`(normal situation)
   out_blank <- correct_categ(comptage = evavelo_example$comptage,
                              enquete = evavelo_example$enquete %>%
                                mutate(categorie_corrige = NA_character_)) %>%
-    suppressWarnings()
+    suppressMessages()
   # full columns `categorie_corrige`(if passing an already processed file)
   out_loisir <- correct_categ(comptage = evavelo_example$comptage,
                               enquete = evavelo_example$enquete %>%
                                 mutate(categorie_corrige = "Loisir")) %>%
-    suppressWarnings()
+    suppressMessages()
 
   expect_equal(out_blank, out)
   expect_equal(out_loisir, out)
@@ -51,7 +51,7 @@ test_that("Answers are similar in enquete and comptage", {
   ## Example data where each comptage has a unique enquete
   out <- correct_categ(all_enquete_example$comptage,
                        all_enquete_example$enquete) %>%
-    suppressWarnings()
+    suppressMessages()
   expect_equal(out$comptages_man_post_traitements$categorie_visuelle_cycliste_corrige,
                out$enquetes_post_traitement$categorie_corrige)
 
