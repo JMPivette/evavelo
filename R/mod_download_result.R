@@ -13,13 +13,13 @@ mod_download_result_ui <- function(id){
   tagList(
     shinyjs::useShinyjs(),
     shinyjs::disabled(
-      downloadButton(ns("download_light"), "Download Modified Columns")
+      downloadButton(ns("download_light"), "Télécharger les colonnes modifiées")
     ),
     shinyjs::disabled(
-      downloadButton(ns("download_full"), "Download Complete File (experimental)")
+      downloadButton(ns("download_full"), "Télécharger le fichier entier (experimental)")
     ),
     br(),br(),
-    downloadButton(ns("download_logs"), "Download logs")
+    downloadButton(ns("download_logs"), "Télécharger les logs")
   )
 }
 

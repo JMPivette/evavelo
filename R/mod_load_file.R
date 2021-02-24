@@ -16,7 +16,9 @@ mod_load_file_ui <- function(id){
   ns <- NS(id)
   tagList(
     useSweetAlert(), # /!\ needed with 'progressSweetAlert'
-    fileInput(ns("file1"), "Choose XLSX File",
+    fileInput(ns("file1"), "Choisissez un fichier XLSX",
+              buttonLabel = "Parcourir...",
+              placeholder = "Aucun fichier sélectionné",
               accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
   )
 }
