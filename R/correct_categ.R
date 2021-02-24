@@ -59,7 +59,7 @@ correct_categ <- function(comptage,
            .data$id_quest,
            .data$categorie_corrige,
            .data$categorie)
-  message("Correction de categories pour ", nrow(cat_to_correct), " questionnaires ....")
+  message("Correction de cat\u00e9gories pour ", nrow(cat_to_correct), " questionnaires ....")
 
 ## Check where decision couldn't be made and replace with answer from enquete.
 
@@ -70,9 +70,9 @@ correct_categ <- function(comptage,
   nb_no_decision <- length(no_decision)
   if(nb_no_decision != 0){
     message(
-      "Il n'a pas ete possible de corriger les categories de ",
+      "Il n\'a pas \u00e9t\u00e9 possible de corriger les cat\u00e9gories de ",
       nb_no_decision,
-      " questionnaire(s).\nLa categorie du declarant sera utilisee:\n\t",
+      " questionnaire(s).\nLa cat\u00e9gorie du d\u00e9clarant sera utilis\u00e9e:\n\t",
       paste(no_decision, collapse = ", ")
     )
   }
@@ -93,7 +93,7 @@ correct_categ <- function(comptage,
     dplyr::pull(.data$main_id_quest)
   if(length(quest_multiple_cat) != 0){
     warning(
-      "Les questionnaires multiples suivants ont plusieurs valeurs de categorie corrigees:\n\t",
+      "Les questionnaires multiples suivants ont plusieurs valeurs de cat\u00e9gorie corrig\u00e9es:\n\t",
       quest_multiple_cat,
       call. = FALSE
             )

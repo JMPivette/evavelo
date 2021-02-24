@@ -11,13 +11,13 @@ check_evavelo <- function(eva_data){
   ## function that returns a status and log information. not really clear for the moment but will be later
 
   # initialize outputs
-  log <- "" ## string to store log information
+  log <- "\nV\u00e9rification du fichier\n---------------------------------" ## string to store log information
   err <- FALSE ## boolean output to tell if an error occurred
 
 
   ## Check sheets with their associated post_traitement----------------------
 
-  log <- add_message_log(log, "Comparing enquetes_saisies and enquetes_post_traitement...")
+  log <- add_message_log(log, "Comparaison de enquetes_saisies et enquetes_post_traitement...")
   withCallingHandlers(enq_diff <- compare_init_post(init = eva_data$enquete_init,
                                              post_trait = eva_data$enquete),
                       warning = function(w) {
@@ -26,7 +26,7 @@ check_evavelo <- function(eva_data){
                       }) %>%
     suppressWarnings()
 
-  log <- add_message_log(log, "Comparing comptages_manuels and comptages_man_post_traitements...")
+  log <- add_message_log(log, "Comparaison de comptages_manuels et comptages_man_post_traitements...")
   withCallingHandlers(compt_diff <- compare_init_post(init = eva_data$comptage_init,
                                              post_trait = eva_data$comptage),
                       warning = function(w) {
@@ -36,14 +36,14 @@ check_evavelo <- function(eva_data){
     suppressWarnings()
 
   ## Check integrity of comptage-------------------------
-  log <- add_message_log(log, "Checking comptage...")
+  log <- add_message_log(log, "V\u00e9rification de comptages_man_post_traitements...")
   #Check variable names
   if (!all(comptage_colnames %in% names(eva_data$comptage))) {
     not_present <- setdiff(comptage_colnames, names(eva_data$comptage))
     err <- TRUE
     log <- add_message_log(log,
-                           " ERROR:", paste(not_present, collapse = ", "),
-                           " missing from comptage")
+                           " ERREUR:", paste(not_present, collapse = ", "),
+                           " est absent de comptages_man_post_traitements.")
   }
   # Check uniqueness of id_quest
   dupli_id <- eva_data$comptage %>%
@@ -52,7 +52,7 @@ check_evavelo <- function(eva_data){
     dplyr::filter(!is.na(.data$id_quest) & .data$n > 1)
   if (nrow(dupli_id) != 0) {
     err <- TRUE
-    log <- add_message_log(log, " ERROR: duplicated id_quest in 'comptage':\n",
+    log <- add_message_log(log, " ERREUR: id_quest dupliqu\u00e9 dans  \'comptages_man_post_traitements\':\n",
                            paste(dupli_id$id_quest, "(", dupli_id$n, "), ", collapse = "")
     )
   }
@@ -64,7 +64,7 @@ check_evavelo <- function(eva_data){
     err <- TRUE
     log <- add_message_log(
       log,
-      " ERROR: the following non-standard values are in 'categorie_visuelle_cycliste': ",
+      " ERREUR: pr\u00e9sence de valeurs non-standard dans \'categorie_visuelle_cycliste\': ",
       paste(wrong_cat, collapse = ", ")
     )
   }
@@ -80,7 +80,7 @@ check_evavelo <- function(eva_data){
   # if (length(mismatch_categorie_vis) != 0){
   #   log <- add_message_log(
   #     log,
-  #     " Warning: Mismatch between 'categorie_visuelle' and 'categorie_visuelle_cycliste' at line(s): ",
+  #     " Warning: Mismatch between \'categorie_visuelle\' and \'categorie_visuelle_cycliste\' at line(s): ",
   #     paste(mismatch_categorie_vis$index, collapse = ", ")
   #   )
   # }
@@ -88,14 +88,14 @@ check_evavelo <- function(eva_data){
 
   ## Check integrity of enquete--------------------------
   #Check variable names
-  log <- add_message_log(log, "Checking enquete...")
+  log <- add_message_log(log, "V\u00e9rification de enquetes_post_traitement...")
 
   if (!all(enquete_colnames %in% names(eva_data$enquete))) {
     not_present <- setdiff(enquete_colnames, names(eva_data$enquete))
     err <- TRUE
     log <- add_message_log(log,
-                           " ERROR", paste(not_present, collapse = ", "),
-                           " missing from enquete")
+                           " ERREUR", paste(not_present, collapse = ", "),
+                           " absent de enquetes_post_traitement")
   }
 
   # Check uniqueness of id_quest
@@ -105,26 +105,26 @@ check_evavelo <- function(eva_data){
     dplyr::filter(!is.na(.data$id_quest) & .data$n > 1)
   if (nrow(dupli_id) != 0) {
     err <- TRUE
-    log <- add_message_log(log, " ERROR: duplicated id_quest in 'enquete':\n",
+    log <- add_message_log(log, " ERREUR: id_quest dupliqu\u00e9 dans \'enquetes_post_traitement\':\n",
                            paste(dupli_id$id_quest, collapse = ", ")
     )
   }
 
   ## Check integrity of calendrier
   #Check variable names
-  log <- add_message_log(log, "Checking calendrier...")
+  log <- add_message_log(log, "V\u00e9rification de calendrier...")
   if (!all(calendrier_colnames %in% names(eva_data$calendrier))) {
     not_present <- setdiff(calendrier_colnames, names(eva_data$calendrier))
     err <- TRUE
     log <- add_message_log(log,
-                           " ERROR", paste(not_present, collapse = ", "),
-                           " missing from calendrier")
+                           " ERREUR", paste(not_present, collapse = ", "),
+                           " absent de calendrier")
   }
 
 
 
   ## Check relationship between comptage and enquete-------------------------------
-  log <- add_message_log(log, "Checking relationship between comptage and enquete...")
+  log <- add_message_log(log, "V\u00e9rification des liens entre comptages_man_post_traitements et enquetes_post_traitement")
   # Find id_quest with no relationship
   enquete_id_quest <- radical_quest(eva_data$enquete$id_quest)%>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
     unique()
@@ -135,18 +135,18 @@ check_evavelo <- function(eva_data){
   if(length(id_notin_compt) != 0){
     err <- TRUE
     log <- add_message_log(log,
-                           " ERROR: The following id_quest are not present in 'comptage':\n",
+                           " ERREUR: Les id_quest suivants sont absents de \'comptages_man_post_traitements\':\n",
                            paste(id_notin_compt, collapse = ", "))
   }
   if(length(id_notin_enq) != 0){
     err <- TRUE
     log <- add_message_log(log,
-                           " ERROR: The following id_quest are not present in 'enquete':\n",
+                           " ERREUR: Les id_quest suivants sont absents de \'enquetes_post_traitement\':\n",
                            paste(id_notin_enq, collapse = ", "))
   }
 
   ## Check relationship with calendrier_sites-------------------------
-  log <- add_message_log(log, "Checking id_site_enq and date from calendrier...")
+  log <- add_message_log(log, "V\u00e9rification des id_site_enq et date de \'calendrier\'...")
 
   cal_enq_difflog <- check_diff(a = eva_data$calendrier, b = eva_data$enquete,
                                 name_a = "calendrier", name_b = "enquete")
@@ -161,7 +161,7 @@ check_evavelo <- function(eva_data){
 
   ## Final message-----------------------
   if(err == FALSE){
-    log <- add_message_log(log, "No error found when checking input data.")
+    log <- add_message_log(log, "Aucune erreur dans le fichier!")
   }
 
 
@@ -225,7 +225,7 @@ log_in_x_not_in_y <- function(x, y, name_x, name_y) {
                                    by = c("id_site_enq", "date_enq"))
   if(nrow(in_x_notin_y) != 0){
     log <- paste(
-      " ERROR:", nrow(in_x_notin_y), "days are in", name_x, "but missing from", name_y,":\n",
+      " ERREUR:", nrow(in_x_notin_y), "jours sont dans", name_x, "mais manquant de", name_y,":\n",
       paste("id_site_enq:", in_x_notin_y$id_site_enq, "\tdate:" ,in_x_notin_y$date_enq, "\n",
             collapse = " ")
     )
