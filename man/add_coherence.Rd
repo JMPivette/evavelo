@@ -18,7 +18,7 @@ add_coherence(data, col_name = "coherent")
 Internal function that calls is_iti_coherent
 }
 \details{
-data should have the following columns: dms, iti_km_voyage, iti_experience,
+data should have the following columns: iti_km_voyage, iti_experience,
 iti_depart_itineraire, iti_arrivee_itineraire,
 iti_depart_initial, iti_arrivee_final
 }

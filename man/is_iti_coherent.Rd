@@ -5,17 +5,15 @@
 \title{Helper function to control "coherence" of specific "itinerance" answers:}
 \usage{
 is_iti_coherent(
-  dms,
   iti_km_voyage,
   iti_experience,
   iti_dep_iti_valide,
   iti_arr_iti_valide,
-  ...
+  iti_depart_initial,
+  iti_arrivee_final
 )
 }
 \arguments{
-\item{dms}{numeric vector: 'duree moyenne de sejour'}
-
 \item{iti_km_voyage}{numeric vector}
 
 \item{iti_experience}{character vector}
@@ -24,11 +22,14 @@ is_iti_coherent(
 
 \item{iti_arr_iti_valide}{character vector}
 
-\item{...}{other answers to iti_* questions}
+\item{iti_depart_initial}{character vector}
+
+\item{iti_arrivee_final}{character vector}
 }
 \value{
 a boolean vector indicating if answer is coherent
 }
 \description{
 https://github.com/JMPivette/evavelo/discussions/7
+ https://github.com/JMPivette/evavelo/issues/39
 }

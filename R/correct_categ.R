@@ -35,7 +35,7 @@ correct_categ <- function(comptage,
            .data$type_sortie, .data$dms, starts_with("iti_"),
            .data$km_sortie, .data$type_trajet, # used for Case 5
            .data$nb_vae, .data$nb_total_velo, .data$activites, ## Used for Case 6 11
-           .data$activite_motiv # USed for Case 9 12
+           .data$activite_motiv, .data$activites, .data$activites_aucune # USed for Case 9 12
     ) %>%
     mutate(main_id_quest = radical_quest(.data$id_quest)) %>% # Deal with multiple quest by group
     left_join(select(comptage,
@@ -57,7 +57,34 @@ correct_categ <- function(comptage,
     correct_util_sport() %>%
     select(.data$main_id_quest,
            .data$id_quest,
+           .data$categorie_corrige,
+           .data$categorie)
+  message("Correction de categories pour ", nrow(cat_to_correct), " questionnaires ....")
+
+## Check where decision couldn't be made and replace with answer from enquete.
+
+  no_decision <- cat_to_correct %>%
+    dplyr::filter(is.na(.data$categorie_corrige)) %>%
+    dplyr::pull(.data$id_quest)
+
+  nb_no_decision <- length(no_decision)
+  if(nb_no_decision != 0){
+    warning(
+      "Il n'a pas ete possible de corriger les categories de ",
+      nb_no_decision,
+      " questionnaire(s).\nLa categorie du declarant sera utilisee:\n\t",
+      paste(no_decision, collapse = ", "),
+      call. = FALSE, immediate. = TRUE
+    )
+  }
+
+  cat_to_correct <- cat_to_correct %>%
+    mutate(categorie_corrige = coalesce(.data$categorie_corrige,
+                                        .data$categorie)) %>%
+    select(.data$main_id_quest,
+           .data$id_quest,
            .data$categorie_corrige)
+
 
   ## Check for multiple "categorie_corrige" in the same group
   quest_multiple_cat <- cat_to_correct %>%
@@ -145,8 +172,13 @@ correct_itinerant <- function(data){
     dplyr::mutate(
       categorie_corrige =
         dplyr::case_when(
+          is.na(type_sortie) & is.na(dms) ~ NA_character_,
+          is.na(dms) & (type_sortie != "Plusieurs jours" | !coherent) ~ NA_character_,
+          is.na(type_sortie) & dms > 1 & !coherent ~ NA_character_,
+          type_sortie == "Plusieurs jours" & (dms > 1 | coherent) ~ "Itin\u00e9rant",
+          dms <= 1 ~ other_cat,
           coherent ~ "Itin\u00e9rant",
-          type_sortie == "Plusieurs jours" & dms > 1 ~ "Itin\u00e9rant",
+          iti_km_voyage/dms > 40 ~ "Itin\u00e9rant",
           TRUE ~ other_cat
         )
     )
@@ -177,15 +209,17 @@ correct_spor_lois <- function(data){
                     .data$categorie == "Loisir" & .data$categorie_visuelle_cycliste =="Sportif"
     ) %>%
     dplyr::mutate(
-      autre_activite = !is.na(.data$activites) & .data$activites != "Aucune",
+      autre_activite = .data$activites_aucune == 0,
       ## VAE definition might change in future version of Methodology
-      vae = !is.na(.data$nb_vae) & .data$nb_vae == .data$nb_total_velo
+      vae = .data$nb_vae == .data$nb_total_velo
     ) %>%
     dplyr::mutate(
       categorie_corrige = dplyr::case_when(
-        is.na(km_sortie) ~ "Loisir",
-        km_sortie > 50 & autre_activite == FALSE & vae == FALSE ~ "Sportif",
-        TRUE ~ "Loisir")
+        vae ~ "Loisir",
+        km_sortie > 50 & !autre_activite  ~ "Sportif",
+        km_sortie > 50 & autre_activite ~ "Loisir",
+        km_sortie <= 50 ~ "Loisir",
+        TRUE ~ NA_character_)
     )
 
   data %>%
@@ -213,10 +247,14 @@ correct_util_lois <- function(data){
                     .data$categorie == "Loisir" & .data$categorie_visuelle_cycliste == "Utilitaire"
     ) %>%
     dplyr::mutate(
+      no_activity = is.na(.data$activites) | .data$activites_aucune == 1
+    ) %>%
+    dplyr::mutate(
       categorie_corrige = dplyr::case_when(
-        is.na(activite_motiv) ~ categorie_visuelle_cycliste,
+        no_activity ~ categorie,
         stringr::str_detect(activite_motiv, "but") ~ "Utilitaire",
-        TRUE ~"Loisir"
+        stringr::str_detect(activite_motiv, "occasion") ~ "Loisir",
+        TRUE ~ NA_character_
       ))
   ## Update rows
   data %>%
@@ -240,26 +278,29 @@ correct_util_lois <- function(data){
 #' @export
 correct_util_sport <- function(data){
   # Cas 5
+  # https://github.com/JMPivette/evavelo/issues/48
   cas_5 <- data %>%
     dplyr::filter(.data$categorie == "Utilitaire" & .data$categorie_visuelle_cycliste =="Sportif") %>%
     dplyr::mutate(
       categorie_corrige =
         dplyr::case_when(
-          km_sortie <= 30 & type_trajet == "Aller-retour" ~ "Utilitaire",
+          is.na(km_sortie) ~ NA_character_,
+          km_sortie <= 30 & (is.na(type_trajet) | type_trajet == "Aller-retour") ~ "Utilitaire",
           TRUE ~ "Sportif"
         )
     ) %>%
     dplyr::select(.data$id_quest, .data$categorie_corrige)
 
   # Cas 8
+  # https://github.com/JMPivette/evavelo/issues/50
   cas_8 <- data %>%
     dplyr::filter(.data$categorie == "Sportif" & .data$categorie_visuelle_cycliste =="Utilitaire") %>%
     dplyr::mutate(vae = !is.na(.data$nb_vae) & .data$nb_vae == .data$nb_total_velo) %>%
     dplyr::mutate(
-      categorie_corrige = ifelse(
-        .data$km_sortie > 50 & .data$vae == FALSE,
-        "Sportif",
-        "Utilitaire"
+      categorie_corrige = dplyr::case_when(
+        .data$km_sortie > 50 & .data$vae == FALSE ~ "Sportif",
+        .data$km_sortie <= 50 | .data$vae == TRUE ~ "Utilitaire",
+        TRUE ~ NA_character_
       )
     ) %>%
     dplyr::select(.data$id_quest, .data$categorie_corrige)
@@ -276,7 +317,7 @@ correct_util_sport <- function(data){
 #'
 #' Internal function that calls is_iti_coherent
 #'
-#' data should have the following columns: dms, iti_km_voyage, iti_experience,
+#' data should have the following columns: iti_km_voyage, iti_experience,
 #' iti_depart_itineraire, iti_arrivee_itineraire,
 #' iti_depart_initial, iti_arrivee_final
 #'
@@ -292,43 +333,41 @@ add_coherence <- function(data,
   data %>%
     dplyr::mutate(
       ## check coherence of itinerant answers
-      !!col_name := is_iti_coherent(.data$dms, .data$iti_km_voyage, .data$iti_experience,
-                                    .data$iti_dep_iti_valide, .data$iti_arr_iti_valide,
-                                    .data$iti_depart_initial, .data$iti_arrivee_final)
+      !!col_name := is_iti_coherent(iti_km_voyage = .data$iti_km_voyage,
+                                    iti_experience = .data$iti_experience,
+                                    iti_dep_iti_valide = .data$iti_dep_iti_valide,
+                                    iti_arr_iti_valide = .data$iti_arr_iti_valide,
+                                    iti_depart_initial = .data$iti_depart_initial,
+                                    iti_arrivee_final = .data$iti_arrivee_final)
     )
 }
 
 #' Helper function to control "coherence" of specific "itinerance" answers:
 #'
 #'  https://github.com/JMPivette/evavelo/discussions/7
+#'  https://github.com/JMPivette/evavelo/issues/39
 #'
-#' @param dms numeric vector: 'duree moyenne de sejour'
 #' @param iti_km_voyage numeric vector
 #' @param iti_experience character vector
 #' @param iti_dep_iti_valide character vector
 #' @param iti_arr_iti_valide character vector
-#' @param ... other answers to iti_* questions
+#' @param iti_depart_initial character vector
+#' @param iti_arrivee_final character vector
 #'
 #' @return a boolean vector indicating if answer is coherent
-is_iti_coherent <- function (dms,
-                             iti_km_voyage,
+is_iti_coherent <- function (iti_km_voyage,
                              iti_experience,
                              iti_dep_iti_valide,
-                             iti_arr_iti_valide,...){
-  ## Check distance
-  coher_dist <-  iti_km_voyage/dms
-  coher_dist[is.na(coher_dist)] <- 0 # Remove NA
-  coher_dist <- coher_dist > 40
+                             iti_arr_iti_valide,
+                             iti_depart_initial,
+                             iti_arrivee_final){
 
-  ## Check iti_dep_iti_valide & iti_arr_iti_valide
-  coher_commune <- !is.na(iti_dep_iti_valide) & !is.na(iti_arr_iti_valide)
+  ## Check iti depart and arrivee
+  coher_commune <- (!is.na(iti_dep_iti_valide) | !is.na(iti_depart_initial)) &
+    (!is.na(iti_arr_iti_valide) | !is.na(iti_arrivee_final))
 
-  ## Check iti_other has all answers (no NAs)
-  #(We don't need iti_dep_iti_valide and iti_arr_iti_valide that are already tested)
-  coher_iti_other <- lapply(list(...), is.na)
-  coher_iti_other <- Reduce(`+`, coher_iti_other) == 0
   ## Check that we have at least 2 answers out of three
-  coher_2_3 <- ((!is.na(iti_km_voyage)) + coher_iti_other + (!is.na(iti_experience))) >= 2
+  coher_2_3 <- ((!is.na(iti_km_voyage)) + coher_commune + (!is.na(iti_experience))) >= 2
 
-  return(coher_dist | (coher_commune & coher_2_3))
+  return(coher_2_3)
 }
