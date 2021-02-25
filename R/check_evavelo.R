@@ -58,7 +58,7 @@ check_evavelo <- function(eva_data){
   }
 
   # Check values of categorie_visuelle_cycliste
-  wrong_cat <- setdiff(unique(eva_data$comptage$categorie_visuelle_cycliste),
+  wrong_cat <- dplyr::setdiff(unique(eva_data$comptage$categorie_visuelle_cycliste),
           c("Loisir","Sportif","Utilitaire","Itin\u00e9rant", NA))
   if (length(wrong_cat) != 0 ) {
     err <- TRUE
@@ -91,7 +91,7 @@ check_evavelo <- function(eva_data){
   log <- add_message_log(log, "V\u00e9rification de enquetes_post_traitement...")
 
   if (!all(enquete_colnames %in% names(eva_data$enquete))) {
-    not_present <- setdiff(enquete_colnames, names(eva_data$enquete))
+    not_present <- dplyr::setdiff(enquete_colnames, names(eva_data$enquete))
     err <- TRUE
     log <- add_message_log(log,
                            " ERREUR", paste(not_present, collapse = ", "),
@@ -114,7 +114,7 @@ check_evavelo <- function(eva_data){
   #Check variable names
   log <- add_message_log(log, "V\u00e9rification de calendrier...")
   if (!all(calendrier_colnames %in% names(eva_data$calendrier))) {
-    not_present <- setdiff(calendrier_colnames, names(eva_data$calendrier))
+    not_present <- dplyr::setdiff(calendrier_colnames, names(eva_data$calendrier))
     err <- TRUE
     log <- add_message_log(log,
                            " ERREUR", paste(not_present, collapse = ", "),
@@ -128,9 +128,9 @@ check_evavelo <- function(eva_data){
   # Find id_quest with no relationship
   enquete_id_quest <- radical_quest(eva_data$enquete$id_quest)%>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
     unique()
-  id_notin_enq <- setdiff(eva_data$comptage$id_quest,
+  id_notin_enq <- dplyr::setdiff(eva_data$comptage$id_quest,
                           c(enquete_id_quest, NA))
-  id_notin_compt <- setdiff(enquete_id_quest,
+  id_notin_compt <- dplyr::setdiff(enquete_id_quest,
                             c(eva_data$comptage$id_quest, NA))
   if(length(id_notin_compt) != 0){
     err <- TRUE
@@ -143,6 +143,15 @@ check_evavelo <- function(eva_data){
     log <- add_message_log(log,
                            " ERREUR: Les id_quest suivants sont absents de \'enquetes_post_traitement\':\n",
                            paste(id_notin_enq, collapse = ", "))
+  }
+  ## Check mismatch in in volume multiple questionnaire 3.1.5.2----------------------------
+  log <- add_message_log(log, "V\u00e9rification de volume_manuel et de taille_totale_groupe pour les questionnaires multiples...")
+  volume_mismatch_mult <- check_multiple_volume(eva_data)
+  if(nrow(volume_mismatch_mult) != 0){
+    err <- TRUE
+    log <- add_message_log(log,
+                           " ERREUR: Incoh\u00e9rence entre volume_manuel et taille_totale_groupe sur les questionnaires multiples suivants:\n",
+                           paste(volume_mismatch_mult$id_quest, collapse = ", "))
   }
 
   ## Check relationship with calendrier_sites-------------------------
@@ -231,4 +240,47 @@ log_in_x_not_in_y <- function(x, y, name_x, name_y) {
     )
   }
   log
+}
+
+#' Check volume abnomaly in multiple questionnaires
+#'
+#' This function basically compares volume_manuel from comptage to taille_totale_groupe from enquete.
+#' In case of multiple quest, volume_manuel should be the sum of taile_totale_groupe or its unique value.
+#' All other possibilities are outputs from this function
+#'
+#' @param eva_data an eva_data object containing enquete and comptage
+#'
+#' @return a data.frame containing id_quest sum_taille unique_taille and volume_manuel
+#'
+check_multiple_volume <- function(eva_data){
+  ## Detect multiple quest and compute key indicators based on taille_totale_groupe
+  mult_quest <- eva_data$enquete %>%
+    dplyr::select(.data$id_quest, .data$taille_totale_groupe) %>%
+    dplyr::group_by(id_quest_main = radical_quest(.data$id_quest)) %>%
+    dplyr::filter(dplyr::n()>1) %>%
+    dplyr::summarize(
+      sum_taille = sum(.data$taille_totale_groupe),
+      unique_taille = unique(.data$taille_totale_groupe),
+      .groups = "keep"
+    ) %>%
+    dplyr::mutate(
+      unique_taille = dplyr::case_when(dplyr::n() > 1 ~ NA_real_,
+                                       TRUE ~ unique_taille)
+    ) %>%
+    dplyr::distinct() %>%
+    dplyr::rename(id_quest = "id_quest_main") %>%
+    dplyr::left_join(
+      dplyr::select(eva_data$comptage,
+                    .data$id_quest, .data$volume_manuel),
+      by = "id_quest")
+
+  ## Keep only "abnormal cases":
+
+  quest_ok <- mult_quest %>%
+    dplyr::filter(volume_manuel == sum_taille | volume_manuel == unique_taille)
+
+  mult_quest %>%
+    dplyr::anti_join(quest_ok, by = "id_quest")
+
+
 }
