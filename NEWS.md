@@ -2,6 +2,8 @@
 
 - Add volume and `taille_groupe` check on multiple id_quest #53
 
+- Detects potential multiple answers #54
+
 # evavelo 0.5.0
 
 - User Interface improvement #33
