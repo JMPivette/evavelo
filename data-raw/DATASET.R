@@ -17,7 +17,7 @@ all_enquete_example <- read_evavelo(all_enquete_path)
 comptage_colnames <- c(
   "id_quest", "categorie_visuelle",
   "categorie_visuelle_cycliste", "categorie_breve",
-  "id_site_enq", "date_enq")
+  "id_site_enq", "date_enq", "volume_manuel")
 
 enquete_colnames <- c(
   "id_quest", "categorie", "categorie_corrige",
@@ -28,7 +28,7 @@ enquete_colnames <- c(
   "distance_domicile_enq", "distance_heb_enq","distance_dom_enq_reelle", "distance_heb_enq_reelle",
   "iti_dep_iti_valide", "iti_arr_iti_valide",
   "ville_heb_cog_lau", "ville_res_cog_lau",
-  "id_section_origine", "id_section_dest")
+  "id_section_origine", "id_section_dest", "taille_totale_groupe")
 
 calendrier_colnames <- c("id_site_enq", "date_enq")
 

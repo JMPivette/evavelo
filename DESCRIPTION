@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.5.0
+Version: 0.5.1
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
@@ -31,7 +31,8 @@ Imports:
     shinyWidgets,
     stats,
     stringr,
-    tidyr
+    tidyr,
+    utils
 Suggests: 
     here,
     knitr,

@@ -7,6 +7,8 @@ app_run <- function() {
   old <- options(shiny.autoload.r = FALSE)
   on.exit(options(old), add = TRUE)
 
+  addResourcePath('img', system.file('app/img', package = 'evavelo'))
+
   shiny::shinyApp(
     ui = app_ui,
     server = app_server
