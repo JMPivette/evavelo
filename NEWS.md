@@ -1,4 +1,4 @@
-# evavelo (development version)
+# evavelo 0.5.1
 
 - Add volume and `taille_groupe` check on multiple id_quest #53
 
