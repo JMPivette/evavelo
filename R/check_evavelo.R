@@ -300,7 +300,7 @@ check_multiple_volume <- function(eva_data){
 #' Will group identical answers to a series of text answers
 #' And then will confirm with the similarity of numeric responses (km_sortie, heure_enq)
 #'
-#' @param enquete
+#' @param enquete enquete data.frame obtained with `read_enquete()`
 #'
 #' @return a data.frame with one columns enq_list containing potential similar answers
 

@@ -7,7 +7,7 @@
 check_similar_enquete(enquete)
 }
 \arguments{
-\item{enquete}{}
+\item{enquete}{enquete data.frame obtained with `read_enquete()`}
 }
 \value{
 a data.frame with one columns enq_list containing potential similar answers
