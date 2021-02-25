@@ -33,9 +33,9 @@ app_ui <- function(request) {
                     href="https://www.velo-territoires.org/resource/eva-velo/",
                     target="_blank"),
             br(),
-            "Version EVA-Scan: ", packageDescription("evavelo")$Version,
+            "Version EVA-Scan: ", utils::packageDescription("evavelo")$Version,
             tags$a(" (code) ",
-                   href = packageDescription("evavelo")$URL,
+                   href = utils::packageDescription("evavelo")$URL,
                    target = "_blank")),
         ),
         mainPanel(mod_show_log_ui("show_log_ui_1"))

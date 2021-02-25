@@ -31,7 +31,8 @@ Imports:
     shinyWidgets,
     stats,
     stringr,
-    tidyr
+    tidyr,
+    utils
 Suggests: 
     here,
     knitr,
