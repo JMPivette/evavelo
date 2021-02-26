@@ -107,6 +107,7 @@ read_enquete <- function(file, init = FALSE) {
     dplyr::mutate(
       date_enq = openxlsx::convertToDate(.data$date_enq),
       heure_enq = as.integer(.data$heure_enq),
+      revenu = as.numeric(revenu),
       id_quest = as.character(.data$id_quest),
       dms = dplyr::if_else(.data$dms != 0,.data$dms, NA_real_) ## Fix issue #44 when dms = 0
     ) %>%
