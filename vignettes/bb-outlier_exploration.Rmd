@@ -21,17 +21,25 @@ options(tibble.print_min = 20)
 ```
 
 ```{r}
+#path <- here::here("../Data/01_Link_removed.xlsx")
+# eva_data <- evavelo::read_evavelo(path)
+# saveRDS(eva_data, "full_data.Rds")
+
 ## Loading example data
-eva_data <- evavelo:::evavelo_example
+# eva_data <- evavelo:::evavelo_example
+enquete <- readRDS("../full_data.Rds")$enquete %>% 
+  as_tibble()
+  
+
 ```
 Eva-Scan:
 Document de travail sur la détection d'anomalies pour différentes valeurs numériques.
 
-Analyse d'un fichier type '02_simplified.xlsx'
+Analyse d'un fichier type '01_full_data.xlsx'
 
 ## km_sortie (3.1.14)
 
-L'idee est de sortir le premier et le dernier decile pour qu'ils puissent être analysés.
+L'idee est de sortir le premier et le dernier centile pour qu'ils puissent être analysés.
 Le regroupement se fait par catégorie de cyclistes.
 
 Je rajoute une méthode classique de 1.5 x intervalle interquantile car il est demandé de comparer par rapport à la médiane dans la méthodologie:
@@ -39,7 +47,7 @@ Je rajoute une méthode classique de 1.5 x intervalle interquantile car il est d
 ```{r}
 
 ## Attention, penser à utiliser categorie_corrige dans le traitement réel
-data_km <- eva_data$enquete %>% 
+data_km <- enquete %>% 
   select(id_quest, km_sortie, 
          categorie) %>% 
   filter(!is.na(km_sortie))
@@ -47,22 +55,25 @@ data_km <- eva_data$enquete %>%
 # Verification de quantiles
 data_km %>% 
   group_by(categorie) %>% 
-  summarize(p10 = quantile(km_sortie, 0.1),
-            p25 = quantile(km_sortie, 0.25),
-            P75 = quantile(km_sortie, 0.75),
-            p90 = quantile(km_sortie, 0.9),
-            med = median(km_sortie),
-            n = n() )
+  summarize(
+    p01 = quantile(km_sortie, 0.01),
+    p10 = quantile(km_sortie, 0.1),
+    p25 = quantile(km_sortie, 0.25),
+    P75 = quantile(km_sortie, 0.75),
+    p90 = quantile(km_sortie, 0.9),
+    p99 = quantile(km_sortie, 0.99),
+    med = median(km_sortie),
+    n = n() )
 
 ## First approach with percentile
-### First decile
+### First centile
 data_km %>% 
   group_by(categorie) %>% 
-  filter(km_sortie < quantile(km_sortie, 0.1))
-### Last decile
+  filter(km_sortie < quantile(km_sortie, 0.01))
+### Last centile
 data_km %>% 
   group_by(categorie) %>% 
-  filter(km_sortie > quantile(km_sortie, 0.9))
+  filter(km_sortie > quantile(km_sortie, 0.99))
 
 ## IQR approach
 data_km %>% 
@@ -75,35 +86,41 @@ data_km %>%
 
 ## dms  (3.1.17)
 
-Meme type d'approche avec la detection du permier et dernier decile. Par contre cette fois le groupement peut se faire par categorie et par mode_heb_regroupe.
+Meme type d'approche avec la detection du permier et dernier decile. 
+TODO: Le regroupement doit se faire par mode_heb_regroupe. Si jamais un groupe est > 200 réponses, on peut le subdiviser ensuite en categorie_corrige.
 
-Je teste les 2 types de regroupements:
+Il faudra aussi détecter les valeurs <1 et ==365
+
+
 
 ### Regroupement par categorie
 
 ```{r}
-data_dms <- eva_data$enquete %>% 
+data_dms <- enquete %>% 
   select(id_quest, dms, 
-         categorie, mode_heb_regroupe) %>% 
+         categorie, mode_heb_regroupe, mode_heb_regroupe2) %>% 
   filter(!is.na(dms)) %>% 
   group_by(categorie)
 
 # Verification de quantiles
 data_dms %>% 
-  summarize(p10 = quantile(dms, 0.1),
-            p25 = quantile(dms, 0.25),
-            P75 = quantile(dms, 0.75),
-            p90 = quantile(dms, 0.9),
-            med = median(dms),
-            n = n())
+  summarize(
+    p01 = quantile(dms, 0.01),
+    p10 = quantile(dms, 0.1),
+    p25 = quantile(dms, 0.25),
+    P75 = quantile(dms, 0.75),
+    p90 = quantile(dms, 0.9),
+    p99 = quantile(dms, 0.99),
+    med = median(dms),
+    n = n() )
 
 ## Grouping by category
 ### First approach with percentile
 data_dms %>% 
-  filter(dms < quantile(dms, 0.1))
+  filter(dms < quantile(dms, 0.01))
 
 data_dms %>% 
-  filter(dms > quantile(dms, 0.9))
+  filter(dms > quantile(dms, 0.99))
 
 ### IQR approach
 data_dms %>% 
@@ -120,19 +137,57 @@ data_dms_heb <- data_dms %>%
 
 # Verification de quantiles
 data_dms_heb %>% 
-  summarize(p10 = quantile(dms, 0.1),
-            p25 = quantile(dms, 0.25),
-            P75 = quantile(dms, 0.75),
-            p90 = quantile(dms, 0.9),
-            med = median(dms),
-            n = n())
+  summarize(
+    p01 = quantile(dms, 0.01),
+    p10 = quantile(dms, 0.1),
+    p25 = quantile(dms, 0.25),
+    P75 = quantile(dms, 0.75),
+    p90 = quantile(dms, 0.9),
+    p99 = quantile(dms, 0.99),
+    med = median(dms),
+    n = n() )
 
 ### First approach with percentile
 data_dms_heb %>% 
-  filter(dms < quantile(dms, 0.1))
+  filter(dms < quantile(dms, 0.01))
 
 data_dms_heb %>% 
-  filter(dms > quantile(dms, 0.9))
+  filter(dms > quantile(dms, 0.99))
+
+### IQR approach
+data_dms_heb %>% 
+  filter(dms < quantile(dms, 0.25) - 1.5 * IQR(dms) |
+           dms > quantile(dms, 0.75) + 1.5 * IQR(dms))
+
+
+```
+### Regroupement par mode_heb_regroupe
+
+
+ 
+```{r}
+## Grouping by mode_heb_regroupe
+data_dms_heb <- data_dms %>% 
+  group_by(mode_heb_regroupe)
+
+# Verification de quantiles
+data_dms_heb %>% 
+  summarize(
+    p01 = quantile(dms, 0.01),
+    p10 = quantile(dms, 0.1),
+    p25 = quantile(dms, 0.25),
+    P75 = quantile(dms, 0.75),
+    p90 = quantile(dms, 0.9),
+    p99 = quantile(dms, 0.99),
+    med = median(dms),
+    n = n() )
+
+### First approach with percentile
+data_dms_heb %>% 
+  filter(dms < quantile(dms, 0.01))
+
+data_dms_heb %>% 
+  filter(dms > quantile(dms, 0.99))
 
 ### IQR approach
 data_dms_heb %>% 
@@ -142,31 +197,33 @@ data_dms_heb %>%
 
 ```
 
-
 ##  revenu (3.1.33)
 
 Signaler les premier et dernier decile de revenu
 
 ```{r}
-data_revenu <- eva_data$enquete %>% 
+data_revenu <- enquete %>% 
   select(id_quest, revenu) %>% 
   filter(!is.na(revenu))
 
 data_revenu %>% 
-  summarize(p10 = quantile(revenu, 0.1),
-            p25 = quantile(revenu, 0.25),
-            P75 = quantile(revenu, 0.75),
-            p90 = quantile(revenu, 0.9),
-            med = median(revenu),
-            n = n())
+  summarize(
+    p01 = quantile(revenu, 0.01),
+    p10 = quantile(revenu, 0.1),
+    p25 = quantile(revenu, 0.25),
+    P75 = quantile(revenu, 0.75),
+    p90 = quantile(revenu, 0.9),
+    p99 = quantile(revenu, 0.99),
+    med = median(revenu),
+    n = n() )
 
 
 ## First approach with percentile
 data_revenu %>% 
-  filter(revenu < quantile(revenu, 0.1))
+  filter(revenu < quantile(revenu, 0.01))
 
 data_revenu %>% 
-  filter(revenu > quantile(revenu, 0.9))
+  filter(revenu > quantile(revenu, 0.99))
 
 ## IQR approach
 data_revenu %>% 
@@ -178,8 +235,10 @@ data_revenu %>%
 
 Mon fichier d'exemple ne comporte que des coûts de type [tour_dep_heb] mais le code ci-dessous fonctionne avec plusieurs type de dépenses 
 
+TODO: grouper par categorie sauf pour transport et hebergement
+
 ```{r}
-data_depense <- eva_data$enquete %>% 
+data_depense <- enquete %>% 
   select(id_quest, 
          starts_with("tour_dep_"),
          - ends_with("corrige"),
@@ -192,19 +251,22 @@ data_depense <- eva_data$enquete %>%
 
 data_depense %>% 
   group_by(depense) %>% 
-  summarise(p10 = quantile(valeur, 0.1),
-            p25 = quantile(valeur, 0.25),
-            P75 = quantile(valeur, 0.75),
-            p90 = quantile(valeur, 0.9),
-            med = median(valeur),
-            n = n())
+  summarize(
+    p01 = quantile(valeur, 0.01),
+    p10 = quantile(valeur, 0.1),
+    p25 = quantile(valeur, 0.25),
+    P75 = quantile(valeur, 0.75),
+    p90 = quantile(valeur, 0.9),
+    p99 = quantile(valeur, 0.99),
+    med = median(valeur),
+    n = n() )
 
 ## First approach with percentile
 data_depense %>% 
-  filter(valeur < quantile(valeur, 0.1))
+  filter(valeur < quantile(valeur, 0.01))
 
 data_depense %>% 
-  filter(valeur > quantile(valeur, 0.9))
+  filter(valeur > quantile(valeur, 0.99))
 
 ## IQR approach
 data_depense %>% 
