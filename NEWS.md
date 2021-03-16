@@ -1,3 +1,7 @@
+# evavelo (development version)
+
+- Exploratory analysis on outliers #33
+
 # evavelo 0.5.1
 
 - Add volume and `taille_groupe` check on multiple id_quest #53
