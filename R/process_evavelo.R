@@ -12,8 +12,11 @@
 process_evavelo <- function(file,
                             check = TRUE){
   ## Import data
-  if(!is.evadata(file))
+  if(is.evadata(file) == FALSE)
     file <- read_evavelo(file)
+  if(attr(file, "geocoded") == FALSE)
+    file <- geocode_evavelo(file)
+
   ## Check values
   if (check == TRUE){
     check_result <- check_evavelo(file)
