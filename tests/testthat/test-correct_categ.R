@@ -1,4 +1,4 @@
-library(dplyr)
+# library(dplyr)
 # Test Global function ------------------------------------------------------------------------
 
 test_that("wrong column names gives an error", {
@@ -21,9 +21,9 @@ test_that("wrong column names gives an error", {
   ## Warning if categorie_corrige are different in the same group
   enquete_modified <- evavelo_example$enquete %>%
     mutate(
-      activite_motiv = if_else(id_quest == "106aA16-2",
-                               "Cette activité est le but de ma randonnée", # Will change from Loisir to Utilitaire
-                               activite_motiv))
+      activite_motiv = dplyr::if_else(id_quest == "106aA16-2",
+                                      "Cette activité est le but de ma randonnée", # Will change from Loisir to Utilitaire
+                                      activite_motiv))
 
   expect_warning(correct_categ(comptage = evavelo_example$comptage,
                                enquete = enquete_modified),

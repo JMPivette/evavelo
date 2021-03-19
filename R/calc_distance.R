@@ -12,6 +12,9 @@
 #'
 calc_distance <- function(eva_data){
 
+  if(attr(eva_data, "geocoded") == FALSE)
+    stop("Cannot calculate distance on evadata that is not geocoded")
+
   enquete <- eva_data$enquete
 
   ## Update COG values-------------------------
