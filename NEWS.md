@@ -1,6 +1,8 @@
 # evavelo (development version)
 
-- Exploratory analysis on outliers #33
+- Add check_num_oultiers() function (#34)
+
+- Exploratory analysis on outliers #34
 
 # evavelo 0.5.1
 
