@@ -74,12 +74,12 @@ mod_check_file_server <- function(input, output, session, r){
                     "--------------------------------------------\n")
     if(is.null(r$processed)){
       r$log <- paste0(r$log,
-                      "Utilisation de 'categorie_corrige' du fichier xlsx\n",
-                      "Si vous voulez calculer 'categorie_corrige', cliquez sur 'Traiter Fichier' avant de faire ce traitement\n")
+                      "Utilisation de \'categorie_corrige\' du fichier xlsx\n",
+                      "Si vous voulez calculer \'categorie_corrige\', cliquez sur \'Traiter Fichier\' avant de faire ce traitement\n")
     } else {
       r$log <- paste0(r$log,
-                      "Utilisation de 'categorie_corrige' recalculé lors du traitement du fichier\n",
-                      "Si vous voulez utiliser 'categorie_corrige' du fichier xlsx, rechargez le dans l'application.\n")
+                      "Utilisation de \'categorie_corrige\' recalcul\u00e9 lors du traitement du fichier\n",
+                      "Si vous voulez utiliser \'categorie_corrige\' du fichier xlsx, rechargez le dans l\'application.\n")
     }
 
     tryCatch(

@@ -64,7 +64,7 @@ check_similar_enquete <- function(enquete){
     log <- paste0(log, "Les questionnaires suivants sont peut-\u00eatre multiples:\n\t",
                   paste0(simil_enq$enq_list, collapse = "\n\t"))
   } else {
-    log <- paste0(log, "Aucun questionnaire mutiple détecté \n")
+    log <- paste0(log, "Aucun questionnaire mutiple d\u00e9tect\u00e9 \n")
   }
 
 
