@@ -19,7 +19,6 @@ mod_download_result_ui <- function(id){
       downloadButton(ns("download_full"), "T\u00e9l\u00e9charger le fichier entier (experimental)")
     ),
     br(),br(),
-    downloadButton(ns("download_logs"), "T\u00e9l\u00e9charger les logs")
   )
 }
 
@@ -30,14 +29,14 @@ mod_download_result_server <- function(input, output, session, r){
   ns <- session$ns
 
   output$download_light <- downloadHandler(
-    filename = function() r$filename,
+    filename = function() paste0(r$filename, "_scan.xlsx"),
     content = function(file) {
       openxlsx::write.xlsx(r$processed, file)
     }
   )
 
   output$download_full <- downloadHandler(
-    filename = function() r$filename,
+    filename = function() paste0(r$filename, "_scan.xlsx"),
     content = function(file) {
       sendSweetAlert(
         session = session,
@@ -51,14 +50,6 @@ mod_download_result_server <- function(input, output, session, r){
       closeSweetAlert()
     }
   )
-
-  output$download_logs <- downloadHandler(
-    filename = "log.txt",
-    content = function(file) {
-      cat(r$log, file = file)
-    }
-  )
-
 
   observeEvent(r$processed,{
     if(is.null(r$processed)){

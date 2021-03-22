@@ -16,7 +16,10 @@ mod_show_log_ui <- function(id){
   ns <- NS(id)
   tagList(
     verbatimTextOutput(ns("file_name")) %>%
-      withSpinner()
+      withSpinner(),
+    br(),
+    downloadButton(ns("download_logs"), "T\u00e9l\u00e9charger les logs"),
+    actionButton(ns("clear_logs"), "Effacer les logs", icon = icon("broom"))
   )
 }
 
@@ -26,8 +29,19 @@ mod_show_log_ui <- function(id){
 mod_show_log_server <- function(input, output, session, r){
   ns <- session$ns
 
+  output$download_logs <- downloadHandler(
+    filename = "log.txt",
+    content = function(file) {
+      cat(r$log, file = file)
+    }
+  )
+
   ## Display logs on screen
   output$file_name <- renderText(r$log)
+
+  observeEvent(input$clear_logs,{
+    r$log <- NULL
+  })
 
 }
 

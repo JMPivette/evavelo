@@ -1,5 +1,7 @@
 # evavelo (development version)
 
+- Improve UI to separate each treatment
+
 - Add check_num_oultiers() function (#34)
 
 - Exploratory analysis on outliers #34
