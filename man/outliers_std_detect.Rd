@@ -4,13 +4,7 @@
 \alias{outliers_std_detect}
 \title{Standard detection of outliers}
 \usage{
-outliers_std_detect(
-  .data,
-  variable,
-  col_name = outlier_reason,
-  filter = TRUE,
-  k = 1.5
-)
+outliers_std_detect(.data, variable, col_name = raison, filter = TRUE, k = 1.5)
 }
 \arguments{
 \item{.data}{a tibble. if grouped, the analysis will be done per group}
