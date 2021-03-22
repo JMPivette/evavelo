@@ -37,14 +37,12 @@ enquete <- readRDS("full_data.Rds")$enquete %>%
   
 
 ```
-Eva-Scan:
-Document de travail sur la détection d'anomalies pour différentes valeurs numériques.
+
+Eva-Scan: Document de travail sur la détection d'anomalies pour différentes valeurs numériques.
 
 Analyse d'un fichier type **'01_full_data.xlsx'**
 
 ## km_sortie (3.1.14)
-
-
 
 ```{r}
 
@@ -68,8 +66,7 @@ data_km %>%
     n = n() )
 ```
 
-L'idee est de sortir le premier et le dernier centile pour qu'ils puissent être analysés.
-Le regroupement se fait par catégorie de cyclistes.
+L'idee est de sortir le premier et le dernier centile pour qu'ils puissent être analysés. Le regroupement se fait par catégorie de cyclistes.
 
 Je rajoute une méthode classique de 1.5 x intervalle interquantile car il est demandé de comparer par rapport à la médiane dans la méthodologie:
 
@@ -92,17 +89,13 @@ data_km %>%
 
 ```
 
+## dms (3.1.17)
 
+Meme type d'approche avec la detection du permier et dernier decile.
 
-## dms  (3.1.17)
-
-Meme type d'approche avec la detection du permier et dernier decile. 
-
-La différence maeure concerne le mode regroupement. Le regroupement se fait par mode_heb_regroupe. Si jamais un groupe est > 200 réponses, on le subdivise ensuite en categorie_corrige_corrige (et on regroupe ensemble les catégories avec moins de 50 réponses)
-.
+La différence maeure concerne le mode regroupement. Le regroupement se fait par mode_heb_regroupe. Si jamais un groupe est \> 200 réponses, on le subdivise ensuite en categorie_corrige_corrige (et on regroupe ensemble les catégories avec moins de 50 réponses) .
 
 Les valeurs de dms inférieur à 1 ou égale à 365 sont aussi considérées comme des anomalies
-
 
 ```{r}
 data_dms <- enquete %>% 
@@ -165,9 +158,9 @@ data_dms %>%
            dms > quantile(dms, 0.75) + 1.5 * IQR(dms))
 ```
 
-##  revenu (3.1.33)
+## revenu (3.1.33)
 
-Signaler les premier et dernier decile de revenu
+Pas de groupement dans les calculs d'outlier sur les revenu. On prend juste l'ensemble des réponses.
 
 ```{r}
 data_revenu <- enquete %>% 
@@ -201,19 +194,17 @@ data_revenu %>%
            revenu > quantile(revenu, 0.75) + 1.5 * IQR(revenu))
 ```
 
-
 ## depense [tour_dep_xxx] (3.1.26)
 
+### Groupées par categorie_corrige
 
-### depense groupées par categorie
-Pour les detections d'anomalies sur les dépenses, le groupement catégorie sauf pour les cas spécifiques TO, transport et heberement.
-Attention, ces données sont vides dans mon fichier template.
+Pour les detections d'anomalies sur les dépenses, le groupement se fait par catégorie_corrige sauf pour les cas spécifiques TO, transport et hebergement. Attention, ces données sont vides dans mon fichier template.
 
 ```{r}
-dep_to_analyse_later <- c("tour_dep_to_jour", #2
-                          "tour_dep_heb", ## Different treatment #3
-                          "tour_dep_transp" #4
-                          )
+# dep_to_analyse_later <- c("tour_dep_to_jour", #2
+#                           "tour_dep_heb", ## Different treatment #3
+#                           "tour_dep_transp" #4
+#                           )
 
 dep_to_analyse <- c("tour_dep_alim",
                     "tour_dep_activites",
@@ -258,10 +249,9 @@ data_depense %>%
            valeur > quantile(valeur, 0.75) + 1.5 * IQR(valeur))
 ```
 
+### Groupées par mode d'hebergement
 
-### depense groupées par  mode d'hergement 
-
-Ces dépenses sont groupées par mode d'hebergement:  **tour_dep_to_jour (3.1.26.2)** et **tour_dep_heb (3.1.26.3)**
+Ces dépenses sont groupées par mode d'hebergement et non par categorie_corrige: **[tour_dep_to_jour] (3.1.26.2)** et **[tour_dep_heb] (3.1.26.3)**
 
 ```{r}
 data_depense <- enquete %>% 
@@ -302,20 +292,30 @@ data_depense %>%
            valeur > quantile(valeur, 0.75) + 1.5 * IQR(valeur))
 
 ```
- 
-### depenses transport [tour_dep_transp] (3.1.26.4)
-Le chapitre 3.1.26.4 inque plutôt des corrections et non des contrôles sur **[tour_dep_transp]**
-Par certain de ce qu'il faut vérifier.
+
+### [tour_dep_transp] (3.1.26.4)
+
+Le chapitre 3.1.26.4 indique plutôt des corrections et non des contrôles sur **[tour_dep_transp]** .Le groupement se fait par mode de transport. Les combinaisons sont multiples, je ne garde les catégories que s'il y a plus de 100 réponses. Les reste est classé en other.
+
+Malheureusement mon fichier type ne contient pas de dépenses de transport.
+
+Partie non intégrée dans le package. Methodologie à vérifier: (<https://github.com/JMPivette/evavelo/discussions/59>)
 
 ```{r}
 data_dep_transp <- enquete %>% 
   select(id_quest,
          mode_transp_jour, dist_transp_jour, distance_dom_enq_reelle, 
-         tour_dep_transp)
+         tour_dep_transp) %>% 
+  group_by(mode_transp_jour)
 
 data_dep_transp %>% 
-  count(mode_trans_jour)
+  count(mode_transp_jour)
 
+data_dep_transp %>% 
+  mutate(mode_transp_lump = case_when(
+    n() > 100 ~ mode_transp_jour,
+    TRUE ~ "Other"
+  )) %>% 
+  count(mode_transp_lump)
 
 ```
-
