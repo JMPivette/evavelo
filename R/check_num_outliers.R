@@ -48,12 +48,12 @@ check_num_outliers <- function(evadata,
     dplyr::group_by(.data$mode_heb_regroupe, .data$categorie_lump) %>%
     outliers_std_detect(.data$dms, filter = FALSE) %>%
     dplyr::mutate(
-      outlier_reason = dplyr::case_when(
+      raison = dplyr::case_when(
         .data$dms < 1 ~ "< 1",
         .data$dms == 365 ~ "= 365",
-        TRUE ~ outlier_reason)
+        TRUE ~ raison)
     ) %>%
-    dplyr::filter(!is.na(.data$outlier_reason)) %>%
+    dplyr::filter(!is.na(.data$raison)) %>%
     dplyr::relocate(.data$categorie_lump, .before = .data$dms)
 
 
@@ -122,7 +122,7 @@ check_num_outliers <- function(evadata,
 
 outliers_std_detect <- function(.data,
                                 variable,
-                                col_name = outlier_reason,
+                                col_name = raison,
                                 filter = TRUE,
                                 k = 1.5){
   v <- rlang::enquo(variable)
@@ -131,8 +131,8 @@ outliers_std_detect <- function(.data,
 
   .data %>%
     mutate({{col_name}} := dplyr::case_when(
-      !!v < quantile(!!v, 0.01) ~ "first centile",
-      !!v > quantile(!!v, 0.99) ~ 'last centile',
+      !!v < quantile(!!v, 0.01) ~ "premier centile",
+      !!v > quantile(!!v, 0.99) ~ 'dernier centile',
       !!v < quantile(!!v, 0.25) - k * IQR(!!v) |
         !!v > quantile(!!v, 0.75) + k * IQR(!!v) ~ paste(k,"x IQR")
     )) %>%
