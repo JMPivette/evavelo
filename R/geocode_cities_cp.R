@@ -66,7 +66,7 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
     dplyr::bind_cols(.data, .)
 
   ## Checking wrong results and propose an alternative in warnings-------------------
-  message("\n...Verification de ",
+  message("\n...V\u00e9rification de ",
           city_col_name, ".............")
   anomaly_to_check <- city_list_cp %>%
     filter(!is.na(!!city_col)) %>%
@@ -171,7 +171,7 @@ check_warn_cities_cp <- function(data){
 
 
   if(nrow(wrong_with_proposal) != 0){
-    message("Les villes suivantes ont ete ignorees. Propositions de corrections:",
+    message("Les villes suivantes ont ete ignor\u00e9es. Propositions de corrections:",
             paste0("\n\t",wrong_with_proposal$city," (", wrong_with_proposal$postcode,") -> \t",
                    wrong_with_proposal$result_label, " (",wrong_with_proposal$result_postcode, ")"))
   }
