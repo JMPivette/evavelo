@@ -16,3 +16,4 @@ a list of data.frames
 This function will look at each element of the list y name (not by position) and will cbind the one with the same names
 It returns one list with names of all the input lists
 }
+\keyword{internal}

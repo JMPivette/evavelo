@@ -10,6 +10,9 @@ usethis::use_vignette("ba-using_package")
 usethis::use_coverage()
 
 usethis::use_news_md()
+## Pkgdown
+usethis::use_pkgdown()
+usethis::use_github_action("pkgdown")
 
 # Document functions and dependencies
 ##attachment::att_to_description()
@@ -28,6 +31,8 @@ usethis::use_version()
 ## Pull Requests
 # Create a PR
 usethis::pr_push()
-
 # After PR approval to clean locally.
 usethis::pr_finish()
+
+# Run to build the website
+pkgdown::build_site()

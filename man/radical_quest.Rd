@@ -16,3 +16,4 @@ a character vector the same size of `id_quest` without suffix
 In a case of multiple id_quest for the same groups, they wil be named "ABC-01", "ABC-02", etc..
 This function removes the suffix and keep only "ABC" in this example.
 }
+\keyword{internal}

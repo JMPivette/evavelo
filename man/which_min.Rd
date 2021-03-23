@@ -15,3 +15,4 @@ an integer vector with position of minimum value
 \description{
 An improved version of base R which.min that returns NA is all are Nas (instead of empty integer)
 }
+\keyword{internal}
