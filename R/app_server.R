@@ -13,6 +13,8 @@ app_server <- function( input, output, session ) {
   callModule(mod_load_file_server, "load_file_ui_1", r = r)
   callModule(mod_download_result_server, "download_result_ui_1", r = r)
   callModule(mod_show_log_server, "show_log_ui_1", r = r)
+  callModule(mod_check_file_server, "check_file_ui_1", r = r)
+  callModule(mod_process_file_server, "process_file_ui_1", r = r)
 
   observeEvent(input$browser, {
     browser()

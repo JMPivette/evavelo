@@ -1,3 +1,13 @@
+# evavelo 0.6.0
+
+- Add find_wrong_geocoding() to export all the cities that couldn't be geocoded.
+
+- Improve UI to separate each treatment
+
+- Add check_num_oultiers() function (#34)
+
+- Exploratory analysis on outliers #34
+
 # evavelo 0.5.1
 
 - Add volume and `taille_groupe` check on multiple id_quest #53

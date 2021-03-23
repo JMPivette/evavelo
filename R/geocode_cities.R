@@ -21,7 +21,7 @@ geocode_cities <- function(.data, city_col){
   result <- geocode_df_cities(.data, !!city_col)
 
   ## Warning  and errors -----------------------------------------------
-  message("\n...Verification de ",
+  message("\n...V\u00e9rification de ",
           city_col_name, ".............")
   errors <- result %>%
     dplyr::filter(is.na(.data$result_lat) & !is.na(!!city_col)) %>%
@@ -43,7 +43,7 @@ geocode_cities <- function(.data, city_col){
             paste("\n\t",errors))
 
   if(nrow(replaced_to_check) != 0)
-    message("Interpretation de communes mal nommees:",
+    message("Interpretation de communes mal nomm\u00e9es:",
             paste0("\n\t",replaced_to_check$city, " -> ",
                    replaced_to_check$result_name, " (",
                    replaced_to_check$result_cog, ") ")

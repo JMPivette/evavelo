@@ -9,8 +9,6 @@
 #' @export
 
 read_evavelo <- function(file){
-  message("V\u00e9rification des noms de communes")
-  message("---------------------------------")
   out <- list(
     calendrier = read_calendrier(file),
     table_communes = read_table_communes(file),
@@ -21,6 +19,7 @@ read_evavelo <- function(file){
   )
 
   class(out) <- c("evadata", class(out))
+  attr(out, "geocoded") <- FALSE
   out
 
 }
@@ -39,8 +38,8 @@ read_table_communes <- function(file, sheet = "table_communes"){
   openxlsx::read.xlsx(file,
                       sheet,
                       startRow = 2) %>%  # We skip the first row that contains global information and not data.
-    janitor::clean_names() %>%
-    geocode_table_communes()
+    janitor::clean_names()
+    # geocode_table_communes()
 
 }
 
@@ -107,6 +106,7 @@ read_enquete <- function(file, init = FALSE) {
     dplyr::mutate(
       date_enq = openxlsx::convertToDate(.data$date_enq),
       heure_enq = as.integer(.data$heure_enq),
+      revenu = as.numeric(revenu),
       id_quest = as.character(.data$id_quest),
       dms = dplyr::if_else(.data$dms != 0,.data$dms, NA_real_) ## Fix issue #44 when dms = 0
     ) %>%
@@ -119,16 +119,16 @@ read_enquete <- function(file, init = FALSE) {
     )
 
 
-  if(init == FALSE){ ## check cities and add columns
-    enquete <- enquete %>%
-      geocode_cities(ville_heb) %>%
-      geocode_cities(iti_depart_itineraire) %>%
-      geocode_cities(iti_arrivee_itineraire) %>%
-      geocode_cities(nom_site_enq) %>%
-      geocode_cities_cp(ville_res,
-                        cp_col = cp_res,
-                        country_col = pays_res)
-  }
+  # if(init == FALSE){ ## check cities and add columns
+  #   enquete <- enquete %>%
+  #     geocode_cities(ville_heb) %>%
+  #     geocode_cities(iti_depart_itineraire) %>%
+  #     geocode_cities(iti_arrivee_itineraire) %>%
+  #     geocode_cities(nom_site_enq) %>%
+  #     geocode_cities_cp(ville_res,
+  #                       cp_col = cp_res,
+  #                       country_col = pays_res)
+  # }
 
   enquete
 

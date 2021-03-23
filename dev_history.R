@@ -23,3 +23,11 @@ covr::codecov()
 
 #Update version
 usethis::use_version()
+
+
+## Pull Requests
+# Create a PR
+usethis::pr_push()
+
+# After PR approval to clean locally.
+usethis::pr_finish()

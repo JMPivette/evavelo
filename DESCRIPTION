@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.5.1
+Version: 0.6.0
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
@@ -13,7 +13,7 @@ License: MIT + file LICENSE
 URL: https://github.com/JMPivette/evavelo
 BugReports: https://github.com/JMPivette/evavelo/issues
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
 Imports: 
     banR,
     bslib,
@@ -34,7 +34,6 @@ Imports:
     tidyr,
     utils
 Suggests: 
-    here,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),

@@ -9,3 +9,4 @@
 ^data-raw$
 ^inst/example-local/
 ^.github/
+^localRmd/
