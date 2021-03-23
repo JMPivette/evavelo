@@ -29,7 +29,7 @@ app_ui <- function(request) {
           h3("Scan"),
           mod_check_file_ui("check_file_ui_1"),
           br(), br(),
-          h3("Process"),
+          h3("Traitement"),
           mod_process_file_ui("process_file_ui_1"),
           br(),br(),
           mod_download_result_ui("download_result_ui_1"),

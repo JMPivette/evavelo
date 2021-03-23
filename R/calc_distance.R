@@ -18,6 +18,7 @@ calc_distance <- function(eva_data, max_dist = 30){
   if(attr(eva_data, "geocoded") == FALSE)
     stop("Cannot calculate distance on evadata that is not geocoded")
 
+  message("Calcul des distances...")
   enquete <- eva_data$enquete
 
   ## Update COG values-------------------------
@@ -54,11 +55,11 @@ calc_distance <- function(eva_data, max_dist = 30){
     dplyr::left_join(select(enquete,
                             .data$id_quest, .data$iti_depart_itineraire),
                      by = "id_quest") %>%
-    dplyr::transmute(excluded = paste0(.data$iti_depart_itineraire, " (",.data$id_quest,"):"))
+    dplyr::transmute(excluded = paste0(.data$iti_depart_itineraire, " (",.data$id_quest,")"))
   if(nrow(excluded_dep) !=0)
     message(
       "Les villes de d\u00e9part d\'itin\u00e9raire suivantes sont trop \u00e9loign\u00e9es de l\'itin\u00e9raire (>",
-      max_dist,"km)\n\t",
+      max_dist,"km):\n\t",
       paste0(excluded_dep$excluded), collapse = "\n\t"
       )
 
@@ -89,11 +90,11 @@ calc_distance <- function(eva_data, max_dist = 30){
     dplyr::left_join(select(enquete,
                             .data$id_quest, .data$iti_arrivee_itineraire),
                      by = "id_quest") %>%
-    dplyr::transmute(excluded = paste0(.data$iti_arrivee_itineraire, " (",.data$id_quest,"):"))
+    dplyr::transmute(excluded = paste0(.data$iti_arrivee_itineraire, " (",.data$id_quest,")"))
   if(nrow(excluded_arr) !=0)
     message(
       "Les villes d\'arriv\u00e9e d\'itin\u00e9raire suivantes sont trop \u00e9loign\u00e9es de l\'itin\u00e9raire (>",
-      max_dist,"km)\n\t",
+      max_dist,"km):\n\t",
       paste0(excluded_arr$excluded), collapse = "\n\t"
       )
 

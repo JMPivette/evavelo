@@ -11,7 +11,7 @@
 mod_process_file_ui <- function(id){
   ns <- NS(id)
   tagList(
-    actionButton(ns("process_file"), "Process file")
+    actionButton(ns("process_file"), "Traiter fichier")
 
   )
 }
@@ -28,11 +28,13 @@ mod_process_file_server <- function(input, output, session, r){
       sendSweetAlert(
         session = session,
         title = "Fichier incorrect",
-        text = "Le fichier a rencontr\u00e9 des erreurs lors de l\'\u00e9tape de validation",
+        text = "Le fichier a rencontr\u00e9 des erreurs lors de l\'\u00e9tape de v\u00e9rification",
         type = "error"
       )
     } else {
-      r$log <- paste(r$log, "\n\n Traitement du fichier...\n")
+      r$log <- paste0(r$log,
+                      "\n\n Traitement du fichier...\n",
+                      "------------------------------\n")
       check_to_do <- is.null(r$file_checked) ## In case File check hasn't been done previously
       tryCatch(
         {

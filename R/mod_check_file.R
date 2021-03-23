@@ -11,16 +11,24 @@
 mod_check_file_ui <- function(id){
   ns <- NS(id)
   tagList(
+    ## Style icons
+    tags$style(".fa-check-circle {color:#008000; font-size: 26px}"),
+    tags$style(".fa-times-circle {color:#800000; font-size: 26px}"),
+
+
     shinyjs::useShinyjs(),
-    actionButton(ns("check_file"), "V\u00e9rifier Fichier"),br(),
-    br(),
-    actionButton(ns("check_quest_multiple"), "Chercher questionnaires multiples"),br(),
-    shinyjs::hidden(downloadLink(ns("download_mult_quest"), "T\u00e9l\u00e9charger questionnaires multiples")),
-    br(),
-    actionButton(ns("check_geocode"), "G\u00e9ocodage des villes"),
+    actionButton(ns("check_file"), "V\u00e9rifier Fichier"),
+    shinyjs::hidden(icon("check-circle", id = ns("check_valid_icon"))),
+    shinyjs::hidden(icon("times-circle", id = ns("check_error_icon"))),
+    br(), br(),
+    actionButton(ns("check_quest_multiple"), "Chercher questionnaires multiples"),
+    shinyjs::hidden(downloadLink(ns("download_mult_quest"), "Questionnaires multiples")),
     br(),br(),
-    actionButton(ns("check_outliers"), "Chercher valeurs num\u00e9riques anormales"),br(),
-    shinyjs::hidden(downloadLink(ns("download_outliers"), "T\u00e9l\u00e9charger valeurs anormales")),
+    actionButton(ns("check_geocode"), "G\u00e9ocodage des villes"),
+    shinyjs::hidden(downloadLink(ns("download_wrong_geo"), "Erreurs de g\u00e9ocodage")),
+    br(),br(),
+    actionButton(ns("check_outliers"), "Chercher valeurs num\u00e9riques anormales"),
+    shinyjs::hidden(downloadLink(ns("download_outliers"), "Valeurs anormales")),
   )
 }
 
@@ -30,7 +38,7 @@ mod_check_file_ui <- function(id){
 mod_check_file_server <- function(input, output, session, r){
   ns <- session$ns
 
-# Observer on action buttons ------------------------------------------------------------------
+  # Observer on action buttons ------------------------------------------------------------------
 
 
   observeEvent(input$check_file, {
@@ -83,10 +91,10 @@ mod_check_file_server <- function(input, output, session, r){
     }
 
     tryCatch(
-      {browser()
+      {
         r$num_outliers <- check_num_outliers(r$eva_data,
                                              categorie_corrige = r$processed$enquetes_post_traitement$categorie_corrige)
-        r$log <- paste0(r$log, "Valeurs num\u00e9riques anormales disponible au t\u00e9l\u00e9chargement!\n")
+        r$log <- paste0(r$log, "Valeurs num\u00e9riques anormales disponibles au t\u00e9l\u00e9chargement!\n")
         #shinyjs::show("download_outliers")
       },
       error = function(e){
@@ -127,7 +135,7 @@ mod_check_file_server <- function(input, output, session, r){
   })
 
 
-# Hide/Show downloads link --------------------------------------------------------------------
+  # Hide/Show downloads link and icons--------------------------------------------------------------------
 
   observeEvent(r$mult_quest,{
     if(is.null(r$mult_quest))
@@ -145,22 +153,51 @@ mod_check_file_server <- function(input, output, session, r){
   },
   ignoreNULL = FALSE)
 
+  observeEvent(r$eva_data,{
+    if(attr(r$eva_data, "geocoded") == FALSE)
+      shinyjs::hide("download_wrong_geo")
+    else
+      shinyjs::show("download_wrong_geo")
+  })
 
-# Download Handlers ---------------------------------------------------------------------------
+  observeEvent(r$file_checked, {
+    if(is.null(r$file_checked)){
+      shinyjs::hide("check_valid_icon")
+      shinyjs::hide("check_error_icon")
+    } else if (r$file_checked){
+      shinyjs::show("check_valid_icon")
+      shinyjs::hide("check_error_icon")
+    } else {
+      shinyjs::hide("check_valid_icon")
+      shinyjs::show("check_error_icon")
+    }
+  },
+  ignoreNULL = FALSE)
 
-output$download_mult_quest <- downloadHandler(
-  filename = function() paste0(r$filename, "_mult_quest.xlsx"),
-  content = function(file){
-    openxlsx::write.xlsx(r$mult_quest, file)
-  }
-)
 
-output$download_outliers <- downloadHandler(
-  filename = function() paste0(r$filename, "_anomaly.xlsx"),
-  content = function(file){
-    openxlsx::write.xlsx(r$num_outliers, file)
-  }
-)
+  # Download Handlers ---------------------------------------------------------------------------
+
+  output$download_mult_quest <- downloadHandler(
+    filename = function() paste0(r$filename, "_mult_quest.xlsx"),
+    content = function(file){
+      openxlsx::write.xlsx(r$mult_quest, file)
+    }
+  )
+
+  output$download_outliers <- downloadHandler(
+    filename = function() paste0(r$filename, "_anomaly.xlsx"),
+    content = function(file){
+      openxlsx::write.xlsx(r$num_outliers, file)
+    }
+  )
+
+  output$download_wrong_geo <- downloadHandler(
+    filename = function() paste0(r$filename, "_geo_error.xlsx"),
+    content = function(file){
+      openxlsx::write.xlsx(find_wrong_geocoding(r$eva_data),
+                           file)
+    }
+  )
 
 }
 
