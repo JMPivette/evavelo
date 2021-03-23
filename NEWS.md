@@ -1,3 +1,5 @@
+# evavelo (development version)
+
 # evavelo 0.6.0
 
 - Add find_wrong_geocoding() to export all the cities that couldn't be geocoded.
