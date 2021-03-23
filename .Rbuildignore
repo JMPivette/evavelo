@@ -9,5 +9,4 @@
 ^data-raw$
 ^inst/example-local/
 ^.github/
-^vignettes/bb
-^vignettes/rsconnect/
+^localRmd/
