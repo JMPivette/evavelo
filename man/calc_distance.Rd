@@ -4,10 +4,12 @@
 \alias{calc_distance}
 \title{Computes distance (3.1.19-3.1.21)}
 \usage{
-calc_distance(eva_data)
+calc_distance(eva_data, max_dist = 30)
 }
 \arguments{
 \item{eva_data}{an evadata object obtained using evavelo::read_evavelo()}
+
+\item{max_dist}{distances greater than this value in kilometers will be discarded when looking for iti_dep_iti and iti_arr_iti and result will have NAs}
 }
 \value{
 a list of data.frames with modified columns from the original xlsx file

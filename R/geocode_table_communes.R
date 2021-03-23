@@ -38,7 +38,7 @@ geocode_table_communes <- function(table_communes){
 
   message("...V\u00e9rification de table_communes.............")
   if(nrow(old_cities) != 0){
-    message("Les communes suivantes n\'existent plus et doivent etre remplacees par les communes nouvelles:",
+    message("Les communes suivantes n\'existent plus et doivent etre remplac\u00e9es par les communes nouvelles:",
             paste0("\n\t",old_cities$nom_commune,"(", old_cities$cog,") -> ",
                    old_cities$result_city, "(",old_cities$result_citycode, ")"))
   }
@@ -49,7 +49,7 @@ geocode_table_communes <- function(table_communes){
                      by = names(wrong_result))
 
   if(nrow(other_cities) != 0){
-    message("Impossible de reconnaitre les communes suivantes:\n\t",
+    message("Impossible de reconna\u00eetre les communes suivantes:",
             paste0("\n\t",other_cities$nom_commune,"(", other_cities$cog, ")"))
   }
 

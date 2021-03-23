@@ -43,7 +43,7 @@ geocode_cities <- function(.data, city_col){
             paste("\n\t",errors))
 
   if(nrow(replaced_to_check) != 0)
-    message("Interpretation de communes mal nommees:",
+    message("Interpretation de communes mal nomm\u00e9es:",
             paste0("\n\t",replaced_to_check$city, " -> ",
                    replaced_to_check$result_name, " (",
                    replaced_to_check$result_cog, ") ")

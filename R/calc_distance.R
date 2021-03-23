@@ -6,11 +6,14 @@
 #' * Fill  iti_dep_iti_valide and iti_arr_iti_valide with the closest city on itinary
 #' * Compute distances distance_domicile_enq distance_dom_enq_reelle distance_heb_enq and distance_heb_enq_reelle
 #' @param eva_data an evadata object obtained using evavelo::read_evavelo()
+#' @param max_dist distances greater than this value in kilometers will be discarded when looking for iti_dep_iti and iti_arr_iti and result will have NAs
 #'
 #' @return a list of data.frames with modified columns from the original xlsx file
 #' @export
 #'
-calc_distance <- function(eva_data){
+calc_distance <- function(eva_data, max_dist = 30){
+
+
 
   if(attr(eva_data, "geocoded") == FALSE)
     stop("Cannot calculate distance on evadata that is not geocoded")
@@ -23,7 +26,7 @@ calc_distance <- function(eva_data){
     ville_res_cog_lau = .data$ville_res_cog
   )
 
- ##Remplir les champs [iti_dep_iti_valide] et [iti_arr_iti_valide] avec la ville d'itinéraire la plus proche----------------------
+  ##Remplir les champs [iti_dep_iti_valide] et [iti_arr_iti_valide] avec la ville d'itinéraire la plus proche----------------------
 
   iti_depart <- enquete %>%
     tidyr::drop_na(.data$iti_depart_itineraire_lon, .data$iti_depart_itineraire_lat) %>%
@@ -35,7 +38,7 @@ calc_distance <- function(eva_data){
         lon_b = eva_data$table_communes$longitude,
         lat_b = eva_data$table_communes$latitude,
         id_b = eva_data$table_communes$nom_commune,
-      )
+        max_dist = max_dist)
     ) %>%
     dplyr::left_join(
       select(eva_data$table_communes,
@@ -45,6 +48,19 @@ calc_distance <- function(eva_data){
     dplyr::rename(
       id_section_origine = .data$id_section
     )
+  ## message on iti_dep too far from iti
+  excluded_dep <- iti_depart %>%
+    dplyr::filter(is.na(.data$iti_dep_iti_valide)) %>%
+    dplyr::left_join(select(enquete,
+                            .data$id_quest, .data$iti_depart_itineraire),
+                     by = "id_quest") %>%
+    dplyr::transmute(excluded = paste0(.data$iti_depart_itineraire, " (",.data$id_quest,"):"))
+  if(nrow(excluded_dep) !=0)
+    message(
+      "Les villes de d\u00e9part d\'itin\u00e9raire suivantes sont trop \u00e9loign\u00e9es de l\'itin\u00e9raire (>",
+      max_dist,"km)\n\t",
+      paste0(excluded_dep$excluded), collapse = "\n\t"
+      )
 
   iti_arrivee <- enquete %>%
     tidyr::drop_na(.data$iti_arrivee_itineraire_lon, .data$iti_arrivee_itineraire_lat) %>%
@@ -56,7 +72,7 @@ calc_distance <- function(eva_data){
         lon_b = eva_data$table_communes$longitude,
         lat_b = eva_data$table_communes$latitude,
         id_b = eva_data$table_communes$nom_commune,
-      )
+        max_dist = max_dist)
     ) %>%
     dplyr::left_join(
       select(eva_data$table_communes,
@@ -67,6 +83,19 @@ calc_distance <- function(eva_data){
       id_section_dest = .data$id_section
     )
 
+  ## message on iti_arr too far from iti
+  excluded_arr <- iti_arrivee %>%
+    dplyr::filter(is.na(.data$iti_arr_iti_valide)) %>%
+    dplyr::left_join(select(enquete,
+                            .data$id_quest, .data$iti_arrivee_itineraire),
+                     by = "id_quest") %>%
+    dplyr::transmute(excluded = paste0(.data$iti_arrivee_itineraire, " (",.data$id_quest,"):"))
+  if(nrow(excluded_arr) !=0)
+    message(
+      "Les villes d\'arriv\u00e9e d\'itin\u00e9raire suivantes sont trop \u00e9loign\u00e9es de l\'itin\u00e9raire (>",
+      max_dist,"km)\n\t",
+      paste0(excluded_arr$excluded), collapse = "\n\t"
+      )
 
   ## Compute distance from Point_enquete---------------------
   dist_point_enq <- enquete %>%
