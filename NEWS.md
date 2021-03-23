@@ -1,5 +1,7 @@
 # evavelo (development version)
 
+- Add find_wrong_geocoding() to export all the cities that couldn't be geocoded.
+
 - Improve UI to separate each treatment
 
 - Add check_num_oultiers() function (#34)
