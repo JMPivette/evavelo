@@ -22,3 +22,4 @@ data should have the following columns: iti_km_voyage, iti_experience,
 iti_depart_itineraire, iti_arrivee_itineraire,
 iti_depart_initial, iti_arrivee_final
 }
+\keyword{internal}

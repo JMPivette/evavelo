@@ -24,3 +24,4 @@ NA returns NA ansd not cities starting with "na"
 Messages are not displayed when there is no error.
 input.data is not altered even if contains special characters. Column order is also preserved
 }
+\keyword{internal}

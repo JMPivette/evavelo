@@ -21,3 +21,4 @@ a log message with the differences between data.frames
 \description{
 Check correctness of id_site_enq and date_enq between 2 data.frames
 }
+\keyword{internal}

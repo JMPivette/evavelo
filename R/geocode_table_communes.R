@@ -9,7 +9,7 @@
 #' @return a data.frame similar to table_communes with latitude and longitude added.
 #' @importFrom rlang .data
 #'
-#' @export
+#' @keywords internal
 #'
 
 geocode_table_communes <- function(table_communes){

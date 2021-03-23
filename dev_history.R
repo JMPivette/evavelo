@@ -34,5 +34,7 @@ usethis::pr_push()
 # After PR approval to clean locally.
 usethis::pr_finish()
 
-# Run to build the website
+# Run to build the website localy
 pkgdown::build_site()
+# Run to update on github pages
+pkgdown::deploy_to_branch

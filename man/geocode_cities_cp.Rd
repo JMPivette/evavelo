@@ -23,3 +23,4 @@ the input data.frame with 3 new columns with a name based on city_col (_lat, _lo
 Since there is a postcode information, this function is stricter than geo_code_cities()
 mispleeing or wrong postcode are not taken in account but an informative warning is created.
 }
+\keyword{internal}

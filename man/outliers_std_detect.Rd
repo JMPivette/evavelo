@@ -24,3 +24,4 @@ If FALSE, the number of rows in the output will be the same as .data.}
 \description{
 Internal function that detects first centile, last centile and IQR per group
 }
+\keyword{internal}

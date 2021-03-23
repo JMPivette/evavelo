@@ -74,6 +74,7 @@ find_wrong_geocoding <- function(data){
 #' @param fields_to_keep fields that will be exported along with var_name
 #'
 #' @return a data.frame with cities that couldn't be geocoded
+#' @keywords internal
 
 find_wrong_cities <- function(var_name, enquete, fields_to_keep = "id_quest"){
   cog <- paste0(var_name, "_cog")

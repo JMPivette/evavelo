@@ -207,6 +207,7 @@ add_message_log <- function(log, ...){
 #' @importFrom rlang .data
 #'
 #' @return a log message with the differences between data.frames
+#' @keywords internal
 
 check_diff <- function(a, b, name_a = NULL, name_b = NULL) {
   # Deal with missing names
@@ -236,6 +237,7 @@ check_diff <- function(a, b, name_a = NULL, name_b = NULL) {
 #' @param name_y name of the df to be used in the log message.
 #'
 #' @return a string which logs the differences
+#' @keywords internal
 
 log_in_x_not_in_y <- function(x, y, name_x, name_y) {
   log <- character(0)
@@ -260,7 +262,7 @@ log_in_x_not_in_y <- function(x, y, name_x, name_y) {
 #' @param eva_data an eva_data object containing enquete and comptage
 #'
 #' @return a data.frame containing id_quest sum_taille unique_taille and volume_manuel
-#'
+#' @keywords internal
 check_multiple_volume <- function(eva_data){
   ## Detect multiple quest and compute key indicators based on taille_totale_groupe
   mult_quest <- eva_data$enquete %>%

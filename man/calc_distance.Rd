@@ -20,3 +20,4 @@ This function does the following actions
 * Fill  iti_dep_iti_valide and iti_arr_iti_valide with the closest city on itinary
 * Compute distances distance_domicile_enq distance_dom_enq_reelle distance_heb_enq and distance_heb_enq_reelle
 }
+\keyword{internal}

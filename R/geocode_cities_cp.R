@@ -10,7 +10,7 @@
 #' @param country_col optional contry_col (to avoid geocoding non-french cities)
 #'
 #' @return the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
-#' @export
+#' @keywords internal
 #'
 
 geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
@@ -95,6 +95,7 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
 #' This data.frame is produced using banR::geocode_tbl()
 #'
 #' @return invisible(0)
+#' @keywords internal
 
 check_warn_cities_cp <- function(data){
 

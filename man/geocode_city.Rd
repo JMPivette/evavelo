@@ -21,3 +21,4 @@ wrapper around banR::geocode() but that limits to one result of type "municipali
 Contrary to geocode(), if there is no result or if the request is empty we still get a one row data.frame
 (that contains only Nas)
 }
+\keyword{internal}

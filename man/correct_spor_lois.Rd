@@ -18,3 +18,4 @@ In Chapter 3.1.11, this corresponds to cases 6 11
 \details{
 this function can be used inside pipe operator and is compatible with dplyr
 }
+\keyword{internal}
