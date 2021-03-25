@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read and process a eva-velo file — process_evavelo • evavelo</title>
+<title>Process an eva-velo file or evadata object — process_evavelo • evavelo</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Read and process a eva-velo file — process_evavelo" />
-<meta property="og:description" content="Read and process a eva-velo file" />
+<meta property="og:title" content="Process an eva-velo file or evadata object — process_evavelo" />
+<meta property="og:description" content="Process an eva-velo file or evadata object" />
 
 
 
@@ -126,13 +126,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read and process a eva-velo file</h1>
+    <h1>Process an eva-velo file or evadata object</h1>
     <small class="dont-index">Source: <a href='https://github.com/JMPivette/evavelo/blob/master/R/process_evavelo.R'><code>R/process_evavelo.R</code></a></small>
     <div class="hidden name"><code>process_evavelo.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Read and process a eva-velo file</p>
+    <p>Process an eva-velo file or evadata object</p>
     </div>
 
     <pre class="usage"><span class='fu'>process_evavelo</span><span class='op'>(</span><span class='va'>file</span>, check <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
@@ -153,7 +153,16 @@ This value can be set to FALSE if you already used check_evavelo() and don't wan
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a list of corrected categories</p>
+    <p>a list of data.frames with variables that have been changed</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function works with a lot of different `file` input. If an excel file is passed as input, this function will internally call `read_evavelo()` and `geocode_evavelo()`.
+An evadata object or even an already geocoded object can be used as an input.</p>
+<p>This function will do the followings</p><ul>
+<li><p>Compute distances between cities</p></li>
+<li><p>Compute categorie_corrige field</p></li>
+</ul>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

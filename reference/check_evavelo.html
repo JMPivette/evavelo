@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check input file correctness (Eva-velo) — check_evavelo • evavelo</title>
+<title>Check evadata object correctness — check_evavelo • evavelo</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Check input file correctness (Eva-velo) — check_evavelo" />
-<meta property="og:description" content="Check input file correctness (Eva-velo)" />
+<meta property="og:title" content="Check evadata object correctness — check_evavelo" />
+<meta property="og:description" content="Check evadata object correctness" />
 
 
 
@@ -126,13 +126,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check input file correctness (Eva-velo)</h1>
+    <h1>Check evadata object correctness</h1>
     <small class="dont-index">Source: <a href='https://github.com/JMPivette/evavelo/blob/master/R/check_evavelo.R'><code>R/check_evavelo.R</code></a></small>
     <div class="hidden name"><code>check_evavelo.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Check input file correctness (Eva-velo)</p>
+    <p>Check evadata object correctness</p>
     </div>
 
     <pre class="usage"><span class='fu'>check_evavelo</span><span class='op'>(</span><span class='va'>eva_data</span><span class='op'>)</span></pre>
@@ -142,13 +142,16 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>eva_data</th>
-      <td><p>a named list of data.frames obtained with read_evavelo()</p></td>
+      <td><p>a named list of data.frames (evadata object) obtained with read_evavelo()</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a list of two values: error (a boolean) and log (a string)</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function performs mandatory checks on the input data.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

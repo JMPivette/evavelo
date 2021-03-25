@@ -40,9 +40,7 @@
 
 
 <meta property="og:title" content="Detects similar response in enquete — check_similar_enquete" />
-<meta property="og:description" content="Try to detect multiple id_quest that were not tagged as
-Will group identical answers to a series of text answers
-And then will confirm with the similarity of numeric responses (km_sortie, heure_enq)" />
+<meta property="og:description" content="Try to detect multiple id_quest that were not tagged as multiple" />
 
 
 
@@ -134,9 +132,7 @@ And then will confirm with the similarity of numeric responses (km_sortie, heure
     </div>
 
     <div class="ref-description">
-    <p>Try to detect multiple id_quest that were not tagged as
-Will group identical answers to a series of text answers
-And then will confirm with the similarity of numeric responses (km_sortie, heure_enq)</p>
+    <p>Try to detect multiple id_quest that were not tagged as multiple</p>
     </div>
 
     <pre class="usage"><span class='fu'>check_similar_enquete</span><span class='op'>(</span><span class='va'>enquete</span><span class='op'>)</span></pre>
@@ -146,13 +142,17 @@ And then will confirm with the similarity of numeric responses (km_sortie, heure
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>enquete</th>
-      <td><p>enquete data.frame obtained with `read_enquete()`</p></td>
+      <td><p>enquete data.frame obtained which is part of an eva_data object.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a data.frame with one columns enq_list containing potential similar answers</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Will group identical answers to a series of text answers</p>
+<p>And then will confirm with the similarity of numeric responses (km_sortie, heure_enq)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
