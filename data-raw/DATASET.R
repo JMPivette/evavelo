@@ -21,7 +21,8 @@ comptage_colnames <- c(
   "id_site_enq", "date_enq", "volume_manuel")
 
 enquete_colnames <- c(
-  "id_quest", "categorie", "categorie_corrige",
+  "id_quest", "id_site_enq", "date_enq",
+  "categorie", "categorie_corrige",
   "type_sortie", "dms", "km_sortie", "type_trajet",
   "nb_vae", "nb_total_velo", "activites", "activite_motiv", "activites_aucune","id_site_enq", "date_enq",
   "iti_km_voyage", "iti_depart_initial", "iti_depart_itineraire", "iti_arrivee_itineraire",
@@ -30,7 +31,10 @@ enquete_colnames <- c(
   "mode_transp_jour", "dist_transp_jour",
   "iti_dep_iti_valide", "iti_arr_iti_valide",
   "ville_heb_cog_lau", "ville_res_cog_lau",
-  "id_section_origine", "id_section_dest", "taille_totale_groupe")
+  "id_section_origine", "id_section_dest", "taille_totale_groupe",
+  "mode_heb_regroupe", "revenu",
+  "tour_dep_alim", "tour_dep_activites", "tour_dep_souvenirs", "tour_dep_location", "tour_dep_autres",
+  "tour_dep_to_jour", "tour_dep_heb")
 
 calendrier_colnames <- c("id_site_enq", "date_enq")
 
