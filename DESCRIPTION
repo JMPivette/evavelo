@@ -10,7 +10,8 @@ Description: Applique differents traitement automatique en lien avec la
     methode EVA-VELO (Methode nationale pour l'evaluation des retombées
     des veloroutes).
 License: MIT + file LICENSE
-URL: https://github.com/JMPivette/evavelo
+URL: https://jmpivette.github.io/evavelo/,
+    https://github.com/JMPivette/evavelo
 BugReports: https://github.com/JMPivette/evavelo/issues
 Depends: 
     R (>= 3.5.0)
