@@ -2,7 +2,7 @@
 % Please edit documentation in R/geocode_evavelo.R
 \name{geocode_evavelo}
 \alias{geocode_evavelo}
-\title{Geocode a eva_data object}
+\title{Geocode an eva_data object}
 \usage{
 geocode_evavelo(data)
 }
@@ -10,8 +10,8 @@ geocode_evavelo(data)
 \item{data}{an evadata object obtained with read_evavelo() or an xlsx file, Workbook object or URL to xlsx file}
 }
 \value{
-a geocoded eva_data object
+a geocoded evadata object
 }
 \description{
-Geocode a eva_data object
+Geocode an eva_data object
 }

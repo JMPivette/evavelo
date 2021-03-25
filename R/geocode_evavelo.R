@@ -1,8 +1,8 @@
-#' Geocode a eva_data object
+#' Geocode an evadata object
 #'
 #' @param data an evadata object obtained with read_evavelo() or an xlsx file, Workbook object or URL to xlsx file
 #'
-#' @return a geocoded eva_data object
+#' @return a geocoded evadata object
 #' @export
 
 geocode_evavelo <- function(data){

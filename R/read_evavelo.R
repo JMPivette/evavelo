@@ -5,7 +5,7 @@
 #' @param file xlsx file, Workbook object or URL to xlsx file
 #'
 #'
-#' @return a list of data.frames
+#' @return an evadata object which is in fact a list of data.frames
 #' @export
 
 read_evavelo <- function(file){

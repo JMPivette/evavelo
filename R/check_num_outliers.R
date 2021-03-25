@@ -1,6 +1,6 @@
 #' Search for outliers in numeric values
 #'
-#' @param evadata an evafata object obtained with read_eva_velo()
+#' @param evadata an evadata object obtained with read_eva_velo()
 #' @param categorie_corrige optional vector of categorie_corrige. Must be the same size as the number of rows in evadata$enquete.
 #' To be used if we want to use different categorie_corrige than the one stored in evadata
 #'

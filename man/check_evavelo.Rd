@@ -2,16 +2,19 @@
 % Please edit documentation in R/check_evavelo.R
 \name{check_evavelo}
 \alias{check_evavelo}
-\title{Check input file correctness (Eva-velo)}
+\title{Check evadata object correctness}
 \usage{
 check_evavelo(eva_data)
 }
 \arguments{
-\item{eva_data}{a named list of data.frames obtained with read_evavelo()}
+\item{eva_data}{a named list of data.frames (evadata object) obtained with read_evavelo()}
 }
 \value{
 a list of two values: error (a boolean) and log (a string)
 }
 \description{
-Check input file correctness (Eva-velo)
+Check evadata object correctness
+}
+\details{
+This function performs mandatory checks on the input data.
 }

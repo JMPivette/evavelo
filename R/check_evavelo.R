@@ -1,8 +1,12 @@
-#' Check input file correctness (Eva-velo)
+#' Check evadata object correctness
 #'
-#' @param eva_data a named list of data.frames obtained with read_evavelo()
+#' @param eva_data a named list of data.frames (evadata object) obtained with read_evavelo()
 #'
 #' @return a list of two values: error (a boolean) and log (a string)
+#'
+#' @details
+#'
+#' This function performs mandatory checks on the input data.
 #'
 #' @importFrom rlang .data
 #' @export
