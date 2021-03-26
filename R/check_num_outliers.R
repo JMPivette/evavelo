@@ -99,11 +99,41 @@ check_num_outliers <- function(evadata,
     dplyr::group_by(.data$depense, .data$mode_heb_regroupe) %>%
     outliers_std_detect(.data$valeur)
 
+  ## Depense tour_dep_transp (3.1.26.4)
+  ## group by mode_transp_jour that have more than 100 answers
+  ## https://github.com/JMPivette/evavelo/discussions/59
+  tour_dep_transp <- enquete %>%
+    dplyr::select(.data$id_quest,
+           .data$mode_transp_jour,
+           .data$tour_dep_transp) %>%
+    dplyr::filter(!is.na(.data$tour_dep_transp) & .data$mode_transp_jour != "Aucun") %>%
+    dplyr::group_by(.data$mode_transp_jour) %>%
+    dplyr::mutate(mode_transp_lump = case_when(
+      n() > 100 ~ mode_transp_jour,
+      TRUE ~ "Other")
+    ) %>%
+    dplyr::group_by(.data$mode_transp_lump) %>%
+    outliers_std_detect(.data$tour_dep_transp)
+
+    ## Deal with case where 'Aucun' is selected but there is a tour_dep_transp value
+  tour_dep_transp_aucun <- enquete %>%
+    dplyr::select(.data$id_quest,
+           .data$mode_transp_jour,
+           .data$tour_dep_transp) %>%
+    dplyr::filter(mode_transp_jour == "Aucun") %>%
+    dplyr::filter(!is.na(tour_dep_transp) & tour_dep_transp != 0)
+
+  tour_dep_transp <- rbind(tour_dep_transp,
+                           tour_dep_transp_aucun)
+
+
+
   list(km_sortie = km_sortie,
        dms = dms,
        revenu = revenu,
        tour_dep_cat = tour_dep_cat,
-       tour_dep_heb = tour_dep_heb)
+       tour_dep_heb = tour_dep_heb,
+       tour_dep_transp = tour_dep_transp)
 
 }
 
