@@ -50,7 +50,7 @@ geocode_cities <- function(.data, city_col){
             )
   ## reformat output------------------------------------------
   result %>%
-    select(-.data$result_name, -.data$result_score) %>%
+    dplyr::select(-.data$result_name, -.data$result_score) %>%
     dplyr::rename_with(
       .fn = ~ paste0(city_col_name, "_",
                      stringr::str_sub(stringr::str_remove(.x, "^result_"),

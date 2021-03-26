@@ -23,7 +23,7 @@ geocode_df_cities <- function(.data,
   city_col_name <- rlang::as_name(city)
   ## Create a correspondance table----------------
   unique_cities <- .data %>%
-    mutate(# In case of logical values (all NAs for example)
+    dplyr::mutate(# In case of logical values (all NAs for example)
       !!city_col_name := dplyr::if_else(
         is.na(!!city),
         "",

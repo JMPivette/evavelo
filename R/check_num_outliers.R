@@ -95,7 +95,7 @@ check_num_outliers <- function(evadata,
     tidyr::pivot_longer(starts_with("tour_dep"),
                         names_to = "depense",
                         values_to = "valeur") %>%
-    filter(!is.na(.data$valeur)) %>%
+    dplyr::filter(!is.na(.data$valeur)) %>%
     dplyr::group_by(.data$depense, .data$mode_heb_regroupe) %>%
     outliers_std_detect(.data$valeur)
 
@@ -104,23 +104,24 @@ check_num_outliers <- function(evadata,
   ## https://github.com/JMPivette/evavelo/discussions/59
   tour_dep_transp <- enquete %>%
     dplyr::select(.data$id_quest,
-           .data$mode_transp_jour,
-           .data$tour_dep_transp) %>%
+                  .data$mode_transp_jour,
+                  .data$tour_dep_transp) %>%
     dplyr::filter(!is.na(.data$tour_dep_transp) & .data$mode_transp_jour != "Aucun") %>%
     dplyr::group_by(.data$mode_transp_jour) %>%
-    dplyr::mutate(mode_transp_lump = case_when(
-      n() > 100 ~ mode_transp_jour,
-      TRUE ~ "Other")
+    dplyr::mutate(
+      mode_transp_lump = dplyr::case_when(
+        dplyr::n() > 100 ~ mode_transp_jour,
+        TRUE ~ "Other")
     ) %>%
     dplyr::group_by(.data$mode_transp_lump) %>%
     outliers_std_detect(.data$tour_dep_transp)
 
-    ## Deal with case where 'Aucun' is selected but there is a tour_dep_transp value
+  ## Deal with case where 'Aucun' is selected but there is a tour_dep_transp value
   tour_dep_transp_aucun <- enquete %>%
     dplyr::select(.data$id_quest,
-           .data$mode_transp_jour,
-           .data$tour_dep_transp) %>%
-    dplyr::filter(mode_transp_jour == "Aucun") %>%
+                  .data$mode_transp_jour,
+                  .data$tour_dep_transp) %>%
+    dplyr::filter(.data$mode_transp_jour == "Aucun") %>%
     dplyr::filter(!is.na(tour_dep_transp) & tour_dep_transp != 0)
 
   tour_dep_transp <- rbind(tour_dep_transp,
@@ -161,11 +162,11 @@ outliers_std_detect <- function(.data,
   if(nrow(.data) == 0) return(.data)
 
   .data %>%
-    mutate({{col_name}} := dplyr::case_when(
+    dplyr::mutate({{col_name}} := dplyr::case_when(
       !!v < quantile(!!v, 0.01) ~ "premier centile",
       !!v > quantile(!!v, 0.99) ~ 'dernier centile',
       !!v < quantile(!!v, 0.25) - k * IQR(!!v) |
         !!v > quantile(!!v, 0.75) + k * IQR(!!v) ~ paste(k,"x IQR")
     )) %>%
-    {if(filter) filter(., !is.na(!!col_name)) else .}
+    {if(filter) dplyr::filter(., !is.na(!!col_name)) else .}
 }

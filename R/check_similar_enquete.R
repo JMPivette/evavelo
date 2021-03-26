@@ -59,15 +59,15 @@ check_similar_enquete <- function(enquete){
     dplyr::group_by(
       dplyr::across(dplyr::all_of(mand_variables_to_check))
     ) %>%
-    filter(dplyr::n()>1) %>% ## keep only identical answers in multiple lines
+    dplyr::filter(dplyr::n()>1) %>% ## keep only identical answers in multiple lines
     dplyr::summarise(enq_list = paste0(.data$id_quest, collapse = ", "),
                      res = keep_potential_duplicated(.data$nb_na,.data$heure_enq,
                                                      .data$age, .data$km_sortie, .data$ville_res),
                      ## Spot groups that were already identified
                      n_radical = length(unique(radical_quest(.data$id_quest)))) %>%
     dplyr::ungroup() %>%
-    filter(.data$res == TRUE & .data$n_radical > 1) %>%
-    select(.data$enq_list)
+    dplyr::filter(.data$res == TRUE & .data$n_radical > 1) %>%
+    dplyr::select(.data$enq_list)
 
   if(nrow(simil_enq) !=0){
     log <- paste0(log, "Les questionnaires suivants sont peut-\u00eatre multiples:\n\t",
