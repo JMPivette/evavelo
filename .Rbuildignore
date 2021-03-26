@@ -10,3 +10,7 @@
 ^inst/example-local/
 ^.github/
 ^localRmd/
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

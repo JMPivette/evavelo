@@ -5,7 +5,7 @@
 #' @param file xlsx file, Workbook object or URL to xlsx file
 #'
 #'
-#' @return a list of data.frames
+#' @return an evadata object which is in fact a list of data.frames
 #' @export
 
 read_evavelo <- function(file){
@@ -32,7 +32,7 @@ read_evavelo <- function(file){
 #' @param sheet Name of the worksheet containing "table_communes" information.
 #'
 #' @return a data.frame
-#' @export
+#' @keywords internal
 read_table_communes <- function(file, sheet = "table_communes"){
 
   openxlsx::read.xlsx(file,
@@ -55,7 +55,7 @@ read_table_communes <- function(file, sheet = "table_communes"){
 #' @importFrom rlang .data
 #'
 #' @return a data.frame
-#' @export
+#' @keywords internal
 read_comptage <- function(file, init = FALSE){
   sheet <- ifelse(init, "comptages_manuels", "comptages_man_post_traitements")
   comptage <- openxlsx::read.xlsx(file, sheet)
@@ -85,7 +85,7 @@ read_comptage <- function(file, init = FALSE){
 #' @importFrom rlang .data
 #'
 #' @return a data.frame
-#' @export
+#' @keywords internal
 read_enquete <- function(file, init = FALSE) {
   sheet <- ifelse(init, "enquetes_saisies", "enquetes_post_traitement")
   enquete <- openxlsx::read.xlsx(file, sheet)
@@ -118,18 +118,6 @@ read_enquete <- function(file, init = FALSE) {
       )
     )
 
-
-  # if(init == FALSE){ ## check cities and add columns
-  #   enquete <- enquete %>%
-  #     geocode_cities(ville_heb) %>%
-  #     geocode_cities(iti_depart_itineraire) %>%
-  #     geocode_cities(iti_arrivee_itineraire) %>%
-  #     geocode_cities(nom_site_enq) %>%
-  #     geocode_cities_cp(ville_res,
-  #                       cp_col = cp_res,
-  #                       country_col = pays_res)
-  # }
-
   enquete
 
 }
@@ -142,7 +130,7 @@ read_enquete <- function(file, init = FALSE) {
 #' @param sheet Name of the worksheet caontaining "calendrier" information.
 #'
 #' @return a data.frame
-#' @export
+#' @keywords internal
 read_calendrier <- function(file, sheet = "calendrier_sites"){
 
   calendrier <- openxlsx::read.xlsx(file,

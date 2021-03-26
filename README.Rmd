@@ -11,48 +11,82 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+options(tibble.print_min = 5, tibble.print_max = 5)
 ```
 
-# evavelo
+# Eva-Scan
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![Codecov test coverage](https://codecov.io/gh/JMPivette/evavelo/branch/master/graph/badge.svg)](https://codecov.io/gh/JMPivette/evavelo?branch=master)
+
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) [![Codecov test coverage](https://codecov.io/gh/JMPivette/evavelo/branch/master/graph/badge.svg)](https://codecov.io/gh/JMPivette/evavelo?branch=master)
+
 <!-- badges: end -->
 
-Le but du package {evavelo} est d'appliquer des traitements automatiques sur des fichiers d'enquêtes liés à la méthode EVA-VELO (Méthode nationale evaluation des retombées des vélo-routes) développée par **Vélo et Territoires**
+## Résumé
 
-## Utilisation
+Le but du package `evavelo` est d'appliquer des traitements automatiques sur des fichiers d'enquêtes liés à la méthode [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo) (Méthode nationale evaluation des retombées des vélo-routes) développée par **Vélo et Territoires**
 
-Ce projet est en cours de developpement et ne peut pas encore être utilisé.
+Ce projet est en cours de developpement et ne peut pas encore être utilisé. Il sera composé de fonctions de traitements de fichier mais aussi d'une interface web.
 
-Il sera composé de fonctions de traitements de fichier mais aussi d'une interface web.
+## Installation
 
-### Traitement enquête Eva-Velo
+```{r eval = FALSE}
+# Development version from GitHub
+# install.packages("devtools")
+devtools::install_github("JMPivette/evavelo")
+```
 
-La function principale `process_evavelo()` permet de traiter un fichier d'enquête xlsx avec la méthode Eva-Vélo.
 
-```{r}
+## Traitement d'enquête Eva-Velo
+
+La function principale `process_evavelo()` permet de traiter un fichier d'enquête xlsx avec la méthode Eva-Vélo. Cette function va notamment:
+
+-   Vérifier l'intégrité du fichier
+-   Remplir le champ `categorie_corrige`
+-   Calculer les différentes distances par rapport au point d'enquête
+-   Trouver les codes COG des communes de résidence et d'herbergement
+-   Remplir le champ `id_section_origine`
+
+```{r full_process, message=FALSE}
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 
-##eva_data <- evavelo::read_evavelo(xlsx_path)
+
 eva_data_processed <- evavelo::process_evavelo(xlsx_path)
+
 lapply(eva_data_processed, head)
 ```
 
+## Traitement étapes par étapes
 
-### Traitement étapes par étapes
-Il est possible de décomposer le traitement étapes par étapes:
+Il est possible de décomposer tous les traitement effectués par `process_evavelo()` étape par étape:
 
-```{r}
+### Lecture du fichier
+
+La fonction `read_evavelo()` permet de lire un fichier xlsx et de récupérer un objet avec toutes les informations intéressantes pour le traitement.
+
+```{r read}
 eva_data <- evavelo::read_evavelo(xlsx_path)
+```
 
+### Géocodage des villes
+
+La fonction `geocode_evavelo()` permet de modifier l'objet en géocodant les noms de communes
+
+```{r geocode}
 eva_data_geocoded <- evavelo::geocode_evavelo(eva_data)
 
-eva_data_processed <- evavelo::process_evavelo(eva_data_geocoded)
-
-lapply(eva_data_processed, head)
-
-
 ```
 
+### Process
+
+La fonction `process_evavelo()` que nous avons déjà utilisé sur un fichier Excel peut aussi être utilisée directement sur un objet géocodé avec `geocode_evavelo()`
+
+```{r process}
+eva_data_processed <- evavelo::process_evavelo(eva_data_geocoded)
+```
+
+## Interface Web
+
+La fonction `evavelo::app_run()` permet d'utiliser le package via une interface web: 
+
+![UI Screenshot](man/figures/eva-scan-ui.png?raw=true "Title")

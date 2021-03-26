@@ -20,3 +20,4 @@ the input data.frame with geocoding infomation.
 Equivalent to banR::geocode_tbl() but much slower (one API request per row)
 This function is used when we only want "municipality" as result type which is impossible with geocode_tbl().
 }
+\keyword{internal}

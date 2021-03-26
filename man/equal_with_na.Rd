@@ -19,3 +19,4 @@ This function is a variant of == that takes in account NAs.
 By default NA == NA returns FALSE in R
 With this fonction, NAs can be compared
 }
+\keyword{internal}

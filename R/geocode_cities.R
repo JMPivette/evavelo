@@ -9,7 +9,7 @@
 #' This value will also be used to name the new columns.
 #'
 #' @return the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
-#' @export
+#' @keywords internal
 #'
 
 geocode_cities <- function(.data, city_col){

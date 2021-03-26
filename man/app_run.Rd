@@ -2,10 +2,10 @@
 % Please edit documentation in R/app_run.R
 \name{app_run}
 \alias{app_run}
-\title{Run the Shiny Application}
+\title{Run a Web User Interface}
 \usage{
 app_run()
 }
 \description{
-Run the Shiny Application
+Run a Shiny application locally to analyse an xlsx file.
 }

@@ -21,3 +21,4 @@ This function compares 2 data.frames element_wise and returns a logical data.fra
 NA values are also compared (as opposed to base R `==`)
 Comparison is done columns by columns so both date.frames should be ordered.
 }
+\keyword{internal}

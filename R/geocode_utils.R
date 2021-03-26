@@ -15,6 +15,7 @@
 #'
 #' @return .data with additional columns named :
 #' result_name, result_cog, result_lat, result_lon, result_score
+#' @keywords internal
 #'
 geocode_df_cities <- function(.data,
                               city_col){
@@ -87,6 +88,7 @@ geocode_df_cities <- function(.data,
 #' @param score_limit results below this score will be ignored and replaced by NAs
 #'
 #' @return the input data.frame with geocoding infomation.
+#' @keywords internal
 
 geocode_row_by_row <- function(.data,
                                city_col,
@@ -137,6 +139,7 @@ geocode_row_by_row <- function(.data,
 #' @param score_limit results below this score will be ignored and replaced by NAs
 #'
 #' @return a one line data.frame
+#' @keywords internal
 
 geocode_city <- function(city_name, score_limit = 0.4){
 

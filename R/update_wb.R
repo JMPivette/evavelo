@@ -29,6 +29,7 @@ update_wb <- function(wb, data){
 #' @param sheet name of the sheet that needs to be updated
 #'
 #' @return invisible(0)
+#' @keywords internal
 
 update_ws <- function(wb, data, sheet){
   col_names <- openxlsx::readWorkbook(wb, sheet = sheet) %>%

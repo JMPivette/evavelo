@@ -4,6 +4,7 @@
 #'
 #' @param x a data.frame
 #' @param cols a columns names vector
+#' @keywords internal
 #'
 
 df_has_cols <- function(x, cols) {
@@ -25,6 +26,7 @@ df_has_cols <- function(x, cols) {
 #' @param id_quest a character vector of id_quest to modify
 #'
 #' @return a character vector the same size of `id_quest` without suffix
+#' @keywords internal
 
 radical_quest <- function(id_quest){
   stringr::str_remove(id_quest,
@@ -45,6 +47,7 @@ radical_quest <- function(id_quest){
 #' @param b a vector
 #'
 #' @return a boolean vector with element wise comparison
+#' @keywords internal
 #'
 equal_with_na <- function(a,b){
   result <- a == b
@@ -65,6 +68,7 @@ equal_with_na <- function(a,b){
 #' @param verbose boolean to add warning when there is a mismatch
 #'
 #' @return a logical data.frame
+#' @keywords internal
 #'
 df_compare <- function(x, y, verbose = TRUE) {
   compare_lgl <- purrr::map2_df(x, y, equal_with_na)
@@ -119,6 +123,7 @@ is.evadata <- function(x) inherits(x, "evadata")
 #' @param x numeric vector whose min is searched for
 #'
 #' @return an integer vector with position of minimum value
+#' @keywords internal
 which_min <- function(x){
   if(all(is.na(x)))
     NA_integer_
@@ -135,6 +140,7 @@ which_min <- function(x){
 #' @param ... several named lists of data.frames
 #'
 #' @return a list of data.frames
+#' @keywords internal
 #'
 bind_list_df <- function(...){
   lst_df <- list(...)

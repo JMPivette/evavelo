@@ -15,3 +15,4 @@ a vector the same size as dist with computed value
 \description{
 Compute real distance based on Indiggo formula
 }
+\keyword{internal}

@@ -20,3 +20,4 @@ This function will try to find the best match in case of mispelling.
 A warning message will be generated indicating the city that has been chosen in case of doubt.
 This function is much more permissive to mispelling errors than geocode_cities_cp()
 }
+\keyword{internal}

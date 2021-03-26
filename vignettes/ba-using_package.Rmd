@@ -1,8 +1,8 @@
 ---
-title: "ba-using_package"
+title: "Utilisation de Eva-Scan"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{ba-using_package}
+  %\VignetteIndexEntry{Utilisation de Eva-Scan}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,7 +21,7 @@ library(dplyr)
 ```
 
 ## Import and clean file
-Importation et nettoyage des données.
+Import des données
 
 ```{r import files}
 # Full data
@@ -39,9 +39,15 @@ eva_data <- evavelo::read_evavelo(xlsx_path)
 
 ### Test input values
 
-```{r test}
-process_evavelo(eva_data)
+Si l'object eva_data n'a pas été géocodé au préalable, `process_evavelo()` va géocoder les villes avant de faire le traitement.
+Un log du géocodage apparaitra dans les messages.
 
+La fonction retourne une liste de valeurs créées ou modifiées.
+
+```{r test}
+result <- process_evavelo(eva_data)
+
+lapply(result, print)
 ```
 
 

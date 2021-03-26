@@ -7,7 +7,7 @@
 check_num_outliers(evadata, categorie_corrige = NULL)
 }
 \arguments{
-\item{evadata}{an evafata object obtained with read_eva_velo()}
+\item{evadata}{an evadata object obtained with read_eva_velo()}
 
 \item{categorie_corrige}{optional vector of categorie_corrige. Must be the same size as the number of rows in evadata$enquete.
 To be used if we want to use different categorie_corrige than the one stored in evadata}

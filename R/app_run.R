@@ -1,5 +1,6 @@
-#' Run the Shiny Application
+#' Run a Web User Interface
 #'
+#' Run a Shiny application locally to analyse an xlsx file.
 #'
 #' @export
 app_run <- function() {

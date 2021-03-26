@@ -17,3 +17,4 @@ This function basically compares volume_manuel from comptage to taille_totale_gr
 In case of multiple quest, volume_manuel should be the sum of taile_totale_groupe or its unique value.
 All other possibilities are outputs from this function
 }
+\keyword{internal}

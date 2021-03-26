@@ -19,3 +19,4 @@ a data.frame with cities that couldn't be geocoded
 \description{
 Find cities that couldn't be geocoded by geocode_cities()
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ a vector the same length as the number of rows in comptage with the new `categor
 \description{
 This function takes `comptage` and `enquete` data to compute categorie_corrigee field.
 }
+\keyword{internal}

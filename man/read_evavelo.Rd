@@ -10,7 +10,7 @@ read_evavelo(file)
 \item{file}{xlsx file, Workbook object or URL to xlsx file}
 }
 \value{
-a list of data.frames
+an evadata object which is in fact a list of data.frames
 }
 \description{
 Read specific sheets from an xlsx object and perform some basic cleaning.

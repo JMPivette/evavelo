@@ -17,3 +17,4 @@ invisible(0)
 \description{
 Information is printed in warnings. This function doesn't return any values.
 }
+\keyword{internal}

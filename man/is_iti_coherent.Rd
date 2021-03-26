@@ -33,3 +33,4 @@ a boolean vector indicating if answer is coherent
 https://github.com/JMPivette/evavelo/discussions/7
  https://github.com/JMPivette/evavelo/issues/39
 }
+\keyword{internal}

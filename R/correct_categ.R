@@ -11,7 +11,7 @@
 #' @importFrom rlang .data
 #'
 #' @return a vector the same length as the number of rows in comptage with the new `categorie` value
-#' @export
+#' @keywords internal
 
 correct_categ <- function(comptage,
                           enquete) {
@@ -153,7 +153,7 @@ correct_categ <- function(comptage,
 #' @importFrom rlang .data
 #'
 #' @return a data.frame the same size of data with updated categorie_corrige values.
-#' @export
+#' @keywords internal
 correct_itinerant <- function(data){
   ## Apply algorithm
   rows_to_update <- data %>%
@@ -200,7 +200,7 @@ correct_itinerant <- function(data){
 #' @importFrom rlang .data
 #'
 #' @return a data.frame the same size of data with updated categorie_corrige values.
-#' @export
+#' @keywords internal
 
 correct_spor_lois <- function(data){
   rows_to_update <- data %>%
@@ -238,7 +238,7 @@ correct_spor_lois <- function(data){
 #' @importFrom rlang .data
 #'
 #' @return a data.frame the same size of data with updated categorie_corrige values.
-#' @export
+#' @keywords internal
 correct_util_lois <- function(data){
 
   rows_to_update <- data %>%
@@ -274,7 +274,7 @@ correct_util_lois <- function(data){
 #' @importFrom rlang .data
 #'
 #' @return a data.frame the same size of data with updated categorie_corrige values.
-#' @export
+#' @keywords internal
 correct_util_sport <- function(data){
   # Cas 5
   # https://github.com/JMPivette/evavelo/issues/48
@@ -326,6 +326,7 @@ correct_util_sport <- function(data){
 #' @importFrom rlang .data :=
 #'
 #' @return 'data' data.frame with a new logical column name after 'col_name'
+#' @keywords internal
 
 add_coherence <- function(data,
                           col_name = "coherent") {
@@ -354,6 +355,7 @@ add_coherence <- function(data,
 #' @param iti_arrivee_final character vector
 #'
 #' @return a boolean vector indicating if answer is coherent
+#' @keywords internal
 is_iti_coherent <- function (iti_km_voyage,
                              iti_experience,
                              iti_dep_iti_valide,

@@ -1,12 +1,19 @@
-#' Read and process a eva-velo file
-#'
-#'
+#' Process an eva-velo file or evadata object
 #'
 #' @param file an evadata object obtained with read_evavelo() or an xlsx file, Workbook object or URL to xlsx file
 #' @param check  a boolean. Is data checked before being processed.
 #' This value can be set to FALSE if you already used check_evavelo() and don't want to run it twice
 #'
-#' @return a list of corrected categories
+#' @details
+#' This function works with a lot of different `file` input. If an excel file is passed as input, this function will internally call `read_evavelo()` and `geocode_evavelo()`.
+#' An evadata object or even an already geocoded object can be used as an input.
+#'
+#' This function will do the followings
+#' \itemize{
+#'   \item Compute distances between cities
+#'   \item Compute categorie_corrige field
+#' }
+#' @return a list of data.frames with variables that have been changed
 #' @export
 #'
 process_evavelo <- function(file,

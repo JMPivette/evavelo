@@ -9,7 +9,7 @@
 #' @param max_dist distances greater than this value in kilometers will be discarded when looking for iti_dep_iti and iti_arr_iti and result will have NAs
 #'
 #' @return a list of data.frames with modified columns from the original xlsx file
-#' @export
+#' @keywords internal
 #'
 calc_distance <- function(eva_data, max_dist = 30){
 
@@ -148,6 +148,7 @@ calc_distance <- function(eva_data, max_dist = 30){
 #' @param ... additional arguments passed to geodist::geodist_vec()
 #'
 #' @return a vector the same size as lon_a and lat_a
+#' @keywords internal
 
 get_closest_point <- function(lon_a, lat_a,
                               lon_b, lat_b, id_b,
@@ -167,6 +168,7 @@ get_closest_point <- function(lon_a, lat_a,
 #' @param dist a vector of distances to be updated
 #'
 #' @return a vector the same size as dist with computed value
+#' @keywords internal
 real_distance <- function(dist){
   dist * (1.1 + 0.3* exp(-dist/20))
 }

@@ -14,3 +14,4 @@ df_has_cols(x, cols)
 \description{
 THrows an error if some columns `cols` are not present in the data.frame `x`
 }
+\keyword{internal}

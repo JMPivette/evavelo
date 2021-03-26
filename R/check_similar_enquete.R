@@ -1,10 +1,12 @@
 #' Detects similar response in enquete
 #'
-#' Try to detect multiple id_quest that were not tagged as
+#' Try to detect multiple id_quest that were not tagged as multiple
+#'
 #' Will group identical answers to a series of text answers
+#'
 #' And then will confirm with the similarity of numeric responses (km_sortie, heure_enq)
 #'
-#' @param enquete enquete data.frame obtained with `read_enquete()`
+#' @param enquete enquete data.frame obtained which is part of an eva_data object.
 #'
 #' @return a data.frame with one columns enq_list containing potential similar answers
 #' @export

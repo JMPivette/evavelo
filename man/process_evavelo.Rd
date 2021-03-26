@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_evavelo.R
 \name{process_evavelo}
 \alias{process_evavelo}
-\title{Read and process a eva-velo file}
+\title{Process an eva-velo file or evadata object}
 \usage{
 process_evavelo(file, check = TRUE)
 }
@@ -13,8 +13,18 @@ process_evavelo(file, check = TRUE)
 This value can be set to FALSE if you already used check_evavelo() and don't want to run it twice}
 }
 \value{
-a list of corrected categories
+a list of data.frames with variables that have been changed
 }
 \description{
-Read and process a eva-velo file
+Process an eva-velo file or evadata object
+}
+\details{
+This function works with a lot of different `file` input. If an excel file is passed as input, this function will internally call `read_evavelo()` and `geocode_evavelo()`.
+An evadata object or even an already geocoded object can be used as an input.
+
+This function will do the followings
+\itemize{
+  \item Compute distances between cities
+  \item Compute categorie_corrige field
+}
 }

@@ -27,3 +27,4 @@ a vector the same size as lon_a and lat_a
 \description{
 Output a vector with the id of points b that is the closest to points a
 }
+\keyword{internal}

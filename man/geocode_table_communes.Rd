@@ -16,3 +16,4 @@ a data.frame similar to table_communes with latitude and longitude added.
 This function check that the municipalities defined in tables_communes are correct
 and geocodes when possible
 }
+\keyword{internal}
