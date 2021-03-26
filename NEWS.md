@@ -1,3 +1,7 @@
+# evavelo 0.7.1
+
+- Detect outliers on tour_dep_transp in `check_num_outliers()` #59
+
 # evavelo 0.7.0
 
 - Improve documentation 

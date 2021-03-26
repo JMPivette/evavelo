@@ -35,7 +35,7 @@ test_that("geocode_df_cities works", {
 
   expect_equal(geo_df,
                result %>%
-                 select(names(geo_df))
+                 dplyr::select(names(geo_df))
   )
 
   expect_error(geocode_df_cities(geo_df, city_col = city))

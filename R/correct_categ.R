@@ -7,7 +7,6 @@
 #' @param enquete a data.frame that must contain the following columns: .....
 #'
 #' @import magrittr
-#' @importFrom dplyr mutate filter select left_join starts_with coalesce rows_update rename
 #' @importFrom rlang .data
 #'
 #' @return a vector the same length as the number of rows in comptage with the new `categorie` value
@@ -31,22 +30,22 @@ correct_categ <- function(comptage,
 # Combine result to the output -----------------------------------------------------------------
   ## Add `comptage` information to enquete
   enquete <- enquete %>%
-    select(.data$id_quest, .data$categorie, .data$categorie_corrige,
-           .data$type_sortie, .data$dms, starts_with("iti_"),
+    dplyr::select(.data$id_quest, .data$categorie, .data$categorie_corrige,
+           .data$type_sortie, .data$dms, dplyr::starts_with("iti_"),
            .data$km_sortie, .data$type_trajet, # used for Case 5
            .data$nb_vae, .data$nb_total_velo, .data$activites, ## Used for Case 6 11
            .data$activite_motiv, .data$activites, .data$activites_aucune # USed for Case 9 12
     ) %>%
-    mutate(main_id_quest = radical_quest(.data$id_quest)) %>% # Deal with multiple quest by group
-    left_join(select(comptage,
+    dplyr::mutate(main_id_quest = radical_quest(.data$id_quest)) %>% # Deal with multiple quest by group
+    dplyr::left_join(dplyr::select(comptage,
                      .data$id_quest, .data$categorie_visuelle_cycliste),
               by = c("main_id_quest" = "id_quest"))
 
   ## Deal with differences in categorie and categorie_visuelle
   cat_to_correct <- enquete %>%
     ##Delete enquete on non-cyclists (https://github.com/JMPivette/evavelo/discussions/3)
-    filter(!is.na(.data$categorie_visuelle_cycliste)) %>%
-    filter(.data$categorie != .data$categorie_visuelle_cycliste) %>%
+    dplyr::filter(!is.na(.data$categorie_visuelle_cycliste)) %>%
+    dplyr::filter(.data$categorie != .data$categorie_visuelle_cycliste) %>%
     ## Apply case 1 2 3 4 7 10 algorithm
     correct_itinerant() %>%
     ## Apply case 6 11 algorithm
@@ -55,7 +54,7 @@ correct_categ <- function(comptage,
     correct_util_lois() %>%
     ## Apply case 5 8
     correct_util_sport() %>%
-    select(.data$main_id_quest,
+    dplyr::select(.data$main_id_quest,
            .data$id_quest,
            .data$categorie_corrige,
            .data$categorie)
@@ -78,9 +77,9 @@ correct_categ <- function(comptage,
   }
 
   cat_to_correct <- cat_to_correct %>%
-    mutate(categorie_corrige = coalesce(.data$categorie_corrige,
+    dplyr::mutate(categorie_corrige = dplyr::coalesce(.data$categorie_corrige,
                                         .data$categorie)) %>%
-    select(.data$main_id_quest,
+    dplyr::select(.data$main_id_quest,
            .data$id_quest,
            .data$categorie_corrige)
 
@@ -102,8 +101,8 @@ correct_categ <- function(comptage,
 
   ## Update comptage values (categorie_visuelle_cycliste_corrige)
   comptage <- comptage %>%
-    select(.data$id_quest, .data$categorie_visuelle_cycliste, .data$categorie_breve) %>%
-    left_join(## use left join since we have NAs in id_quest
+    dplyr::select(.data$id_quest, .data$categorie_visuelle_cycliste, .data$categorie_breve) %>%
+    dplyr::left_join(## use left join since we have NAs in id_quest
       cat_to_correct %>%
         dplyr::select(.data$main_id_quest, .data$categorie_corrige) %>%
         dplyr::group_by(.data$main_id_quest) %>%
@@ -129,7 +128,7 @@ correct_categ <- function(comptage,
   enquete <- enquete %>%
     dplyr::transmute(.data$id_quest,
                      categorie_corrige = .data$categorie) %>% ## initialize with response from cyclist
-    dplyr::rows_update(select(cat_to_correct, -.data$main_id_quest),
+    dplyr::rows_update(dplyr::select(cat_to_correct, -.data$main_id_quest),
                        by = "id_quest")
 
   ## Return a list with all information.
@@ -183,7 +182,7 @@ correct_itinerant <- function(data){
     )
   ## Update rows
   data %>%
-    dplyr::rows_update(select(rows_to_update,
+    dplyr::rows_update(dplyr::select(rows_to_update,
                               .data$id_quest, .data$categorie_corrige),
                        by = "id_quest")
 }
@@ -222,7 +221,7 @@ correct_spor_lois <- function(data){
     )
 
   data %>%
-    dplyr::rows_update(select(rows_to_update,
+    dplyr::rows_update(dplyr::select(rows_to_update,
                               .data$id_quest, .data$categorie_corrige),
                        by = "id_quest")
 }
@@ -257,7 +256,7 @@ correct_util_lois <- function(data){
       ))
   ## Update rows
   data %>%
-    dplyr::rows_update(select(rows_to_update,
+    dplyr::rows_update(dplyr::select(rows_to_update,
                               .data$id_quest, .data$categorie_corrige),
                        by = "id_quest")
 }

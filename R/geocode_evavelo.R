@@ -49,8 +49,8 @@ find_wrong_geocoding <- function(data){
 
   ## Check tables communes (with cog)
   tables_communes <- data$table_communes %>%
-    filter(!is.na(.data$nom_commune) & is.na(.data$latitude)) %>%
-    select(.data$nom_commune, .data$cog)
+    dplyr::filter(!is.na(.data$nom_commune) & is.na(.data$latitude)) %>%
+    dplyr::select(.data$nom_commune, .data$cog)
 
   ## Check ville_res (with cp)
   ville_res <- find_wrong_cities("ville_res",
@@ -79,7 +79,7 @@ find_wrong_geocoding <- function(data){
 find_wrong_cities <- function(var_name, enquete, fields_to_keep = "id_quest"){
   cog <- paste0(var_name, "_cog")
   enquete %>%
-    filter(!is.na(get(var_name)) & is.na(get(cog))) %>%
-    select(dplyr::all_of(fields_to_keep),
+    dplyr::filter(!is.na(get(var_name)) & is.na(get(cog))) %>%
+    dplyr::select(dplyr::all_of(fields_to_keep),
            dplyr::all_of(var_name))
 }

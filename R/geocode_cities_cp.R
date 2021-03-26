@@ -69,9 +69,9 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col = NULL){
   message("\n...V\u00e9rification de ",
           city_col_name, ".............")
   anomaly_to_check <- city_list_cp %>%
-    filter(!is.na(!!city_col)) %>%
-    filter(.data$french == TRUE) %>%
-    filter(is.na(.data$geocode_ok) | .data$geocode_ok == FALSE) %>%
+    dplyr::filter(!is.na(!!city_col)) %>%
+    dplyr::filter(.data$french == TRUE) %>%
+    dplyr::filter(is.na(.data$geocode_ok) | .data$geocode_ok == FALSE) %>%
     dplyr::select(
       city = !!city_col, postcode = !!cp_col,
       .data$result_type, .data$result_score, .data$result_label, .data$result_postcode) %>%
@@ -115,7 +115,7 @@ check_warn_cities_cp <- function(data){
 
   ## . Wrong post code --------------------
   bad_city_nocp <- data %>%
-    filter(is.na(.data$result_type) | .data$result_type != "municipality") %>%
+    dplyr::filter(is.na(.data$result_type) | .data$result_type != "municipality") %>%
     dplyr::distinct(.data$city, .data$postcode)
 
   if(nrow(bad_city_nocp)!=0){
@@ -123,22 +123,22 @@ check_warn_cities_cp <- function(data){
     banR::geocode_tbl(tbl = .,
                       adresse = city) %>%
     suppressMessages() %>%
-    select(
+    dplyr::select(
       .data$city, .data$postcode,
       .data$result_label, .data$result_postcode,
       .data$result_score, .data$result_type)
 
   wrong_cp <- bad_city_nocp %>%
-    filter(.data$result_type == "municipality" & .data$result_score > .8) %>%
-    select(-dplyr::any_of(c("result_type")))
+    dplyr::filter(.data$result_type == "municipality" & .data$result_score > .8) %>%
+    dplyr::select(-dplyr::any_of(c("result_type")))
 
   ## . Remaining mismatches  ---------------
   last_search <- bad_city_nocp %>%
     dplyr::anti_join(wrong_cp, by = c("city", "postcode")) %>%
-    filter(!is.na(.data$city)) %>%
-    select(.data$city, .data$postcode) %>%
+    dplyr::filter(!is.na(.data$city)) %>%
+    dplyr::select(.data$city, .data$postcode) %>%
     geocode_row_by_row(city_col = .data$city) %>%
-    select(
+    dplyr::select(
       dplyr::any_of(c("city", "postcode", "result_label", "result_postcode", "result_score"))
       #.data$city, .data$postcode ,.data$result_label, .data$result_postcode, .data$result_score
     )
@@ -150,9 +150,9 @@ check_warn_cities_cp <- function(data){
 
   if(nrow(last_search) != 0){
     last_search_proposal <- last_search %>%
-      filter(!is.na(.data$result_label))
+      dplyr::filter(!is.na(.data$result_label))
     wrong_no_proposal <- last_search %>%
-      filter(is.na(.data$result_label)) %>%
+      dplyr::filter(is.na(.data$result_label)) %>%
       dplyr::arrange(.data$city)
   } else {# empty data.frames to avoid error subsetting non-existing cols
     last_search_proposal <- data.frame()

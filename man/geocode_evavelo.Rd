@@ -2,7 +2,7 @@
 % Please edit documentation in R/geocode_evavelo.R
 \name{geocode_evavelo}
 \alias{geocode_evavelo}
-\title{Geocode an eva_data object}
+\title{Geocode an evadata object}
 \usage{
 geocode_evavelo(data)
 }
@@ -13,5 +13,5 @@ geocode_evavelo(data)
 a geocoded evadata object
 }
 \description{
-Geocode an eva_data object
+Geocode an evadata object
 }

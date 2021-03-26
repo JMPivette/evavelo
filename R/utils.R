@@ -77,10 +77,10 @@ df_compare <- function(x, y, verbose = TRUE) {
     perc_equal <- purrr::map_df(compare_lgl,
                                 ~ sum(.x)/length(.x)) %>%
       tidyr::pivot_longer(tidyr::everything(), values_to = "perc_equal") %>%
-      filter(perc_equal != 1)
+      dplyr::filter(perc_equal != 1)
     if(nrow(perc_equal) != 0){
       perc_equal <- perc_equal %>%
-        mutate(
+        dplyr::mutate(
           n_mismatch = round((1 - perc_equal) * nrow(compare_lgl)),
           perc_equal = scales::percent(.data$perc_equal, accuracy = 0.01)
         )
@@ -98,7 +98,7 @@ df_compare <- function(x, y, verbose = TRUE) {
 
 compare_init_post <- function(init, post_trait){
   post_trait <- post_trait %>%
-    select(names(init))
+    dplyr::select(names(init))
 
   mismatch_col <- janitor::compare_df_cols(
     post = post_trait,
@@ -110,8 +110,8 @@ compare_init_post <- function(init, post_trait){
   if(length(mismatch_col != 0))
     warning("The following columns are different: \n\t", paste(mismatch_col, collapse = ", "),
             call. = FALSE)
-  df_compare(select(init, -dplyr::all_of(mismatch_col)),
-             select(post_trait, -dplyr::all_of(mismatch_col)))
+  df_compare(dplyr::select(init, -dplyr::all_of(mismatch_col)),
+             dplyr::select(post_trait, -dplyr::all_of(mismatch_col)))
 
 
 }

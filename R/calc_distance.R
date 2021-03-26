@@ -42,7 +42,7 @@ calc_distance <- function(eva_data, max_dist = 30){
         max_dist = max_dist)
     ) %>%
     dplyr::left_join(
-      select(eva_data$table_communes,
+      dplyr::select(eva_data$table_communes,
              .data$nom_commune, .data$id_section),
       by = c("iti_dep_iti_valide" = "nom_commune")
     ) %>%
@@ -52,7 +52,7 @@ calc_distance <- function(eva_data, max_dist = 30){
   ## message on iti_dep too far from iti
   excluded_dep <- iti_depart %>%
     dplyr::filter(is.na(.data$iti_dep_iti_valide)) %>%
-    dplyr::left_join(select(enquete,
+    dplyr::left_join(dplyr::select(enquete,
                             .data$id_quest, .data$iti_depart_itineraire),
                      by = "id_quest") %>%
     dplyr::transmute(excluded = paste0(.data$iti_depart_itineraire, " (",.data$id_quest,")"))
@@ -76,7 +76,7 @@ calc_distance <- function(eva_data, max_dist = 30){
         max_dist = max_dist)
     ) %>%
     dplyr::left_join(
-      select(eva_data$table_communes,
+      dplyr::select(eva_data$table_communes,
              .data$nom_commune, .data$id_section),
       by = c("iti_arr_iti_valide" = "nom_commune")
     ) %>%
@@ -87,7 +87,7 @@ calc_distance <- function(eva_data, max_dist = 30){
   ## message on iti_arr too far from iti
   excluded_arr <- iti_arrivee %>%
     dplyr::filter(is.na(.data$iti_arr_iti_valide)) %>%
-    dplyr::left_join(select(enquete,
+    dplyr::left_join(dplyr::select(enquete,
                             .data$id_quest, .data$iti_arrivee_itineraire),
                      by = "id_quest") %>%
     dplyr::transmute(excluded = paste0(.data$iti_arrivee_itineraire, " (",.data$id_quest,")"))
@@ -126,7 +126,7 @@ calc_distance <- function(eva_data, max_dist = 30){
   enquete_out <-  dist_point_enq %>%
     dplyr::left_join(iti_depart, by = "id_quest") %>%
     dplyr::left_join(iti_arrivee, by = "id_quest") %>%
-    select(-dplyr::any_of("id_quest")) %>%
+    dplyr::select(-dplyr::any_of("id_quest")) %>%
     cbind(enquete_cog)
 
 

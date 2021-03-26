@@ -20,7 +20,7 @@ test_that("wrong column names gives an error", {
 
   ## Warning if categorie_corrige are different in the same group
   enquete_modified <- evavelo_example$enquete %>%
-    mutate(
+    dplyr::mutate(
       activite_motiv = dplyr::if_else(id_quest == "106aA16-2",
                                       "Cette activité est le but de ma randonnée", # Will change from Loisir to Utilitaire
                                       activite_motiv))
@@ -34,12 +34,12 @@ test_that("wrong column names gives an error", {
   # empty columns `categorie_corrige`(normal situation)
   out_blank <- correct_categ(comptage = evavelo_example$comptage,
                              enquete = evavelo_example$enquete %>%
-                               mutate(categorie_corrige = NA_character_)) %>%
+                               dplyr::mutate(categorie_corrige = NA_character_)) %>%
     suppressMessages()
   # full columns `categorie_corrige`(if passing an already processed file)
   out_loisir <- correct_categ(comptage = evavelo_example$comptage,
                               enquete = evavelo_example$enquete %>%
-                                mutate(categorie_corrige = "Loisir")) %>%
+                                dplyr::mutate(categorie_corrige = "Loisir")) %>%
     suppressMessages()
 
   expect_equal(out_blank, out)
@@ -112,8 +112,8 @@ test_that("correct_itinerant works", {
   expect_s3_class(corrected_df, "data.frame")
 
   ## Test that nothing as changed except for "categorie_corrige"
-  expect_equal(select(df, -categorie_corrige),
-               select(corrected_df, -categorie_corrige))
+  expect_equal(dplyr::select(df, -categorie_corrige),
+               dplyr::select(corrected_df, -categorie_corrige))
 
   ## Test that output is as expected
   expect_equal(corrected_df$categorie_corrige,
@@ -173,8 +173,8 @@ test_that("correct_spor_lois works", {
   expect_s3_class(corrected_df, "data.frame")
 
   ## Test that nothing as changed except for "categorie_corrige"
-  expect_equal(select(df, -categorie_corrige),
-               select(corrected_df, -categorie_corrige))
+  expect_equal(dplyr::select(df, -categorie_corrige),
+               dplyr::select(corrected_df, -categorie_corrige))
 
   ## Test that output is as expected
   expect_equal(expected_out,
@@ -213,8 +213,8 @@ test_that("correct_util_lois works", {
   expect_s3_class(corrected_df, "data.frame")
 
   ## Test that nothing as changed except for "categorie_corrige"
-  expect_equal(select(df, -categorie_corrige),
-               select(corrected_df, -categorie_corrige))
+  expect_equal(dplyr::select(df, -categorie_corrige),
+               dplyr::select(corrected_df, -categorie_corrige))
 
   ## Test that output is as expected
   expect_equal(expected_out,
@@ -257,8 +257,8 @@ test_that("correct_util_sport works", {
   expect_s3_class(corrected_df, "data.frame")
 
   ## Test that nothing as changed except for "categorie_corrige"
-  expect_equal(select(df, -categorie_corrige),
-               select(corrected_df, -categorie_corrige))
+  expect_equal(dplyr::select(df, -categorie_corrige),
+               dplyr::select(corrected_df, -categorie_corrige))
 
   ## Test that output is as expected
   expect_equal(expected_out,
