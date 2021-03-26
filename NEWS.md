@@ -1,6 +1,8 @@
-# evavelo (development version)
+# evavelo 0.7.0
 
-- Improve documentation
+- Improve documentation 
+
+- Add a pkgdown website for documentation
 
 # evavelo 0.6.0
 
