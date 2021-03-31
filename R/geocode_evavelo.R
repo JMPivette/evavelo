@@ -15,13 +15,14 @@ geocode_evavelo <- function(data){
     geocode_table_communes()
 
   data$enquete <- data$enquete %>%
+    geocode_cities_cp(ville_res,
+                      cp_col = cp_res,
+                      country_col = pays_res) %>%
     geocode_cities(ville_heb) %>%
     geocode_cities(iti_depart_itineraire) %>%
     geocode_cities(iti_arrivee_itineraire) %>%
-    geocode_cities(nom_site_enq) %>%
-    geocode_cities_cp(ville_res,
-                      cp_col = cp_res,
-                      country_col = pays_res)
+    geocode_cities(nom_site_enq)
+
 
   attr(data, "geocoded") <- TRUE
 

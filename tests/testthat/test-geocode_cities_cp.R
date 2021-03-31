@@ -32,23 +32,47 @@ test_that("geocode_cities_cp works", {
   expected_name <- c(names(correct_df), "city_lat", "city_lon", "city_cog")
 
   expect_snapshot_output(
-    geocode_cities_cp(na_df, city_col = city, cp_col = postcode) %>%
+    geocode_cities_cp(na_df,
+                      city_col = city,
+                      cp_col = postcode,
+                      country_col = country) %>%
       suppressMessages())
 
-  expect_snapshot_output(geocode_cities_cp(correct_df, city_col = city, cp_col = postcode) %>%
-                           suppressMessages())
+  expect_snapshot_output(
+    geocode_cities_cp(correct_df,
+                      city_col = city,
+                      cp_col = postcode,
+                      country_col = country) %>%
+      suppressMessages())
 
-  expect_equal(
-    geocode_cities_cp(other_country_df, city_col = city, cp_col = postcode) %>%
-      suppressMessages(),
-    geocode_cities_cp(other_country_df, city_col = city,
-                      cp_col = postcode, country_col = country) %>%
+  expect_snapshot_output(
+    geocode_cities_cp(wrong_cp_df,
+                      city_col = city,
+                      cp_col = postcode,
+                      country_col = country) %>%
+      suppressMessages())
+  expect_snapshot_output(
+    geocode_cities_cp(mispelling_df,
+                      city_col = city,
+                      cp_col = postcode,
+                      country_col = country) %>%
+      suppressMessages())
+  expect_snapshot_output(
+    geocode_cities_cp(other_country_df,
+                      city_col = city,
+                      cp_col = postcode,
+                      country_col = country) %>%
       suppressMessages())
 
   expect_equal(
-    geocode_cities_cp(wrong_cp_df, city_col = city, cp_col = postcode ) %>%
+    geocode_cities_cp(wrong_cp_df,
+                      city_col = city,
+                      cp_col = postcode ,
+                      country_col = country) %>%
       suppressMessages() %>%
       names(),
     expected_name)
 
 })
+
+

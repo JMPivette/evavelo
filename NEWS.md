@@ -1,5 +1,7 @@
 # evavelo (development version)
 
+- Detects foreign cities in `ville_res` #57. We use Open Street Map engine (Nomatim) that has a rate limit of 1 request per second. Geocoding can be slow if there are a lot of different cities outside of France. 
+
 # evavelo 0.7.1
 
 - Detect outliers on tour_dep_transp in `check_num_outliers()` #59

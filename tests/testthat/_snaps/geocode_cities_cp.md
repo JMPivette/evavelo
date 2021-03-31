@@ -14,3 +14,27 @@
     1 Nantes       44000        1     1 France      47.2    -1.56 44109   
     2 Saint-Brieuc 22000        2     2 France      48.5    -2.76 22278   
 
+---
+
+    # A tibble: 2 x 8
+      city         postcode     a     b country city_lat city_lon city_cog
+      <chr>        <chr>    <dbl> <dbl> <chr>      <dbl>    <dbl> <chr>   
+    1 Nantes       44000        1     1 France      47.2    -1.56 44109   
+    2 Saint-Brieuc 22278        2     2 France      NA      NA    <NA>    
+
+---
+
+    # A tibble: 2 x 8
+      city      postcode     a     b country city_lat city_lon city_cog
+      <chr>     <chr>    <dbl> <dbl> <chr>      <dbl>    <dbl> <chr>   
+    1 Nantes    44000        1     1 France      47.2    -1.56 44109   
+    2 St Brieuc 22000        2     2 France      NA      NA    <NA>    
+
+---
+
+    # A tibble: 2 x 8
+      city     postcode     a     b country   city_lat city_lon city_cog
+      <chr>    <chr>    <dbl> <dbl> <chr>        <dbl>    <dbl> <chr>   
+    1 Nantes   44000        1     1 France        47.2    -1.56 44109   
+    2 Canberra 22000        2     2 Australie    -35.3   149.   <NA>    
+
