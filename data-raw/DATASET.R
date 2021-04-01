@@ -39,7 +39,26 @@ enquete_colnames <- c(
 calendrier_colnames <- c("id_site_enq", "date_enq")
 
 
+## SF data
+## Region
+regions_shape <- raster::getData(name="GADM", country="FRA", level=1) %>%
+  sf::st_as_sf() %>% #Convert to sf
+  sf::st_transform(crs = 2154) %>%  # Project in Lambert 93
+  sf::st_simplify(dTolerance = 1000) %>% # reduce size
+  dplyr::transmute(id = row_number(),name = NAME_1, geometry) # keep relevant information
+
+
+## France
+france_shape <- raster::getData(name="GADM", country="FRA", level=0) %>%
+  sf::st_as_sf() %>% #Convert to sf
+  sf::st_transform(france, crs = 2154) %>%  # Project in Lambert 93
+  sf::st_simplify(dTolerance = 1000)
+
+
+
+
 usethis::use_data(evavelo_example, evavelo_example_geocoded,
                   quest_mismatch_example, all_enquete_example,
                   comptage_colnames, enquete_colnames, calendrier_colnames,
+                  regions_shape, france_shape,
                   overwrite = TRUE, internal = TRUE)
