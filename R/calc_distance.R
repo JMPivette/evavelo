@@ -274,7 +274,6 @@ intersection_traj_reg <- function(.enquete,
 
   region_boundary <- sf::st_boundary(region_shape)
 
-
   all_geom_points <- .enquete %>%
     dplyr::select(
       .data$id_quest,
@@ -292,13 +291,21 @@ intersection_traj_reg <- function(.enquete,
     sf::st_transform(2154) %>%
     dplyr::mutate(
       in_region = sf::st_intersects(., region_shape, sparse = FALSE)[,1]
-    )
+    ) %>%
+    dplyr::group_by(.data$id_quest) %>%
+    dplyr::filter(all(.data$is_geocoded), any(.data$in_region ==FALSE))
+
+  if(nrow(all_geom_points) == 0){ ## Case when nothing outside regions
+    return(.enquete %>%
+             dplyr::mutate(
+               "{output_prefix}_lon" := NA_real_,
+               "{output_prefix}_lat" := NA_real_
+             ))
+  }
 
   ## Find crossing point with region
 
   cross_region <- all_geom_points %>%
-    dplyr::group_by(.data$id_quest) %>%
-    dplyr::filter(all(.data$is_geocoded), any(.data$in_region ==FALSE)) %>%
     dplyr::summarize(do_union = FALSE) %>%
     sf::st_cast("LINESTRING") %>%
     sf::st_intersection(region_boundary) %>%
