@@ -1,5 +1,7 @@
 # evavelo (development version)
 
+- Segmentation of `distance_dom_enq_reelle` in 3 fields `distance_dom_enq_reelle_regions` `distance_dom_enq_reelle_france` `distance_dom_enq_reelle_etranger` #63
+
 - Detects foreign cities in `ville_res` #57. We use Open Street Map engine (Nomatim) that has a rate limit of 1 request per second. Geocoding can be slow if there are a lot of different cities outside of France. 
 
 # evavelo 0.7.1

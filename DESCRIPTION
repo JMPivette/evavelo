@@ -26,6 +26,7 @@ Imports:
     purrr,
     rlang,
     scales,
+    sf,
     shiny,
     shinycssloaders,
     shinyjs,

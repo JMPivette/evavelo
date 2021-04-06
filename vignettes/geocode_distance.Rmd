@@ -1,0 +1,38 @@
+---
+title: "geocode_distance"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{geocode_distance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(evavelo)
+library(dplyr)
+```
+
+
+Dans le package {evavelo}, différentes phases de geocoding et de mesures de distance sont réalisées.
+
+## Geocoding
+
+### Ville françaises
+Les champs suivants sont géocodés: 
+
+
+### Villes Etrangères
+
+## Mesure de distance
+
+### Distance itinéraire
+
+### Distances point d'enquête
+
