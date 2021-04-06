@@ -54,11 +54,21 @@ france_shape <- raster::getData(name="GADM", country="FRA", level=0) %>%
   sf::st_transform(france, crs = 2154) %>%  # Project in Lambert 93
   sf::st_simplify(dTolerance = 1000)
 
-
+## All cities World
+world_cities <- maps::world.cities %>%
+  dplyr::mutate(country = countrycode::countryname(.data$country.etc)) %>%
+  dplyr::transmute(
+    city = .data$name,
+    country = countrycode::countryname(.data$country.etc),
+    lon = .data$long,
+    .data$lat,
+    .data$pop
+  )
 
 
 usethis::use_data(evavelo_example, evavelo_example_geocoded,
                   quest_mismatch_example, all_enquete_example,
                   comptage_colnames, enquete_colnames, calendrier_colnames,
                   regions_shape, france_shape,
+                  world_cities,
                   overwrite = TRUE, internal = TRUE)
