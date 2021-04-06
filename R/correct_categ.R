@@ -58,7 +58,7 @@ correct_categ <- function(comptage,
            .data$id_quest,
            .data$categorie_corrige,
            .data$categorie)
-  message("Correction de cat\u00e9gories pour ", nrow(cat_to_correct), " questionnaires ....")
+  message("\nCorrection de cat\u00e9gories pour ", nrow(cat_to_correct), " questionnaires ....")
 
 ## Check where decision couldn't be made and replace with answer from enquete.
 
@@ -71,7 +71,7 @@ correct_categ <- function(comptage,
     message(
       "Il n\'a pas \u00e9t\u00e9 possible de corriger les cat\u00e9gories de ",
       nb_no_decision,
-      " questionnaire(s).\nLa cat\u00e9gorie du d\u00e9clarant sera utilis\u00e9e:\n\t",
+      " questionnaire(s).\n\tLa cat\u00e9gorie du d\u00e9clarant sera utilis\u00e9e:\n\t",
       paste(no_decision, collapse = ", ")
     )
   }

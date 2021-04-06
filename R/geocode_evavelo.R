@@ -9,6 +9,12 @@ geocode_evavelo <- function(data){
   if(is.evadata(data) == FALSE)
     data <- read_evavelo(data)
 
+  if(attr(data, "geocoded") == TRUE){
+    message("Les données ont déjà été géocodées")
+    message("-----------------------------------")
+    return(data)
+  }
+
   message("V\u00e9rification des noms de communes")
   message("---------------------------------")
   data$table_communes <- data$table_communes %>%
