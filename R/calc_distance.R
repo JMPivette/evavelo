@@ -112,7 +112,7 @@ calc_distance <- function(eva_data, max_dist = 30){
     ) %>%
     intersection_traj_reg(region_shape = region_union_shape,
                           output_prefix = "cross_region") %>%
-    intersection_traj_reg(region_shape = evavelo:::france_shape,
+    intersection_traj_reg(region_shape = france_shape,
                           output_prefix = "cross_france")
 
   ## Comput all distances
@@ -231,7 +231,7 @@ real_distance <- function(dist){
 #'
 #' @param evadata a geocoded eva_data object that contains tables_communes
 #'
-#' @return
+#' @return an sf object
 #' @keywords internal
 
 unify_regions <- function(evadata){
@@ -240,10 +240,10 @@ unify_regions <- function(evadata){
     sf::st_as_sf(coords = c("longitude", "latitude"),
                  crs = 4326) %>%
     sf::st_transform(2154) %>%
-    sf::st_intersects(evavelo:::regions_shape,
+    sf::st_intersects(regions_shape,
                       sparse = FALSE) %>%
     apply(2, any) %>%
-    evavelo:::regions_shape[.,]
+    regions_shape[.,]
 
   message("Liste des r\u00e9gions de l\'itin\u00e9raire \u00e0 partir de tables_communes:\n\t",
           paste(regions$name, collapse = ", "))

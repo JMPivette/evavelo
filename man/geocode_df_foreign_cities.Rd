@@ -19,12 +19,15 @@ _lat _lon and _cog
 }
 \description{
 A variation of geocode_df_cities for foreign cities.
-Instead of using banR, we use tidygeocoder with osm (nomatim) API
+Instead of using banR, we use a local list of cities in the world.
+For the remaining result to be found, we use tidygeocoder with Open Street Map (nomatim) API
 }
 \details{
 Messages are not displayed when there is no error.
 input.data is not altered even if contains special characters.
 Column order is also preserved.
 Countries that not "France" or NA will not be altered by this function
+
+Due to the limitation of Nomatim, if you request several time the same query it will likely be blacklisted temporarly by Nomatim API.
 }
 \keyword{internal}

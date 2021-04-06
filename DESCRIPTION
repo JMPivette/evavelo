@@ -18,6 +18,7 @@ Depends:
 Imports: 
     banR,
     bslib,
+    countrycode,
     dplyr (>= 1.0.0),
     geodist,
     janitor,

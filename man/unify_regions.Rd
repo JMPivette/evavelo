@@ -10,7 +10,7 @@ unify_regions(evadata)
 \item{evadata}{a geocoded eva_data object that contains tables_communes}
 }
 \value{
-
+an sf object
 }
 \description{
 Based on "tables_communes", this function lists all regions on the itinerary and create a new sf object with the union of these regions

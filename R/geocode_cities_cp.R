@@ -49,12 +49,15 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col){
 #' geocode df for foreign cities
 #'
 #' A variation of geocode_df_cities for foreign cities.
-#' Instead of using banR, we use tidygeocoder with osm (nomatim) API
+#' Instead of using banR, we use a local list of cities in the world.
+#' For the remaining result to be found, we use tidygeocoder with Open Street Map (nomatim) API
 #'
 #' Messages are not displayed when there is no error.
 #' input.data is not altered even if contains special characters.
 #' Column order is also preserved.
 #' Countries that not "France" or NA will not be altered by this function
+#'
+#' Due to the limitation of Nomatim, if you request several time the same query it will likely be blacklisted temporarly by Nomatim API.
 #'
 #' @param .data a data.frame
 #' @param city_col name of the column that contains the city names
@@ -71,6 +74,7 @@ geocode_df_foreign_cities <- function(.data,
   city_col_name <- rlang::as_name(city_col)
   country_col <- rlang::enquo(country_col)
   input_data <- .data
+  nomatim_error <- FALSE
   ## Geocode ----------------------
   foreign_cities <- input_data %>%
     dplyr::transmute(
@@ -83,24 +87,85 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::mutate(
       country = dplyr::case_when(
         country == "Angleterre" ~ "Royaume-Uni",
+        stringr::str_detect(country,
+                            "Etat.+Uni")  ~ "US",
         TRUE ~ country)
     )
 
   if(nrow(foreign_cities) == 0)
     return(.data)
 
-  result <- foreign_cities %>%
-    tidygeocoder::geocode(city = city,
-                          country = country,
-                          method = "osm",
-                          full_results = TRUE)
+  ## First search cities in local database (world_cities)
+  geocoding <- foreign_cities %>%
+    dplyr::mutate(country = countrycode::countryname(.data$country)
+    ) %>%
+    dplyr::left_join(world_cities,
+                     by = c("city","country")
+    ) %>%
+    dplyr::filter(!is.na(.data$lon)) %>%
+    dplyr::group_by(.data$id_rows) %>%
+    dplyr::slice_max(.data$pop) %>% ## Get biggest city in case of multiple result
+    dplyr::ungroup() %>%
+    dplyr::select(.data$id_rows, .data$lat, .data$lon)
+
+  ## Search remaining cities on Open Street Map (Nomatim)
+  ## for unknown cities (mispelled or small)
+  remaining_cities <- foreign_cities %>%
+    dplyr::anti_join(geocoding, by = "id_rows")
+
+  if(nrow(remaining_cities) != 0){
+    tryCatch(
+      { nomatim_geocoding <- foreign_cities %>%
+        dplyr::anti_join(geocoding, by = "id_rows") %>%
+        tidygeocoder::geocode(city = city,
+                              country = country,
+                              method = "osm",
+                              full_results = TRUE) %>%
+        dplyr::filter(.data$type %in% c("city", "administrative")) %>%
+        dplyr::select(.data$id_rows,
+                      .data$lat,
+                      lon = .data$long)
+      },
+      error = function(e){
+        nomatim_error <<- TRUE
+      })
+
+    ## Insist on Nomatim if it fails (to be tested)
+    if(nomatim_error){
+      tryCatch(
+        {nomatim_error <- FALSE
+        tidygeocoder::geo("", method = "osm") ## Test to avoid being blacklisted with 2 times the same request in a row
+        nomatim_geocoding <- foreign_cities %>%
+          dplyr::anti_join(geocoding, by = "id_rows") %>%
+          tidygeocoder::geocode(city = city,
+                                country = country,
+                                method = "osm",
+                                full_results = TRUE) %>%
+          dplyr::filter(.data$type %in% c("city", "administrative")) %>%
+          dplyr::select(.data$id_rows,
+                        .data$lat,
+                        lon = .data$long)
+        },
+        error = function(e){
+          nomatim_error <<- TRUE
+        })
+    }
+  }else{
+    nomatim_geocoding <- data.frame()
+  }
+
+
 
   ## Warns on geocoding that failed -------------------
-  wrong <- result %>%
-    dplyr::filter(is.na(.data$type) |
-                    !.data$type %in% c("city", "administrative")) %>%
-    dplyr::select(.data$city, .data$country)
+  if(nomatim_error){
+    message("Impossible de g\u00e9ocoder certaines villes \u00e9trang\u00e8res. Erreur lors de la requ\u00eate vers Nomatim")
+  } else {
+    geocoding <- geocoding %>%
+      dplyr::bind_rows(nomatim_geocoding)
+  }
 
+  wrong <- foreign_cities %>%
+    dplyr::anti_join(geocoding, by = "id_rows")
   if(nrow(wrong) != 0)
     message("Villes inconnues:",
             paste0("\n\t", wrong$city, " (", wrong$country, ")"))
@@ -111,11 +176,7 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::transmute(id_rows = dplyr::row_number())
 
   ## Compute vectors to add to the data.frame.
-  col_to_add <- result %>%
-    dplyr::filter(.data$type %in% c("city", "administrative")) %>%
-    dplyr::select(.data$id_rows,
-                  .data$lat,
-                  .data$long) %>%
+  col_to_add <- geocoding %>%
     dplyr::right_join(index, by = "id_rows") %>%
     dplyr::arrange(.data$id_rows) %>%
     dplyr::select(-.data$id_rows) %>%
