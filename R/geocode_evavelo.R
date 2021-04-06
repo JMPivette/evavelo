@@ -78,9 +78,9 @@ find_wrong_geocoding <- function(data){
 #' @keywords internal
 
 find_wrong_cities <- function(var_name, enquete, fields_to_keep = "id_quest"){
-  cog <- paste0(var_name, "_cog")
+  lon <- paste0(var_name, "_lon")
   enquete %>%
-    dplyr::filter(!is.na(get(var_name)) & is.na(get(cog))) %>%
+    dplyr::filter(!is.na(get(var_name)) & is.na(get(lon))) %>%
     dplyr::select(dplyr::all_of(fields_to_keep),
            dplyr::all_of(var_name))
 }
