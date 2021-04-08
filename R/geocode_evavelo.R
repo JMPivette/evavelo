@@ -10,7 +10,7 @@ geocode_evavelo <- function(data){
     data <- read_evavelo(data)
 
   if(attr(data, "geocoded") == TRUE){
-    message("Les données ont déjà été géocodées")
+    message("Les donn\u00e9es ont d\u00e9j\u00e0 \u00e9t\u00e9 g\u00e9ocod\u00e9es")
     message("-----------------------------------")
     return(data)
   }
