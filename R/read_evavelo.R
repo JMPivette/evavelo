@@ -108,7 +108,7 @@ read_enquete <- function(file, init = FALSE) {
       heure_enq = as.integer(.data$heure_enq),
       revenu = as.numeric(revenu),
       id_quest = as.character(.data$id_quest),
-      country = as.character(.data$country),
+      pays_res = as.character(.data$pays_res),
       dms = dplyr::if_else(.data$dms != 0,.data$dms, NA_real_) ## Fix issue #44 when dms = 0
     ) %>%
     dplyr::mutate( ## Avoid leading or trailing whitespaces.

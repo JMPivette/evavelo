@@ -31,6 +31,7 @@ enquete_colnames <- c(
   "mode_transp_jour", "dist_transp_jour",
   "iti_dep_iti_valide", "iti_arr_iti_valide",
   "ville_heb_cog_lau", "ville_res_cog_lau",
+  "ville_res", "cp_res", "pays_res", "ville_heb",
   "id_section_origine", "id_section_dest", "taille_totale_groupe",
   "mode_heb_regroupe", "revenu",
   "tour_dep_alim", "tour_dep_activites", "tour_dep_souvenirs", "tour_dep_location", "tour_dep_autres",
