@@ -124,8 +124,8 @@ check_num_outliers <- function(evadata,
     dplyr::filter(.data$mode_transp_jour == "Aucun") %>%
     dplyr::filter(!is.na(tour_dep_transp) & tour_dep_transp != 0)
 
-  tour_dep_transp <- rbind(tour_dep_transp,
-                           tour_dep_transp_aucun)
+  tour_dep_transp <- dplyr::bind_rows(tour_dep_transp,
+                                      tour_dep_transp_aucun)
 
 
 
