@@ -58,6 +58,7 @@ france_shape <- raster::getData(name="GADM", country="FRA", level=0) %>%
 ## All cities World
 world_cities <- maps::world.cities %>%
   dplyr::mutate(country = countrycode::countryname(.data$country.etc)) %>%
+  tidyr::drop_na(country) %>%
   dplyr::transmute(
     city = .data$name,
     country = countrycode::countryname(.data$country.etc),

@@ -86,7 +86,7 @@ geocode_df_foreign_cities <- function(.data,
                     .data$country != "France") %>%
     dplyr::mutate(
       country = dplyr::case_when(
-        country == "Angleterre" ~ "Royaume-Uni",
+        country %in% c("Angleterre", "Ecosse", "Irlande du Nord", "Pays de Galles") ~ "Royaume-Uni",
         stringr::str_detect(country,
                             "Etat.+Uni")  ~ "US",
         TRUE ~ country)
@@ -95,9 +95,11 @@ geocode_df_foreign_cities <- function(.data,
   if(nrow(foreign_cities) == 0)
     return(.data)
 
-  ## First search cities in local database (world_cities)
+  ## First search cities in local database (world_cities)---------
   geocoding <- foreign_cities %>%
-    dplyr::mutate(country = countrycode::countryname(.data$country)
+    dplyr::mutate(
+      country = countrycode::countryname(.data$country),
+      city = stringi::stri_trans_general(.data$city, id = "Latin-ASCII")
     ) %>%
     dplyr::left_join(world_cities,
                      by = c("city","country")
@@ -108,15 +110,50 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::ungroup() %>%
     dplyr::select(.data$id_rows, .data$lat, .data$lon)
 
-  ## Search remaining cities on Open Street Map (Nomatim)
+  ## Search approximate values in local database----------------
+  if(nrow(geocoding) != nrow(foreign_cities)){
+    geocoding_approx <- foreign_cities %>%
+      dplyr::anti_join(geocoding, by = "id_rows") %>%
+      dplyr::mutate(country = countrycode::countryname(.data$country),
+                    city = stringi::stri_trans_general(.data$city, id = "Latin-ASCII")) %>%
+      tidyr::drop_na(.data$city, .data$country) %>%
+      fuzzyjoin::stringdist_left_join(world_cities,
+                                      by = c("city", "country"),
+                                      ignore_case = TRUE,
+                                      max_dist = 1,
+                                      distance_col = "distance") %>%
+      tidyr::drop_na(.data$lon) %>%
+      dplyr::filter(.data$country.distance == 0) %>% ## Need exact Country (otherwise UK get inverted with US)
+      dplyr::group_by(.data$id_rows) %>%
+      dplyr::slice_max(.data$pop) %>% ## Get biggest city in case of multiple result
+      dplyr::ungroup()
+
+    ## Warn user of interpretation:
+    geocoding_approx_recap <- geocoding_approx %>%
+      dplyr::select(.data$id_rows, .data$city.y) %>%
+      dplyr::left_join(foreign_cities, by = "id_rows") %>%
+      dplyr::distinct(.data$city, .data$country, .data$city.y) %>%
+      dplyr::arrange(.data$country, .data$city)
+
+    message("Interpr\u00e9tation de noms de communes \u00e9trang\u00e8res:\n\t",
+            paste0(geocoding_approx_recap$country, " : ", geocoding_approx_recap$city,
+                   " -> ",geocoding_approx_recap$city.y,
+                   collapse = "\n\t"))
+
+    geocoding <- geocoding_approx %>%
+      dplyr::select(.data$id_rows, .data$lat, .data$lon) %>%
+      dplyr::bind_rows(geocoding)
+
+  }
+
+  ## Search remaining cities on Open Street Map (Nomatim)-----------
   ## for unknown cities (mispelled or small)
   remaining_cities <- foreign_cities %>%
     dplyr::anti_join(geocoding, by = "id_rows")
 
   if(nrow(remaining_cities) != 0){
     tryCatch(
-      { nomatim_geocoding <- foreign_cities %>%
-        dplyr::anti_join(geocoding, by = "id_rows") %>%
+      { nomatim_geocoding <- remaining_cities %>%
         tidygeocoder::geocode(city = city,
                               country = country,
                               method = "osm",

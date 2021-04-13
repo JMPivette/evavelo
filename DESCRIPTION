@@ -20,6 +20,7 @@ Imports:
     bslib,
     countrycode,
     dplyr (>= 1.0.0),
+    fuzzyjoin,
     geodist,
     janitor,
     magrittr,
@@ -33,15 +34,18 @@ Imports:
     shinyjs,
     shinyWidgets,
     stats,
+    stringi,
     stringr,
     tibble,
     tidygeocoder,
     tidyr,
     utils
 Suggests: 
+    data.table,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tictoc
 VignetteBuilder: 
     knitr
 Remotes:
