@@ -74,7 +74,9 @@ france_cities <- system.file("extdata", "laposte_hexasmal.csv", package = "evave
   tidyr::separate(coordonnees_gps,
                   into = c("lat", "lon"),
                   sep = ",",
-                  convert = TRUE)
+                  convert = TRUE) %>%
+  dplyr::filter(stringr::str_detect(Code_postal, "^97|98", negate = TRUE)) ## Remove Dom-Tom
+
 france_cities <- france_cities %>%
   dplyr::bind_rows(
     france_cities %>%
@@ -87,10 +89,20 @@ france_cities <- france_cities %>%
                 lon, lat) %>%
   dplyr::distinct()
 
+## France cities unique names (used when searching for cities without having a code)
+## Cities with the same name are removed expect if in same departement (ex: Paris)
+france_cities_unique_names <- france_cities %>%
+  mutate(dep = stringr::str_sub(cp, end = 2)) %>%
+  group_by(city) %>%
+  mutate(n_dupl = length(unique(dep))) %>%
+  filter(n_dupl == 1) %>%
+  slice_head() %>%
+  select(city, lon, lat)
+
 
 usethis::use_data(evavelo_example, evavelo_example_geocoded,
                   quest_mismatch_example, all_enquete_example,
                   comptage_colnames, enquete_colnames, calendrier_colnames,
                   regions_shape, france_shape,
-                  world_cities, france_cities,
+                  world_cities, france_cities, france_cities_unique_names,
                   overwrite = TRUE, internal = TRUE)

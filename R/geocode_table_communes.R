@@ -13,8 +13,29 @@
 #'
 
 geocode_table_communes <- function(table_communes){
-  ## Geocode table_communes
+  ## Geocode with local data base (exact match)
+  local_result <- table_communes %>%
+    dplyr::transmute(.data$cog,
+                     city = rename_french_cities(.data$nom_commune)
+    ) %>%
+    dplyr::left_join(
+      france_cities,
+      by = c("city", "cog")
+    ) %>%
+    tidyr::drop_na() %>%
+    dplyr::select(.data$cog,
+                  longitude = .data$lon,
+                  latitude = .data$lat) %>%
+    dplyr::group_by(.data$cog) %>%
+    dplyr::slice_head() %>%
+    dplyr::ungroup()
+
+
+
+
+  ## Geocode ont founds with banR
   result <- table_communes %>%
+    dplyr::anti_join(local_result, by = "cog") %>%
     dplyr::select(.data$cog,
                   .data$nom_commune) %>%
     banR::geocode_tbl(tbl = .,
@@ -53,11 +74,12 @@ geocode_table_communes <- function(table_communes){
             paste0("\n\t",other_cities$nom_commune,"(", other_cities$cog, ")"))
   }
 
-  ## Remove wrong results
+  ## Remove wrong results and binding local results
   result <- result %>%
     dplyr::select(.data$cog, .data$latitude, .data$longitude) %>%
     dplyr::anti_join(wrong_result,
-                     by = "cog")
+                     by = "cog") %>%
+    dplyr::bind_rows(local_result)
 
   ## add lon. and lat. to original table
   table_communes %>%
