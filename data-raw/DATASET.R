@@ -97,7 +97,8 @@ france_cities_unique_names <- france_cities %>%
   mutate(n_dupl = length(unique(dep))) %>%
   filter(n_dupl == 1) %>%
   slice_head() %>%
-  select(city, lon, lat)
+  ungroup() %>%
+  select(city, lon, lat, cog)
 
 
 usethis::use_data(evavelo_example, evavelo_example_geocoded,

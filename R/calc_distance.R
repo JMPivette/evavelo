@@ -332,7 +332,7 @@ intersection_traj_reg <- function(.enquete,
 
   result <- sf::st_coordinates(cross_region) %>%
     as.data.frame() %>%
-    setNames(paste(output_prefix,
+    stats::setNames(paste(output_prefix,
                    c("lon", "lat"),
                    sep = "_")) %>%
     dplyr::bind_cols(id_quest = cross_region$id_quest, .) %>%

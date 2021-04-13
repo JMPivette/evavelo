@@ -279,7 +279,32 @@ geocode_df_cities_cp <- function(.data,
   if(nrow(french_cities) == 0) ## Nothing to geocode
     return(.data)
 
-  result <- french_cities%>%
+  ## First geocode using local database (exact match)
+  local_result <- french_cities %>%
+    dplyr::mutate(city = rename_french_cities(!!city_col),
+           cp = !!cp_col) %>%
+    dplyr::left_join(
+      france_cities,
+      by = c("city", "cp")) %>%
+    tidyr::drop_na() %>%
+    dplyr::select(.data$id_rows,
+                  longitude = .data$lon,
+                  latitude = .data$lat,
+                  .data$cog)
+
+  remaining_geocode <- french_cities %>%
+    dplyr::anti_join(local_result, by = "id_rows")
+
+  if(nrow(remaining_geocode) == 0){
+    result <- tibble::tibble(id_rows = integer(),
+                     latitude = numeric(),
+                     longitude = numeric(),
+                     cog = character())
+  } else {
+
+  ## Geocode the remaining using banR
+  result <- french_cities %>%
+    dplyr::anti_join(local_result, by = "id_rows") %>%
     banR::geocode_tbl(tbl = .,
                       adresse = !!city_col,
                       code_postal = !!cp_col) %>%
@@ -300,17 +325,20 @@ geocode_df_cities_cp <- function(.data,
   if(nrow(anomaly_to_check) !=0)
     check_warn_cities_cp(anomaly_to_check)
 
+  result <- result %>%
+    dplyr::filter(.data$geocode_ok) %>%
+    dplyr::select(.data$id_rows,
+                  .data$latitude,
+                  .data$longitude,
+                  cog = .data$result_citycode)
+}
 
   ## Format data for output ----------------------------
   index <- input_data %>%
     dplyr::transmute(id_rows = dplyr::row_number())
 
   col_to_add <- result %>%
-    dplyr::filter(.data$geocode_ok) %>%
-    dplyr::select(.data$id_rows,
-                  .data$latitude,
-                  .data$longitude,
-                  cog = .data$result_citycode) %>%
+    dplyr::bind_rows(local_result) %>%
     dplyr::right_join(index, by = "id_rows") %>%
     dplyr::arrange(.data$id_rows) %>%
     dplyr::select(-.data$id_rows) %>%
