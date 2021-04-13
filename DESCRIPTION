@@ -41,7 +41,6 @@ Imports:
     tidyr,
     utils
 Suggests: 
-    data.table,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),

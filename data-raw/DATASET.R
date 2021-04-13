@@ -67,10 +67,30 @@ world_cities <- maps::world.cities %>%
     .data$pop
   )
 
+## All cities France
+france_cities <- system.file("extdata", "laposte_hexasmal.csv", package = "evavelo") %>%
+  data.table::fread(colClasses = "character") %>%
+  filter(coordonnees_gps != "")%>%
+  tidyr::separate(coordonnees_gps,
+                  into = c("lat", "lon"),
+                  sep = ",",
+                  convert = TRUE)
+france_cities <- france_cities %>%
+  dplyr::bind_rows(
+    france_cities %>%
+      dplyr::filter(Nom_commune != Libellé_d_acheminement) %>%
+      dplyr::mutate(Nom_commune = Libellé_d_acheminement)
+  )%>%
+  dplyr::select(city = Nom_commune,
+                cp = Code_postal,
+                cog = Code_commune_INSEE,
+                lon, lat) %>%
+  dplyr::distinct()
+
 
 usethis::use_data(evavelo_example, evavelo_example_geocoded,
                   quest_mismatch_example, all_enquete_example,
                   comptage_colnames, enquete_colnames, calendrier_colnames,
                   regions_shape, france_shape,
-                  world_cities,
+                  world_cities, france_cities,
                   overwrite = TRUE, internal = TRUE)
