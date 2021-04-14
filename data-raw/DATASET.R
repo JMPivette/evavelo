@@ -31,6 +31,7 @@ enquete_colnames <- c(
   "mode_transp_jour", "dist_transp_jour",
   "iti_dep_iti_valide", "iti_arr_iti_valide",
   "ville_heb_cog_lau", "ville_res_cog_lau",
+  "ville_res", "cp_res", "pays_res", "ville_heb",
   "id_section_origine", "id_section_dest", "taille_totale_groupe",
   "mode_heb_regroupe", "revenu",
   "tour_dep_alim", "tour_dep_activites", "tour_dep_souvenirs", "tour_dep_location", "tour_dep_autres",
@@ -39,7 +40,70 @@ enquete_colnames <- c(
 calendrier_colnames <- c("id_site_enq", "date_enq")
 
 
+## SF data
+## Region
+regions_shape <- raster::getData(name="GADM", country="FRA", level=1) %>%
+  sf::st_as_sf() %>% #Convert to sf
+  sf::st_transform(crs = 2154) %>%  # Project in Lambert 93
+  sf::st_simplify(dTolerance = 1000) %>% # reduce size
+  dplyr::transmute(id = row_number(),name = NAME_1, geometry) # keep relevant information
+
+
+## France
+france_shape <- raster::getData(name="GADM", country="FRA", level=0) %>%
+  sf::st_as_sf() %>% #Convert to sf
+  sf::st_transform(france, crs = 2154) %>%  # Project in Lambert 93
+  sf::st_simplify(dTolerance = 1000)
+
+## All cities World
+world_cities <- maps::world.cities %>%
+  dplyr::mutate(country = countrycode::countryname(.data$country.etc)) %>%
+  tidyr::drop_na(country) %>%
+  dplyr::transmute(
+    city = .data$name,
+    country = countrycode::countryname(.data$country.etc),
+    lon = .data$long,
+    .data$lat,
+    .data$pop
+  )
+
+## All cities France
+france_cities <- system.file("extdata", "laposte_hexasmal.csv", package = "evavelo") %>%
+  data.table::fread(colClasses = "character") %>%
+  filter(coordonnees_gps != "")%>%
+  tidyr::separate(coordonnees_gps,
+                  into = c("lat", "lon"),
+                  sep = ",",
+                  convert = TRUE) %>%
+  dplyr::filter(stringr::str_detect(Code_postal, "^97|98", negate = TRUE)) ## Remove Dom-Tom
+
+france_cities <- france_cities %>%
+  dplyr::bind_rows(
+    france_cities %>%
+      dplyr::filter(Nom_commune != Libellé_d_acheminement) %>%
+      dplyr::mutate(Nom_commune = Libellé_d_acheminement)
+  )%>%
+  dplyr::select(city = Nom_commune,
+                cp = Code_postal,
+                cog = Code_commune_INSEE,
+                lon, lat) %>%
+  dplyr::distinct()
+
+## France cities unique names (used when searching for cities without having a code)
+## Cities with the same name are removed expect if in same departement (ex: Paris)
+france_cities_unique_names <- france_cities %>%
+  mutate(dep = stringr::str_sub(cp, end = 2)) %>%
+  group_by(city) %>%
+  mutate(n_dupl = length(unique(dep))) %>%
+  filter(n_dupl == 1) %>%
+  slice_head() %>%
+  ungroup() %>%
+  select(city, lon, lat, cog)
+
+
 usethis::use_data(evavelo_example, evavelo_example_geocoded,
                   quest_mismatch_example, all_enquete_example,
                   comptage_colnames, enquete_colnames, calendrier_colnames,
+                  regions_shape, france_shape,
+                  world_cities, france_cities, france_cities_unique_names,
                   overwrite = TRUE, internal = TRUE)

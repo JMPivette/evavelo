@@ -23,50 +23,72 @@ geocode_df_cities <- function(.data,
   city_col_name <- rlang::as_name(city)
   ## Create a correspondance table----------------
   unique_cities <- .data %>%
+    dplyr::select(!!city) %>%
+    tidyr::drop_na() %>%
     dplyr::mutate(# In case of logical values (all NAs for example)
-      !!city_col_name := dplyr::if_else(
-        is.na(!!city),
-        "",
-        as.character(!!city))) %>%
+      !!city_col_name := as.character(!!city)
+    ) %>%
     dplyr::distinct(!!city)
 
+# geocode with local database -----------------------------------------------------------------
 
-  # First round----
-  cor_table <- unique_cities %>%
-    banR::geocode_tbl(!!city) %>%
-    suppressMessages() %>%
-    dplyr::transmute(
-      result_name = .data$result_city,
-      result_cog = .data$result_citycode,
-      result_lat = .data$latitude,
-      result_lon = .data$longitude,
-      .data$result_score,
-      geocode_ok = !is.na(.data$result_cog) &
-        .data$result_type == "municipality" ) %>%
-    dplyr::bind_cols(unique_cities,.)
+ cor_table <- unique_cities %>%
+   dplyr::mutate(city = rename_french_cities(!!city)) %>%
+   dplyr::left_join(france_cities_unique_names, by = "city") %>%
+   tidyr::drop_na() %>%
+   dplyr::transmute(!!city,
+                    result_name = !!city,
+                    result_cog = .data$cog,
+                    result_lat = .data$lat,
+                    result_lon = .data$lon,
+                    result_score = 1)
 
-  # Second round-----
-  cor_table_second <- cor_table %>%
-    dplyr::filter(!.data$geocode_ok) %>%
-    dplyr::select(!!city) %>%
-    geocode_row_by_row(!!city) %>%
-    dplyr::select(!!city, result_name = .data$result_city, result_cog = .data$result_citycode,
-                  result_lat = .data$result_latitude, result_lon = .data$result_longitude,
-                  .data$result_score)
+ remaining_geocode <- unique_cities %>%
+   dplyr::anti_join(cor_table, by = city_col_name)
 
-  # Adding rounds together---------------------
-  cor_table_first <- cor_table %>%
-    dplyr::filter(.data$geocode_ok) %>%
-    dplyr::select(-dplyr::any_of("geocode_ok"))
+# geocode with banR if evrything hasn't been geocoded -----------------------------------------
 
-  cor_table <- dplyr::bind_rows(
-    cor_table_first,
-    cor_table_second
-  )
-  # %>% dplyr::rename_with(
-  #   .fn = ~ paste0(city_col_name, "_",
-  #                  stringr::str_remove(.x, "^result_")),
-  #   .cols = dplyr::starts_with("result_"))
+ if(nrow(remaining_geocode) != 0){
+   # First round (df) ----
+   cor_table_first <-  remaining_geocode %>%
+     dplyr::mutate(
+       city_renamed = stringi::stri_trans_general(!!city,id = "Latin-ASCII") # to avoid strange result from geocode_tbl
+     ) %>%
+     banR::geocode_tbl(city_renamed) %>%
+     suppressMessages() %>%
+     dplyr::transmute(
+       result_name = .data$result_city,
+       result_cog = .data$result_citycode,
+       result_lat = .data$latitude,
+       result_lon = .data$longitude,
+       .data$result_score,
+       geocode_ok = !is.na(.data$result_cog) &
+         .data$result_type == "municipality" ) %>%
+     dplyr::bind_cols(remaining_geocode,.)
+
+   # Second round(row by row) -----
+   cor_table_second <- cor_table_first %>%
+     dplyr::filter(!.data$geocode_ok) %>%
+     dplyr::select(!!city) %>%
+     dplyr::mutate(
+       city_renamed = stringi::stri_trans_general(!!city,id = "Latin-ASCII") # to avoid strange result from geocode_tbl
+     ) %>%
+     geocode_row_by_row(city_renamed) %>%
+     dplyr::select(!!city, result_name = .data$result_city, result_cog = .data$result_citycode,
+                   result_lat = .data$result_latitude, result_lon = .data$result_longitude,
+                   .data$result_score)
+
+   # Adding rounds together---------------------
+   cor_table_first <- cor_table_first %>%
+     dplyr::filter(.data$geocode_ok) %>%
+     dplyr::select(-dplyr::any_of("geocode_ok"))
+
+   cor_table <- dplyr::bind_rows(
+     cor_table_first,
+     cor_table_second,
+     cor_table
+   )
+ }
 
   ## Adding information to original data.frame---------------------
   .data %>%

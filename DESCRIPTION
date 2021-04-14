@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.7.1
+Version: 0.8.0
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
@@ -18,7 +18,9 @@ Depends:
 Imports: 
     banR,
     bslib,
-    dplyr,
+    countrycode,
+    dplyr (>= 1.0.0),
+    fuzzyjoin,
     geodist,
     janitor,
     magrittr,
@@ -26,19 +28,23 @@ Imports:
     purrr,
     rlang,
     scales,
+    sf,
     shiny,
     shinycssloaders,
     shinyjs,
     shinyWidgets,
     stats,
+    stringi,
     stringr,
+    tibble,
+    tidygeocoder,
     tidyr,
     utils
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    tibble
+    tictoc
 VignetteBuilder: 
     knitr
 Remotes:

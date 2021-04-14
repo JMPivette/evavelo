@@ -31,19 +31,18 @@ test_that("geocode_cities works", {
   )
 
 
-  expect_s3_class(
-    geocode_cities(correct_df, city_col = city) %>% suppressMessages(),
-    'data.frame')
-  expect_s3_class(
-    geocode_cities(light_mispelling_df, city_col = city)%>% suppressMessages(),
-    'data.frame')
-  expect_s3_class(
-    geocode_cities(heavy_mispelling_df, city_col = city) %>% suppressMessages(),
-    'data.frame')
-  expect_s3_class(
-    geocode_cities(other_country_df, city_col = city)%>% suppressMessages(),
-    'data.frame')
-  expect_s3_class(
-    geocode_cities(na_df, city_col = city)%>% suppressMessages(),
-    'data.frame')
+  expect_snapshot_output(
+    geocode_cities(correct_df, city_col = city) %>% suppressMessages())
+
+  expect_snapshot_output(
+    geocode_cities(light_mispelling_df, city_col = city)%>% suppressMessages())
+
+  expect_snapshot_output(
+    geocode_cities(heavy_mispelling_df, city_col = city)%>% suppressMessages())
+
+  expect_snapshot_output(
+    geocode_cities(other_country_df, city_col = city)%>% suppressMessages())
+
+  expect_snapshot_output(
+    geocode_cities(na_df, city_col = city)%>% suppressMessages())
 })
