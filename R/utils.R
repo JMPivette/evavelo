@@ -84,10 +84,10 @@ df_compare <- function(x, y, verbose = TRUE) {
           n_mismatch = round((1 - perc_equal) * nrow(compare_lgl)),
           perc_equal = scales::percent(.data$perc_equal, accuracy = 0.01)
         )
-      warning("The following columns are not 100% identical:\n",
+      warning("Les colonnes suivantes ne sont pas identiques \u00e0 100%:\n",
               paste("\t",perc_equal$name, " : \t",
                     perc_equal$perc_equal,
-                    "(", perc_equal$n_mismatch, "mismatch)","\n"),
+                    "(", perc_equal$n_mismatch, "diff\u00e9rences)","\n"),
               call. = FALSE)
     }
   }
@@ -108,7 +108,7 @@ compare_init_post <- function(init, post_trait){
     dplyr::pull(.data$column_name)
 
   if(length(mismatch_col != 0))
-    warning("The following columns are different: \n\t", paste(mismatch_col, collapse = ", "),
+    warning("Les colonnes suivantes sont diff\u00e9rentes: \n\t", paste(mismatch_col, collapse = ", "),
             call. = FALSE)
   df_compare(dplyr::select(init, -dplyr::all_of(mismatch_col)),
              dplyr::select(post_trait, -dplyr::all_of(mismatch_col)))
@@ -168,7 +168,7 @@ bind_list_df <- function(...){
 rename_french_cities <- function(cities){
   cities %>%
     stringr::str_to_upper() %>%
-    stringr::str_replace_all("[-']", " ") %>%
+    stringr::str_replace_all("[-\']", " ") %>%
     stringi::stri_trans_general(id = "Latin-ASCII") %>%
     stringr::str_replace_all("SAINT ", "ST ")%>%
     stringr::str_replace_all("SAINTE ", "STE ")
