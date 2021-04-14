@@ -38,9 +38,13 @@ geocode_table_communes <- function(table_communes){
     dplyr::anti_join(local_result, by = "cog") %>%
     dplyr::select(.data$cog,
                   .data$nom_commune) %>%
+    dplyr::mutate(
+      city_renamed = stringi::stri_trans_general(.data$nom_commune,id = "Latin-ASCII") # to avoid strange result from geocode_tbl
+    ) %>%
     banR::geocode_tbl(tbl = .,
-                      adresse = nom_commune,
+                      adresse = city_renamed,
                       code_insee = cog) %>%
+    dplyr::select(-.data$city_renamed) %>%
     suppressMessages()
 
   ## Identify wrong answers and create informative warnings

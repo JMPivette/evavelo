@@ -389,8 +389,11 @@ check_warn_cities_cp <- function(data){
 
   if(nrow(bad_city_nocp)!=0){
     bad_city_nocp <- bad_city_nocp %>%
+      dplyr::mutate(
+        city_renamed = stringi::stri_trans_general(.data$city,id = "Latin-ASCII") # to avoid strange result from geocode_tbl
+      ) %>%
       banR::geocode_tbl(tbl = .,
-                        adresse = city) %>%
+                        adresse = city_renamed) %>%
       suppressMessages() %>%
       dplyr::select(
         .data$city, .data$postcode,

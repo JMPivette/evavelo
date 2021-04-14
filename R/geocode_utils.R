@@ -23,11 +23,11 @@ geocode_df_cities <- function(.data,
   city_col_name <- rlang::as_name(city)
   ## Create a correspondance table----------------
   unique_cities <- .data %>%
+    dplyr::select(!!city) %>%
+    tidyr::drop_na() %>%
     dplyr::mutate(# In case of logical values (all NAs for example)
-      !!city_col_name := dplyr::if_else(
-        is.na(!!city),
-        "",
-        as.character(!!city))) %>%
+      !!city_col_name := as.character(!!city)
+    ) %>%
     dplyr::distinct(!!city)
 
 # geocode with local database -----------------------------------------------------------------
@@ -38,9 +38,9 @@ geocode_df_cities <- function(.data,
    tidyr::drop_na() %>%
    dplyr::transmute(!!city,
                     result_name = !!city,
-                    result_lon = .data$lon,
-                    result_lat = .data$lat,
                     result_cog = .data$cog,
+                    result_lat = .data$lat,
+                    result_lon = .data$lon,
                     result_score = 1)
 
  remaining_geocode <- unique_cities %>%
@@ -51,7 +51,10 @@ geocode_df_cities <- function(.data,
  if(nrow(remaining_geocode) != 0){
    # First round (df) ----
    cor_table_first <-  remaining_geocode %>%
-     banR::geocode_tbl(!!city) %>%
+     dplyr::mutate(
+       city_renamed = stringi::stri_trans_general(!!city,id = "Latin-ASCII") # to avoid strange result from geocode_tbl
+     ) %>%
+     banR::geocode_tbl(city_renamed) %>%
      suppressMessages() %>%
      dplyr::transmute(
        result_name = .data$result_city,
@@ -67,7 +70,10 @@ geocode_df_cities <- function(.data,
    cor_table_second <- cor_table_first %>%
      dplyr::filter(!.data$geocode_ok) %>%
      dplyr::select(!!city) %>%
-     geocode_row_by_row(!!city) %>%
+     dplyr::mutate(
+       city_renamed = stringi::stri_trans_general(!!city,id = "Latin-ASCII") # to avoid strange result from geocode_tbl
+     ) %>%
+     geocode_row_by_row(city_renamed) %>%
      dplyr::select(!!city, result_name = .data$result_city, result_cog = .data$result_citycode,
                    result_lat = .data$result_latitude, result_lon = .data$result_longitude,
                    .data$result_score)
