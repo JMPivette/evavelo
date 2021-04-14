@@ -40,14 +40,14 @@ mod_process_file_server <- function(input, output, session, r){
         {
           withCallingHandlers({
             r$processed <- process_evavelo(r$eva_data, check = check_to_do)},
-            message = function(m) r$log<- paste(r$log, m$message))
+            message = function(m) r$log<- paste(r$log, m$message),
+            warning = function(w){
+              r$log <- paste(r$log, " Warnings pendant le traitement du fichier:\n", w$message)
+            })
         },
         error = function(e){
           r$log <- paste(r$log, " ERREUR pendant le traitement du fichier:\n", e)
           r$process_error <- TRUE
-        },
-        warning = function(w){
-          r$log <- paste(r$log, " Warnings pendant le traitement du fichier:\n", w$message)
         }
       )
     }
