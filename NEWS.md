@@ -1,4 +1,6 @@
-# evavelo (development version)
+# evavelo 0.8.1
+
+- Improve UI #66
 
 # evavelo 0.8.0
 
