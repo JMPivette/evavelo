@@ -305,14 +305,19 @@ geocode_df_cities_cp <- function(.data,
   ## Geocode the remaining using banR
   result <- french_cities %>%
     dplyr::anti_join(local_result, by = "id_rows") %>%
+    dplyr::mutate(
+      city_renamed = stringi::stri_trans_general(!!city_col,
+                                                 id = "Latin-ASCII") # to avoid strange result from geocode_tbl
+    ) %>%
     banR::geocode_tbl(tbl = .,
-                      adresse = !!city_col,
+                      adresse = city_renamed,
                       code_postal = !!cp_col) %>%
     suppressMessages() %>%
     dplyr::mutate(
       geocode_ok = (.data$result_type == "municipality" &
                       .data$result_score >= 0.8)
-    )
+    ) %>%
+    dplyr::select(-.data$city_renamed)
 
   ## Checking wrong results and propose an alternative in warnings-------------------
   anomaly_to_check <- result %>%
