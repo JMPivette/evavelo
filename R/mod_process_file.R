@@ -11,7 +11,9 @@
 mod_process_file_ui <- function(id){
   ns <- NS(id)
   tagList(
-    actionButton(ns("process_file"), "Traiter fichier")
+    shinyjs::disabled(
+      actionButton(ns("process_file"), "Traiter fichier", style = 'font-weight:bold')
+    )
 
   )
 }
@@ -53,6 +55,15 @@ mod_process_file_server <- function(input, output, session, r){
     }
 
   })
+
+  observeEvent(r$filename,{
+    if(is.null(r$filename)){
+      shinyjs::disable("process_file")
+    }else {
+      shinyjs::enable("process_file")
+    }
+  },
+  ignoreNULL = FALSE)
 
 }
 

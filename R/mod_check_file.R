@@ -15,20 +15,35 @@ mod_check_file_ui <- function(id){
     tags$style(".fa-check-circle {color:#008000; font-size: 26px}"),
     tags$style(".fa-times-circle {color:#800000; font-size: 26px}"),
 
-
     shinyjs::useShinyjs(),
-    actionButton(ns("check_file"), "V\u00e9rifier Fichier"),
+    shinyjs::disabled(
+      actionButton(ns("check_file"), "V\u00e9rifier Fichier")
+    ),
     shinyjs::hidden(icon("check-circle", id = ns("check_valid_icon"))),
     shinyjs::hidden(icon("times-circle", id = ns("check_error_icon"))),
     br(), br(),
-    actionButton(ns("check_quest_multiple"), "Chercher questionnaires multiples"),
-    shinyjs::hidden(downloadLink(ns("download_mult_quest"), "Questionnaires multiples")),
+    shinyjs::disabled(
+      actionButton(ns("check_quest_multiple"), "Chercher questionnaires multiples")
+    ),
+    shinyjs::hidden(
+      downloadLink(ns("download_mult_quest"), "Questionnaires multiples")
+    ),
     br(),br(),
-    actionButton(ns("check_geocode"), "G\u00e9ocodage des villes"),
-    shinyjs::hidden(downloadLink(ns("download_wrong_geo"), "Erreurs de g\u00e9ocodage")),
+    shinyjs::disabled(
+      actionButton(ns("check_geocode"), "G\u00e9ocodage des villes")
+    ),
+    shinyjs::hidden(
+      downloadLink(ns("download_wrong_geo"), "Erreurs de g\u00e9ocodage")
+    ),
     br(),br(),
-    actionButton(ns("check_outliers"), "Chercher valeurs num\u00e9riques anormales"),
-    shinyjs::hidden(downloadLink(ns("download_outliers"), "Valeurs anormales")),
+      mod_process_file_ui(ns("process_file_ui_2")),
+    br(), br(),
+    shinyjs::disabled(
+      actionButton(ns("check_outliers"), "Chercher valeurs num\u00e9riques anormales")
+    ),
+    shinyjs::hidden(
+      downloadLink(ns("download_outliers"), "Valeurs anormales")
+    ),
   )
 }
 
@@ -37,6 +52,7 @@ mod_check_file_ui <- function(id){
 #' @noRd
 mod_check_file_server <- function(input, output, session, r){
   ns <- session$ns
+  callModule(mod_process_file_server, "process_file_ui_2", r = r)
 
   # Observer on action buttons ------------------------------------------------------------------
 
@@ -80,15 +96,15 @@ mod_check_file_server <- function(input, output, session, r){
     r$log <- paste0(r$log,
                     "\n\nRecherche de valeurs num\u00e9riques anormales...\n",
                     "--------------------------------------------\n")
-    if(is.null(r$processed)){
-      r$log <- paste0(r$log,
-                      "Utilisation de \'categorie_corrige\' du fichier xlsx\n",
-                      "Si vous voulez calculer \'categorie_corrige\', cliquez sur \'Traiter Fichier\' avant de faire ce traitement\n")
-    } else {
-      r$log <- paste0(r$log,
-                      "Utilisation de \'categorie_corrige\' recalcul\u00e9 lors du traitement du fichier\n",
-                      "Si vous voulez utiliser \'categorie_corrige\' du fichier xlsx, rechargez le dans l\'application.\n")
-    }
+    # if(is.null(r$processed)){
+    #   r$log <- paste0(r$log,
+    #                   "Utilisation de \'categorie_corrige\' du fichier xlsx\n",
+    #                   "Si vous voulez calculer \'categorie_corrige\', cliquez sur \'Traiter Fichier\' avant de faire ce traitement\n")
+    # } else {
+    #   r$log <- paste0(r$log,
+    #                   "Utilisation de \'categorie_corrige\' recalcul\u00e9 lors du traitement du fichier\n",
+    #                   "Si vous voulez utiliser \'categorie_corrige\' du fichier xlsx, rechargez le dans l\'application.\n")
+    # }
 
     tryCatch(
       {
@@ -164,16 +180,40 @@ mod_check_file_server <- function(input, output, session, r){
     if(is.null(r$file_checked)){
       shinyjs::hide("check_valid_icon")
       shinyjs::hide("check_error_icon")
+      shinyjs::disable("check_quest_multiple")
+      shinyjs::disable("check_geocode")
     } else if (r$file_checked){
       shinyjs::show("check_valid_icon")
       shinyjs::hide("check_error_icon")
+      shinyjs::enable("check_quest_multiple")
+      shinyjs::enable("check_geocode")
     } else {
       shinyjs::hide("check_valid_icon")
       shinyjs::show("check_error_icon")
+      shinyjs::disable("check_quest_multiple")
+      shinyjs::disable("check_geocode")
     }
   },
   ignoreNULL = FALSE)
 
+  observeEvent(r$processed,{
+    if(is.null(r$processed)){
+      shinyjs::disable("check_outliers")
+    }else {
+      shinyjs::enable("check_outliers")
+      shinyjs::show("download_wrong_geo")
+    }
+  },
+  ignoreNULL = FALSE)
+
+  observeEvent(r$filename,{
+    if(is.null(r$filename)){
+      shinyjs::disable("check_file")
+    }else {
+      shinyjs::enable("check_file")
+    }
+  },
+  ignoreNULL = FALSE)
 
   # Download Handlers ---------------------------------------------------------------------------
 
