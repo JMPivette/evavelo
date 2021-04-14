@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -98,6 +98,9 @@
     </li>
     <li>
       <a href="../articles/checking_input.html">Vérification de fichier</a>
+    </li>
+    <li>
+      <a href="../articles/geocode_distance.html">geocode_distance</a>
     </li>
   </ul>
 </li>
@@ -129,6 +132,15 @@
       <small>Source: <a href='https://github.com/JMPivette/evavelo/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="evavelo-080" class="section level1">
+<h1 class="page-header" data-toc-text="0.8.0">
+<a href="#evavelo-080" class="anchor"></a>evavelo 0.8.0</h1>
+<ul>
+<li><p>Segmentation of <code>distance_dom_enq_reelle</code> in 3 fields <code>distance_dom_enq_reelle_regions</code> <code>distance_dom_enq_reelle_france</code> <code>distance_dom_enq_reelle_etranger</code> <a href='https://github.com/JMPivette/evavelo/issues/63'>#63</a></p></li>
+<li><p>Detects foreign cities in <code>ville_res</code> <a href='https://github.com/JMPivette/evavelo/issues/57'>#57</a>. We use Open Street Map engine (Nomatim) that has a rate limit of 1 request per second. Geocoding can be slow if there are a lot of different cities outside of France.</p></li>
+<li><p>Speed improvement in geocoding by using local list of cities (France and Outside)</p></li>
+</ul>
+</div>
     <div id="evavelo-071" class="section level1">
 <h1 class="page-header" data-toc-text="0.7.1">
 <a href="#evavelo-071" class="anchor"></a>evavelo 0.7.1</h1>

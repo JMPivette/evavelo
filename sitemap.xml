@@ -76,6 +76,12 @@
     <loc>https://jmpivette.github.io/evavelo//reference/geocode_df_cities.html</loc>
   </url>
   <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/geocode_df_cities_cp.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/geocode_df_foreign_cities.html</loc>
+  </url>
+  <url>
     <loc>https://jmpivette.github.io/evavelo//reference/geocode_evavelo.html</loc>
   </url>
   <url>
@@ -88,10 +94,16 @@
     <loc>https://jmpivette.github.io/evavelo//reference/get_closest_point.html</loc>
   </url>
   <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/intersection_traj_reg.html</loc>
+  </url>
+  <url>
     <loc>https://jmpivette.github.io/evavelo//reference/is_iti_coherent.html</loc>
   </url>
   <url>
     <loc>https://jmpivette.github.io/evavelo//reference/log_in_x_not_in_y.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/measure_dist_vec.html</loc>
   </url>
   <url>
     <loc>https://jmpivette.github.io/evavelo//reference/outliers_std_detect.html</loc>
@@ -121,6 +133,12 @@
     <loc>https://jmpivette.github.io/evavelo//reference/real_distance.html</loc>
   </url>
   <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/rename_french_cities.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/unify_regions.html</loc>
+  </url>
+  <url>
     <loc>https://jmpivette.github.io/evavelo//reference/update_wb.html</loc>
   </url>
   <url>
@@ -134,5 +152,8 @@
   </url>
   <url>
     <loc>https://jmpivette.github.io/evavelo//articles/checking_input.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo//articles/geocode_distance.html</loc>
   </url>
 </urlset>

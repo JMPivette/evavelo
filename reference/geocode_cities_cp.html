@@ -73,7 +73,7 @@ mispleeing or wrong postcode are not taken in account but an informative warning
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -100,6 +100,9 @@ mispleeing or wrong postcode are not taken in account but an informative warning
     </li>
     <li>
       <a href="../articles/checking_input.html">Vérification de fichier</a>
+    </li>
+    <li>
+      <a href="../articles/geocode_distance.html">geocode_distance</a>
     </li>
   </ul>
 </li>
@@ -137,7 +140,7 @@ mispleeing or wrong postcode are not taken in account but an informative warning
 mispleeing or wrong postcode are not taken in account but an informative warning is created.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>geocode_cities_cp</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>city_col</span>, <span class='va'>cp_col</span>, country_col <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>geocode_cities_cp</span><span class='op'>(</span><span class='va'>.data</span>, <span class='va'>city_col</span>, <span class='va'>cp_col</span>, <span class='va'>country_col</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,13 +160,16 @@ This value will also be used to name the new columns.</p></td>
     </tr>
     <tr>
       <th>country_col</th>
-      <td><p>optional contry_col (to avoid geocoding non-french cities)</p></td>
+      <td><p>contry_col (used to define the type of geocoding)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If country_col is provided, the</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
