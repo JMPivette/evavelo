@@ -158,7 +158,15 @@ calc_distance <- function(eva_data, max_dist = 30){
         .data$distance_dom_enq_reelle -
         .data$distance_dom_enq_reelle_regions -
         .data$distance_dom_enq_reelle_france
-    )
+    ) %>%
+    dplyr::relocate(.data$id_quest,
+                    .data$distance_domicile_enq,
+                    .data$distance_dom_enq_reelle,
+                    .data$distance_dom_enq_reelle_regions,
+                    .data$distance_dom_enq_reelle_france,
+                    .data$distance_dom_enq_reelle_etranger,
+                    .data$distance_heb_enq,
+                    .data$distance_heb_enq_reelle)
 
   ##aggregate all information together------------------
   enquete_out <-  dist_point_enq %>%
