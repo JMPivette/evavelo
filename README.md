@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# EvaVelo
+# Eva-Scan
 
 <!-- badges: start -->
 
@@ -60,34 +60,41 @@ lapply(eva_data_processed, head)
 #> 6     <NA>                                <NA>
 #> 
 #> $enquetes_post_traitement
-#>   id_quest categorie_corrige distance_domicile_enq distance_dom_enq_reelle
-#> 1   106aA1           Sportif              0.000000                0.000000
-#> 2   106aA2        Utilitaire                    NA                      NA
-#> 3   106aA3           Sportif              4.805045                6.419199
-#> 4   106aA4            Loisir              0.000000                0.000000
-#> 5   106aA5           Sportif                    NA                      NA
-#> 6   106aA6            Loisir            157.663372              173.447543
-#>   distance_heb_enq distance_heb_enq_reelle iti_dep_iti_valide
-#> 1               NA                      NA               <NA>
-#> 2               NA                      NA               <NA>
-#> 3               NA                      NA               <NA>
-#> 4               NA                      NA               <NA>
-#> 5               NA                      NA               <NA>
-#> 6               NA                      NA               <NA>
-#>   id_section_origine iti_arr_iti_valide id_section_dest ville_heb_cog_lau
-#> 1                 NA               <NA>              NA              <NA>
-#> 2                 NA               <NA>              NA              <NA>
-#> 3                 NA               <NA>              NA              <NA>
-#> 4                 NA               <NA>              NA              <NA>
-#> 5                 NA               <NA>              NA              <NA>
-#> 6                 NA               <NA>              NA              <NA>
-#>   ville_res_cog_lau
-#> 1             17300
-#> 2              <NA>
-#> 3             17028
-#> 4             17300
-#> 5              <NA>
-#> 6             33318
+#>   id_quest categorie_corrige distance_domicile_enq
+#> 1   106aA1           Sportif              0.468112
+#> 2   106aA2        Utilitaire                    NA
+#> 3   106aA3           Sportif              5.112044
+#> 4   106aA4            Loisir              0.468112
+#> 5   106aA5           Sportif                    NA
+#> 6   106aA6            Loisir            157.044731
+#>   distance_dom_enq_reelle_regions distance_dom_enq_reelle_france
+#> 1                       0.6521081                              0
+#> 2                              NA                             NA
+#> 3                       6.8109554                              0
+#> 4                       0.6521081                              0
+#> 5                              NA                             NA
+#> 6                     172.7675257                              0
+#>   distance_heb_enq distance_dom_enq_reelle distance_heb_enq_reelle
+#> 1               NA               0.6521081                      NA
+#> 2               NA                      NA                      NA
+#> 3               NA               6.8109554                      NA
+#> 4               NA               0.6521081                      NA
+#> 5               NA                      NA                      NA
+#> 6               NA             172.7675257                      NA
+#>   distance_dom_enq_reelle_etranger iti_dep_iti_valide id_section_origine
+#> 1                                0               <NA>                 NA
+#> 2                               NA               <NA>                 NA
+#> 3                                0               <NA>                 NA
+#> 4                                0               <NA>                 NA
+#> 5                               NA               <NA>                 NA
+#> 6                                0               <NA>                 NA
+#>   iti_arr_iti_valide id_section_dest ville_heb_cog_lau ville_res_cog_lau
+#> 1               <NA>              NA              <NA>             17300
+#> 2               <NA>              NA              <NA>              <NA>
+#> 3               <NA>              NA              <NA>             17028
+#> 4               <NA>              NA              <NA>             17300
+#> 5               <NA>              NA              <NA>              <NA>
+#> 6               <NA>              NA              <NA>             33318
 ```
 
 ## Traitement étapes par étapes
@@ -121,34 +128,8 @@ eva_data_geocoded <- evavelo::geocode_evavelo(eva_data)
 #>  Locmaria-Berrien(29129) -> Poullaouen(29227)
 #>  Les Forges(56059) -> Forges de Lanouée(56102)
 #>  Lanouée(56102) -> Forges de Lanouée(56102)
-#>  Château-d Olonne(85060) -> Les Sables-d'Olonne(85194)
+#>  Château-d'Olonne(85060) -> Les Sables-d'Olonne(85194)
 #>  Olonne-sur-Mer(85166) -> Les Sables-d'Olonne(85194)
-#> Impossible de reconnaître les communes suivantes:
-#>  Bretignolles-sur-Mer(85035)
-#> 
-#> ...Vérification de ville_heb.............
-#> Impossible de trouver les communes suivantes:
-#>   Camping-municipal-henvic
-#>   Chaix
-#>   Île de Ré
-#> Interpretation de communes mal nommées:
-#>  Chatelaillon -> Châtelaillon-Plage (17094) 
-#>  Saint-Pol -> Saint-Pol-de-Léon (29259)
-#> 
-#> ...Vérification de iti_depart_itineraire.............
-#> Impossible de trouver les communes suivantes:
-#>   Uméa
-#> Interpretation de communes mal nommées:
-#>  St Brieuc -> Saint-Brieuc (22278) 
-#>  Vielle st Girons -> Vielle-Saint-Girons (40326)
-#> 
-#> ...Vérification de iti_arrivee_itineraire.............
-#> Impossible de trouver les communes suivantes:
-#>   Dortmund
-#> 
-#> ...Vérification de nom_site_enq.............
-#> Interpretation de communes mal nommées:
-#>  St Pol de Léon -> Saint-Pol-de-Léon (29259)
 #> 
 #> ...Vérification de ville_res.............
 #> Les villes suivantes ont ete ignorées. Propositions de corrections:
@@ -170,6 +151,29 @@ eva_data_geocoded <- evavelo::geocode_evavelo(eva_data)
 #>  Saint-Germain-du-Puy (18391) ->     Saint-Germain-du-Puy (18390)
 #>  Saint-Joseph (97980) ->     Saint-Joseph (97480)
 #>  Saint-Pol-de-Léon (22250) ->    Saint-Pol-de-Léon (29250)
+#> Interprétation de noms de communes étrangères:
+#>  Chine : Benjing -> Beijing
+#> Villes inconnues:
+#>  Noor mout (Pays-Bas)
+#> 
+#> ...Vérification de ville_heb.............
+#> Impossible de trouver les communes suivantes:
+#>   Camping-municipal-henvic
+#>   Chaix
+#>   Île de Ré
+#> Interpretation de communes mal nommées:
+#>  Chatelaillon -> Châtelaillon-Plage (17094) 
+#>  Saint-Pol -> Saint-Pol-de-Léon (29259)
+#> 
+#> ...Vérification de iti_depart_itineraire.............
+#> Impossible de trouver les communes suivantes:
+#>   Uméa
+#> 
+#> ...Vérification de iti_arrivee_itineraire.............
+#> Impossible de trouver les communes suivantes:
+#>   Dortmund
+#> 
+#> ...Vérification de nom_site_enq.............
 ```
 
 ### Process
@@ -187,9 +191,12 @@ eva_data_processed <- evavelo::process_evavelo(eva_data_geocoded)
 #> Les villes d'arrivée d'itinéraire suivantes sont trop éloignées de l'itinéraire (>30km):
 #>  Paris (38A34)
 #>  
+#> Liste des régions de l'itinéraire à partir de tables_communes:
+#>  Bretagne, Nouvelle-Aquitaine, Pays de la Loire
+#> 
 #> Correction de catégories pour 17 questionnaires ....
 #> Il n'a pas été possible de corriger les catégories de 3 questionnaire(s).
-#> La catégorie du déclarant sera utilisée:
+#>  La catégorie du déclarant sera utilisée:
 #>  141A35, 38A45, 38A46
 ```
 
