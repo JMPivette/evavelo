@@ -156,3 +156,20 @@ bind_list_df <- function(...){
   ) %>%
     stats::setNames(df_names)
 }
+
+#' Rename french cities names compatible to local data.base
+#'
+#' Convert a string vector and change it to capital without accent. Removes `-` or `'` and transform SAINT to ST.
+#'
+#' @param cities a string vector
+#'
+#' @return a string vector the same length as cities.
+#' @keywords internal
+rename_french_cities <- function(cities){
+  cities %>%
+    stringr::str_to_upper() %>%
+    stringr::str_replace_all("[-']", " ") %>%
+    stringi::stri_trans_general(id = "Latin-ASCII") %>%
+    stringr::str_replace_all("SAINT ", "ST ")%>%
+    stringr::str_replace_all("SAINTE ", "STE ")
+}

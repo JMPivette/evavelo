@@ -45,9 +45,9 @@ Un log du géocodage apparaitra dans les messages.
 La fonction retourne une liste de valeurs créées ou modifiées.
 
 ```{r test}
-result <- process_evavelo(eva_data)
+result <- evavelo::process_evavelo(eva_data)
 
-lapply(result, print)
+purrr::map(result, ~ head(.x,10))
 ```
 
 

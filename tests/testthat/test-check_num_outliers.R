@@ -6,7 +6,7 @@ test_that("check_num_outliers() works", {
 
   ## Check that we have a list of data.frames
   purrr::walk(check,
-              ~ expect_s3_class(., "data.frame"))
+              ~ expect_s3_class(.x, "data.frame"))
 
   ## on data with corrected categories
   check_corrected <- check_num_outliers(
@@ -19,7 +19,7 @@ test_that("check_num_outliers() works", {
 
   ## Check that we have a list of data.frames
   purrr::walk(check_corrected,
-              ~ expect_s3_class(., "data.frame"))
+              ~ expect_s3_class(.x, "data.frame"))
 
 
 })

@@ -4,7 +4,7 @@
 \alias{geocode_cities_cp}
 \title{geocode a data.frame with french cities and postcode}
 \usage{
-geocode_cities_cp(.data, city_col, cp_col, country_col = NULL)
+geocode_cities_cp(.data, city_col, cp_col, country_col)
 }
 \arguments{
 \item{.data}{a dataframe that needs to be updated}
@@ -14,7 +14,7 @@ This value will also be used to name the new columns.}
 
 \item{cp_col}{postcode columns}
 
-\item{country_col}{optional contry_col (to avoid geocoding non-french cities)}
+\item{country_col}{contry_col (used to define the type of geocoding)}
 }
 \value{
 the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
@@ -22,5 +22,8 @@ the input data.frame with 3 new columns with a name based on city_col (_lat, _lo
 \description{
 Since there is a postcode information, this function is stricter than geo_code_cities()
 mispleeing or wrong postcode are not taken in account but an informative warning is created.
+}
+\details{
+If country_col is provided, the
 }
 \keyword{internal}

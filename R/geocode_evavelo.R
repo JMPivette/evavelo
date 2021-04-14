@@ -9,19 +9,26 @@ geocode_evavelo <- function(data){
   if(is.evadata(data) == FALSE)
     data <- read_evavelo(data)
 
+  if(attr(data, "geocoded") == TRUE){
+    message("Les donn\u00e9es ont d\u00e9j\u00e0 \u00e9t\u00e9 g\u00e9ocod\u00e9es")
+    message("-----------------------------------")
+    return(data)
+  }
+
   message("V\u00e9rification des noms de communes")
   message("---------------------------------")
   data$table_communes <- data$table_communes %>%
     geocode_table_communes()
 
   data$enquete <- data$enquete %>%
+    geocode_cities_cp(ville_res,
+                      cp_col = cp_res,
+                      country_col = pays_res) %>%
     geocode_cities(ville_heb) %>%
     geocode_cities(iti_depart_itineraire) %>%
     geocode_cities(iti_arrivee_itineraire) %>%
-    geocode_cities(nom_site_enq) %>%
-    geocode_cities_cp(ville_res,
-                      cp_col = cp_res,
-                      country_col = pays_res)
+    geocode_cities(nom_site_enq)
+
 
   attr(data, "geocoded") <- TRUE
 
@@ -77,9 +84,9 @@ find_wrong_geocoding <- function(data){
 #' @keywords internal
 
 find_wrong_cities <- function(var_name, enquete, fields_to_keep = "id_quest"){
-  cog <- paste0(var_name, "_cog")
+  lon <- paste0(var_name, "_lon")
   enquete %>%
-    dplyr::filter(!is.na(get(var_name)) & is.na(get(cog))) %>%
+    dplyr::filter(!is.na(get(var_name)) & is.na(get(lon))) %>%
     dplyr::select(dplyr::all_of(fields_to_keep),
            dplyr::all_of(var_name))
 }
