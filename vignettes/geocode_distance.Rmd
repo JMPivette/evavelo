@@ -15,24 +15,53 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(evavelo)
-library(dplyr)
+
 ```
 
 
-Dans le package {evavelo}, différentes phases de geocoding et de mesures de distance sont réalisées.
+Dans le package `evavelo`, différentes phases de geocoding et de mesures de distance sont réalisées.
 
 ## Geocoding
 
-### Ville françaises
-Les champs suivants sont géocodés: 
+Le géocodage est réalisé lors de l'appel à la fonction `geocode_evavelo()` qui est elle-même appelée par `process_evavelo()`
 
+### Ville françaises
+Les champs suivants sont géocodés:
+
+* onglet table_communes
+  + `nom_commune` (associé à `cog`)
+* onglet enquête
+  + `ville_res` (associé à `cp_res` et `pays_res`)
+  + `ville_heb`
+  + `iti_depart_itineraire`
+  + `iti_arrivee_itineraire`
+  + `nom_site_enq`
+  
+Le gécodage de ces communes est d'abord réalisé localement en cherchant une correpondance exacte avec la [Base officielle des codes postaux](https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/) réalisé par La Poste. 
+
+Si aucun code postal ou code INSEE n'est fourni (ville_heb par exemple), nous supprimons de cette base les noms qui sont utilisés pour nommés des villes différentes (exemple: "St Denis").
+
+Les villes qui n'ont pas été détectés lors de cette recherche sont ensuite recherchée en utilisant le package [banR](https://github.com/joelgombin/banR) qui fait lui même appel à la [Base Adresse Nationale (BAN)](https://geo.api.gouv.fr/adresse)
 
 ### Villes Etrangères
+La recherche de ville étrangère est réalisée uniquement sur le champ `ville_res` quand `pays_res` est différent de "France".
+
+Un premier géocodage est réalisé localement en utilisant la Base de données `world.cities` du package `{maps}`.
+La description de cette base de données est la suivante:
+
+>This database is primarily of world cities of population greater than about 40,000. Also included are capital cities of any population size, and many smaller towns.
+
+Les villes qui n'ont pu être géocodées sont ensuite recherchées en utilisant le package `{tidygeocoder}` qui fait appel au service [Nomatim](https://nominatim.org/) de Open Street Map
+
+Ce service étant gratuit, les requêtes sont bridées à 1 demande par seconde. Le géocodage peut donc prendre plusieurs minutes en fonction du nombre de ville étrangères à géocodé.
 
 ## Mesure de distance
 
 ### Distance itinéraire
 
 ### Distances point d'enquête
+
+
+
+
 
