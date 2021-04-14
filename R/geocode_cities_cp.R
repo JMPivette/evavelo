@@ -112,18 +112,23 @@ geocode_df_foreign_cities <- function(.data,
 
   ## Search approximate values in local database----------------
   if(nrow(geocoding) != nrow(foreign_cities)){
-    geocoding_approx <- foreign_cities %>%
+    remaining <- foreign_cities %>%
       dplyr::anti_join(geocoding, by = "id_rows") %>%
       dplyr::mutate(country = countrycode::countryname(.data$country),
                     city = stringi::stri_trans_general(.data$city, id = "Latin-ASCII")) %>%
-      tidyr::drop_na(.data$city, .data$country) %>%
-      fuzzyjoin::stringdist_left_join(world_cities,
-                                      by = c("city", "country"),
-                                      ignore_case = TRUE,
-                                      max_dist = 1,
-                                      distance_col = "distance") %>%
+      tidyr::drop_na(.data$city, .data$country)
+
+    geocoding_approx <- remaining %>%
+      fuzzyjoin::stringdist_left_join(
+        world_cities %>%
+          dplyr::filter(.data$country %in% unique(remaining$country)),
+        by = c("city", "country"),
+        ignore_case = TRUE,
+        max_dist = 1,
+        distance_col = "distance"
+      ) %>%
       tidyr::drop_na(.data$lon) %>%
-      dplyr::filter(.data$country.distance == 0) %>% ## Need exact Country (otherwise UK get inverted with US)
+      dplyr::filter(.data$country.x == .data$country.y) %>%
       dplyr::group_by(.data$id_rows) %>%
       dplyr::slice_max(.data$pop) %>% ## Get biggest city in case of multiple result
       dplyr::ungroup()
@@ -282,7 +287,7 @@ geocode_df_cities_cp <- function(.data,
   ## First geocode using local database (exact match)
   local_result <- french_cities %>%
     dplyr::mutate(city = rename_french_cities(!!city_col),
-           cp = !!cp_col) %>%
+                  cp = !!cp_col) %>%
     dplyr::left_join(
       france_cities,
       by = c("city", "cp")) %>%
@@ -297,46 +302,46 @@ geocode_df_cities_cp <- function(.data,
 
   if(nrow(remaining_geocode) == 0){
     result <- tibble::tibble(id_rows = integer(),
-                     latitude = numeric(),
-                     longitude = numeric(),
-                     cog = character())
+                             latitude = numeric(),
+                             longitude = numeric(),
+                             cog = character())
   } else {
 
-  ## Geocode the remaining using banR
-  result <- french_cities %>%
-    dplyr::anti_join(local_result, by = "id_rows") %>%
-    dplyr::mutate(
-      city_renamed = stringi::stri_trans_general(!!city_col,
-                                                 id = "Latin-ASCII") # to avoid strange result from geocode_tbl
-    ) %>%
-    banR::geocode_tbl(tbl = .,
-                      adresse = city_renamed,
-                      code_postal = !!cp_col) %>%
-    suppressMessages() %>%
-    dplyr::mutate(
-      geocode_ok = (.data$result_type == "municipality" &
-                      .data$result_score >= 0.8)
-    ) %>%
-    dplyr::select(-.data$city_renamed)
+    ## Geocode the remaining using banR
+    result <- french_cities %>%
+      dplyr::anti_join(local_result, by = "id_rows") %>%
+      dplyr::mutate(
+        city_renamed = stringi::stri_trans_general(!!city_col,
+                                                   id = "Latin-ASCII") # to avoid strange result from geocode_tbl
+      ) %>%
+      banR::geocode_tbl(tbl = .,
+                        adresse = city_renamed,
+                        code_postal = !!cp_col) %>%
+      suppressMessages() %>%
+      dplyr::mutate(
+        geocode_ok = (.data$result_type == "municipality" &
+                        .data$result_score >= 0.8)
+      ) %>%
+      dplyr::select(-.data$city_renamed)
 
-  ## Checking wrong results and propose an alternative in warnings-------------------
-  anomaly_to_check <- result %>%
-    dplyr::filter(is.na(.data$geocode_ok) | .data$geocode_ok == FALSE) %>%
-    dplyr::select(
-      city = !!city_col, postcode = !!cp_col,
-      .data$result_type, .data$result_score, .data$result_label, .data$result_postcode) %>%
-    dplyr::distinct()
+    ## Checking wrong results and propose an alternative in warnings-------------------
+    anomaly_to_check <- result %>%
+      dplyr::filter(is.na(.data$geocode_ok) | .data$geocode_ok == FALSE) %>%
+      dplyr::select(
+        city = !!city_col, postcode = !!cp_col,
+        .data$result_type, .data$result_score, .data$result_label, .data$result_postcode) %>%
+      dplyr::distinct()
 
-  if(nrow(anomaly_to_check) !=0)
-    check_warn_cities_cp(anomaly_to_check)
+    if(nrow(anomaly_to_check) !=0)
+      check_warn_cities_cp(anomaly_to_check)
 
-  result <- result %>%
-    dplyr::filter(.data$geocode_ok) %>%
-    dplyr::select(.data$id_rows,
-                  .data$latitude,
-                  .data$longitude,
-                  cog = .data$result_citycode)
-}
+    result <- result %>%
+      dplyr::filter(.data$geocode_ok) %>%
+      dplyr::select(.data$id_rows,
+                    .data$latitude,
+                    .data$longitude,
+                    cog = .data$result_citycode)
+  }
 
   ## Format data for output ----------------------------
   index <- input_data %>%
