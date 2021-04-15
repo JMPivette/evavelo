@@ -21,8 +21,7 @@ process_evavelo <- function(file,
   ## Import data
   if(is.evadata(file) == FALSE)
     file <- read_evavelo(file)
-  if(attr(file, "geocoded") == FALSE)
-    file <- geocode_evavelo(file)
+
 
   ## Check values
   if (check == TRUE){
@@ -33,6 +32,9 @@ process_evavelo <- function(file,
       return(NULL)
     }
   }
+
+  if(attr(file, "geocoded") == FALSE)
+    file <- geocode_evavelo(file)
 
   ## process file
   distances_calculated <- calc_distance(file)

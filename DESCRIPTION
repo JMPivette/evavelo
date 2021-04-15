@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.8.0
+Version: 0.8.1
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
