@@ -1,0 +1,106 @@
+---
+title: "site_classification"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{site_classification}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(evavelo)
+library(openxlsx)
+library(magrittr)
+library(dplyr)
+```
+
+## Introduction
+
+L'objectif de ce document de travail est d'ouvrir et de lire le contenu d'un fichier xlsx contenant des données dans l'onglet `comptages_automatiques` et de réaliser une classification hierarchiques des sites
+
+## Ouverture du fichier
+
+```{r file_open}
+file_path <- here::here("vignettes", "classification.xlsx")
+
+
+## header
+header_data <- openxlsx::read.xlsx(file_path, 
+                                   sheet = "comptages_automatiques",
+                                   rows = 1:4) %>% 
+  dplyr::select(-(1:9)) %>% 
+  t() %>% 
+  dplyr::as_tibble(rownames = "site_name") %>% 
+  dplyr::rename_with(~ c("site_name", "id_site","id_channel", "name"))
+  
+
+## data
+load_data <- openxlsx::read.xlsx(file_path, 
+                                  sheet = "comptages_automatiques",
+                                  startRow = 4) %>% 
+  dplyr::select(-dplyr::any_of(c("date", "annee", "mois", "jour", "type_jour"))) %>% 
+  dplyr::rename(date = 1)
+
+
+count_data <- load_data %>% 
+  ## Remove non-existing date (like winter> summer time) before conversion
+  filter(dplyr::if_any(c(where(is.numeric), -date),
+                       ~ !is.na(.x))) %>%  
+  dplyr::mutate(date= openxlsx::convertToDateTime(date)) %>% 
+  dplyr::mutate(week_end = lubridate::wday(date) %in% c(1,7)) %>% 
+  dplyr::mutate(dplyr::across(where(is.character),
+                       ~ !is.na(.x)))
+
+data_to_classify <- count_data %>% 
+  tidyr::pivot_longer(where(is.numeric),
+                      names_to = "site_name",
+                      values_to = "count") %>% 
+  dplyr::left_join(header_data,
+            by = "site_name")
+  
+```
+
+
+## Calcul des prédicateurs
+
+```{r}
+##work on non-holiday
+
+pred <- data_to_classify %>% 
+  # dplyr::group_by(id_channel, jour_ferie, pont, vacances, week_end) %>% 
+  # dplyr::summarize(count= sum(count, na.rm = TRUE), .groups = "drop") %>% 
+  dplyr::group_by(id_channel) %>% 
+  dplyr::summarize(
+    ## Weekday proportion on non holiday (working period)
+    wd_wp = sum((!vacances) * (!week_end) * (!pont) * count, na.rm = TRUE) / 
+      sum((!vacances) * count, na.rm =TRUE),
+    ## Weekday proportion on holiday 
+    wd_ho = sum(vacances * (!week_end) * count, na.rm = TRUE) / 
+      sum(vacances * count, na.rm = TRUE),
+    ## July August over total
+    july_august = sum((lubridate::month(date) %in% 7:8) * count, na.rm = TRUE) /
+      sum(count, na.rm = TRUE)
+    
+    ## Pont 14 juillet et 15 aout dans fréquentation mois aout juillet
+    
+    
+    
+    
+  )
+  
+ 
+pred
+```
+
+
+
+## Classification hierarchique
+
+## Ahffichage du dendogramme.
