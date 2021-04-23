@@ -76,7 +76,8 @@ mod_load_file_server <- function(input, output, session, r){
         {r$eva_data <- read_evavelo(r$data)
         r$log <- paste(r$log, "\n[1] Fichier ouvert!")
         },
-        message = function(m) r$log<- paste(r$log, m$message)),
+        message = function(m) r$log<- paste(r$log,"\n[1]", m$message),
+        warning = function(w) r$log <- paste(r$log,"\n[1] Warning:", w$message)),
       error = function(e){
         r$log <- paste(r$log, "\n[2] ERREUR pendant l\'e chargement\'ouverture du fichier:\n", e)
         r$process_error <- TRUE

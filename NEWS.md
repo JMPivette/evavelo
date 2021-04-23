@@ -2,6 +2,8 @@
 
 - Read counting data from worksheet `comptages_automatiques` 
 
+- Add site clustering and dendogram visualization #24
+
 # evavelo 0.8.1
 
 - Improve UI #66
