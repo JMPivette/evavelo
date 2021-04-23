@@ -23,6 +23,7 @@ Imports:
     fuzzyjoin,
     geodist,
     janitor,
+    lubridate,
     magrittr,
     openxlsx,
     purrr,
@@ -41,10 +42,12 @@ Imports:
     tidyr,
     utils
 Suggests: 
+    factoextra,
+    ggplot2,
+    here,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0),
-    tictoc
+    testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
 Remotes:
