@@ -225,7 +225,8 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
     dplyr::group_by(site_name, id_site, id_channel, name) %>%
     dplyr::summarize(
       ## Weekday proportion excluding holiday (working period)
-      pred_wd_wp = sum_prod(!vacances, !week_end, !pont, count) / sum_prod(!vacances, count),
+      pred_wd_wp = sum_prod(!vacances, !week_end, !pont, !jour_ferie, count) /
+        sum_prod(!vacances, !jour_ferie, count),
       ## Weekday proportion during holiday
       pred_wd_ho = sum_prod(vacances, !week_end, count) / sum_prod(vacances, count),
       ## July August over total
@@ -233,8 +234,8 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
       ## Pont 14 juillet et 15 aout dans fréquentation mois aout juillet
       pred_pont_jul_aug = sum_prod(july_august, pont, count) / sum_prod(july_august, count),
       ## Proportion of count after 17:00 and before 9:00 (on weekday / working period)
-      pred_wp_17_9 = sum_prod(!dplyr::between(lubridate::hour(date),9,17), !vacances, !week_end, !pont, count) /
-        sum_prod(!vacances, !week_end, !pont, count),
+      pred_wp_17_9 = sum_prod(!dplyr::between(lubridate::hour(date),9,17), !vacances, !week_end, !pont, !jour_ferie, count) /
+        sum_prod(!vacances, !week_end, !pont, !jour_ferie, count),
       ## Proportion of counts between 9h and 11h in week-end
       pred_we_09_11 = sum_prod(dplyr::between(lubridate::hour(date),9,11), week_end, count) /
         sum_prod(week_end, count),
