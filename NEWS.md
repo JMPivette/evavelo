@@ -1,5 +1,7 @@
 # evavelo (development version)
 
+- Read counting data from worksheet `comptages_automatiques` 
+
 # evavelo 0.8.1
 
 - Improve UI #66

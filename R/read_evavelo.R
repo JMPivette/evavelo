@@ -15,7 +15,8 @@ read_evavelo <- function(file){
     comptage_init = read_comptage(file, init = TRUE),
     comptage = read_comptage(file),
     enquete_init = read_enquete(file, init = TRUE),
-    enquete = read_enquete(file)
+    enquete = read_enquete(file),
+    comptages_automatiques = read_compt_auto(file)
   )
 
   class(out) <- c("evadata", class(out))
@@ -39,7 +40,7 @@ read_table_communes <- function(file, sheet = "table_communes"){
                       sheet,
                       startRow = 2) %>%  # We skip the first row that contains global information and not data.
     janitor::clean_names()
-    # geocode_table_communes()
+  # geocode_table_communes()
 
 }
 
@@ -143,4 +144,81 @@ read_calendrier <- function(file, sheet = "calendrier_sites"){
     janitor::clean_names()
 
 }
+
+#' Read and clean "comptages_automatiques" information
+#'
+#' Read a specific sheet of an xlsx object and perform some basic cleaning.
+#'
+#' @param file xlsx file, Workbook object or URL to xlsx file
+#' @param sheet Name of the worksheet containing "comptages_automatiques" information.
+#'
+#' @return a data.frame
+#' @keywords internal
+read_compt_auto <- function(file, sheet = "comptages_automatiques"){
+  ## header
+  header_data <- openxlsx::read.xlsx(file,
+                                     sheet,
+                                     sep.names = " ",
+                                     rows = 1:4)
+  if(is.null(header_data)){
+    warning("Aucune donn\u00e9e pr\u00e9sente dans l\'onglet comptages_automatiques")
+    return(NULL)
+  }
+
+
+  # Load header data ----------------------------------------------------------------------------
+
+
+  header_data <- header_data %>%
+    dplyr::select(-(1:9)) %>% ## start col is 10
+    t() %>%
+    dplyr::as_tibble(rownames = "site_name") %>%
+    dplyr::rename_with(~ c("site_name", "id_site","id_channel", "name")) %>%
+    dplyr::mutate(dplyr::across(where(is.character),
+                                stringr::str_squish)) ## Remove repeated white spaces
+
+  ##TODO add a test for uniqueness of id_channel.
+  if(anyDuplicated(header_data$id_channel) != 0){
+    warning("id_channels dupliqu\u00e9s dans l\'onglet comptages_automatiques")
+    return(NULL)
+  }
+
+
+  # Load data -----------------------------------------------------------------------------------
+  load_data <- openxlsx::read.xlsx(file,
+                                   sheet,
+                                   sep.names = " ",
+                                   startRow = 4) %>%
+    dplyr::select(-dplyr::any_of(c("date", "annee", "mois", "jour", "type_jour"))) %>%
+    dplyr::rename(date = 1) %>%
+    ## Remove non-existing date (like winter> summer time) before conversion
+    dplyr::filter(dplyr::if_any(c(where(is.numeric), -date),
+                         ~ !is.na(.x))) %>%
+    ## Transform "x" to TRUE or FALSE
+    dplyr::mutate(dplyr::across(where(is.character),
+                                ~ !is.na(.x))) %>%
+    ## Create useful variables
+    dplyr::mutate(
+      date= openxlsx::convertToDateTime(.data$date),
+      week_end = lubridate::wday(.data$date) %in% c(1,7),
+      july_august = lubridate::month(.data$date) %in% 7:8
+    ) %>%
+    tidyr::pivot_longer(where(is.numeric),
+                        names_to = "name",
+                        values_to = "count"
+    ) %>%
+    dplyr::left_join(header_data,
+                     by = "name")
+
+  # Check data produced to avoid inconsistency later on
+  if(all(!c("date", "jour_ferie", "pont", "vacances", "week_end", "july_august",
+            "name", "count", "site_name", "id_site", "id_channel") == names(load_data))){
+    warning("Probl\u00e8me de format dans l\'onglet comptages_automatiques. Impossible d\'importer")
+    return(NULL)
+  }
+
+
+  return(load_data)
+}
+
 
