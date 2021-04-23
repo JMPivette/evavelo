@@ -20,8 +20,10 @@ Imports:
     bslib,
     countrycode,
     dplyr (>= 1.0.0),
+    factoextra,
     fuzzyjoin,
     geodist,
+    ggplot2,
     janitor,
     lubridate,
     magrittr,
@@ -42,9 +44,6 @@ Imports:
     tidyr,
     utils
 Suggests: 
-    factoextra,
-    ggplot2,
-    here,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
