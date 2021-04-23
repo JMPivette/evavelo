@@ -1,5 +1,5 @@
 ---
-title: "site_classification"
+title: "Classification des sites"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{site_classification}
@@ -14,10 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, message=FALSE}
 library(evavelo)
 library(openxlsx)
-library(magrittr)
 library(dplyr)
 library(ggplot2)
 library(factoextra)
@@ -29,136 +28,38 @@ L'objectif de ce document de travail est d'ouvrir et de lire le contenu d'un fic
 
 ## Ouverture du fichier
 
+La fonction `read_compt_auto()` permet de lire les comptages automatiques et de calculer les indicateurs utilisés pour la classification hierarchique
+
+-   **pred_wd_wp** (Working Day proportion on Working period): La proportion de donnée en jours ouvrés dans la données en excluant les vacances
+-   **pred_wd_ho** (Working Day proportion on Holiday): La proportion de donnée en jours ouvrés pendant les vacances
+-   **pred_jul_aug** (July-August proportion): La proportion de donnée en Juillet-Août par rapport au total.
+-   **pred_pont_jul_aug**: La proportion de données pendant les ponts de Juillet-Août par rapport à toute la période Juillet-Août
+-   **pred_wp_17_9** :La proportion de données avant 9h et après 17h pour les jours ouvrés de la semaine
+-   **pred_we_09_11**: La proportion de données entre 9h et 11h pendant les week-end
+
 ```{r file_open}
-file_path <- here::here("vignettes", "classification.xlsx")
+xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 
+predicates_data <- evavelo::read_compt_auto(xlsx_path)
 
-## header
-header_data <- openxlsx::read.xlsx(file_path, 
-                                   sheet = "comptages_automatiques",
-                                   sep.names = " ",
-                                   rows = 1:4) %>% 
-  dplyr::select(-(1:9)) %>% 
-  t() %>% 
-  dplyr::as_tibble(rownames = "site_name") %>% 
-  dplyr::rename_with(~ c("site_name", "id_site","id_channel", "name")) %>% 
-  dplyr::mutate(dplyr::across(where(is.character),
-                              stringr::str_squish)) ## Remove repeated white spaces
-##TODO add a test for uniqueness of id_channel.
-anyDuplicated(header_data$id_channel)
-
-## data
-load_data <- openxlsx::read.xlsx(file_path, 
-                                 sheet = "comptages_automatiques",
-                                 sep.names = " ",
-                                 startRow = 4) %>% 
-  dplyr::select(-dplyr::any_of(c("date", "annee", "mois", "jour", "type_jour"))) %>% 
-  dplyr::rename(date = 1)
-
-
-count_data <- load_data %>% 
-  ## Remove non-existing date (like winter> summer time) before conversion
-  filter(dplyr::if_any(c(where(is.numeric), -date),
-                       ~ !is.na(.x))) %>%  
-  ## Transform "x" to TRUE or FALSE
-  dplyr::mutate(dplyr::across(where(is.character), 
-                              ~ !is.na(.x))) %>% 
-  ## Create useful variables
-  dplyr::mutate(
-    date= openxlsx::convertToDateTime(date),
-    week_end = lubridate::wday(date) %in% c(1,7),
-    july_august = lubridate::month(date) %in% 7:8)
-
-
-data_to_classify <- count_data %>% 
-  tidyr::pivot_longer(where(is.numeric),
-                      names_to = "name",
-                      values_to = "count") %>% 
-  dplyr::left_join(header_data,
-                   by = "name")
+predicates_data
 
 ```
-
-
-## Calcul des prédicateurs
-
-```{r include=FALSE}
-sum_prod <- evavelo:::sum_prod
-
-```
-
-
-```{r}
-##work on non-holiday
-
-pred <- data_to_classify %>% 
-  dplyr::group_by(site_name, id_site, id_channel, name) %>% 
-  dplyr::summarize(
-    ## Weekday proportion excluding holiday (working period)
-    wd_wp = sum_prod(!vacances, !week_end, !pont, count) / sum_prod(!vacances, count),
-    ## Weekday proportion during holiday 
-    wd_ho = sum_prod(vacances, !week_end, count) / sum_prod(vacances, count),
-    ## July August over total
-    jul_aug = sum_prod(july_august, count) / sum_prod(count),
-    ## Pont 14 juillet et 15 aout dans fréquentation mois aout juillet
-    pont_jul_aug = sum_prod(july_august, pont, count) / sum_prod(july_august, count),
-    ## Proportion of count after 17:00 and before 9:00 (on weekday / working period)
-    wp_17_9 = sum_prod(!between(lubridate::hour(date),9,17), !vacances, !week_end, !pont, count) / 
-      sum_prod(!vacances, !week_end, !pont, count),
-    ## Proportion of counts between 9h and 11h in week-end
-    we_09_11 = sum_prod(between(lubridate::hour(date),9,11), week_end, count) / 
-      sum_prod(week_end, count),
-    ## Proportion of missing data
-    missing = sum(is.na(count)) / dplyr::n(),
-    .groups = "drop"
-  )
-
-
-pred
-```
-
-```{r}
-p <- data_to_classify %>% 
-  group_by(day = as.Date(date), id_site) %>% 
-  summarize(count = sum(count, na.rm = TRUE), .groups = "drop") %>% 
-  filter(!is.na(id_site)) %>% 
-  filter(id_site %in% c(200000924, 200001030)) %>% 
-  ggplot(aes(day, count)) + 
-  geom_line(aes(color = id_site))
-
-
-```
-
-Attention 2018 n'avait aucun pont en juillet aout (14/07 samedi et 15/08 mercredi). Cela crée un indicateur à zéro...
-
-Il faut aussi compter les NAs
-
 
 ## Classification hierarchique
 
-```{r}
-pred_df <- pred %>% 
-  select(wd_wp:we_09_11) %>% 
+```{r, fig.width=7, fig.height=5}
+pred_df <- predicates_data %>% 
+  select(starts_with("pred")) %>% 
   as.data.frame() 
-rownames(pred_df) <- paste0(pred$name,"(",pred$id_site, ")")
+rownames(pred_df) <- paste0(predicates_data$name,"(",predicates_data$id_site, ")")
 
 
 clust <- pred_df %>% 
   dist() %>% 
   hclust(.,method = "ward.D2") 
 
-fviz_dend(clust, cex = 0.6,k = 10, rect = TRUE, horiz = TRUE)
-
-dend <- as.dendrogram(clust)
-
-fviz_dend(clust, cex = 0.6,k = 5, rect = TRUE)
-
-plot(dend, horiz = TRUE, cex = 0.6)
-
-
+fviz_dend(clust, cex = 0.6,k = 5, rect = TRUE, horiz = TRUE)
 
 ```
 
-
-
-## Affichage du dendogramme.
