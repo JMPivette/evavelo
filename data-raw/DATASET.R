@@ -94,7 +94,7 @@ france_cities <- france_cities %>%
 france_cities_unique_names <- france_cities %>%
   mutate(dep = stringr::str_sub(cp, end = 2)) %>%
   group_by(city) %>%
-  mutate(n_dupl = length(unique(dep))) %>%
+  mutate(n_dupl = dplyr::n_distinct(dep)) %>%
   filter(n_dupl == 1) %>%
   slice_head() %>%
   ungroup() %>%
