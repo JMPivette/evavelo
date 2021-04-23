@@ -148,12 +148,13 @@ read_calendrier <- function(file, sheet = "calendrier_sites"){
 #' Read and clean "comptages_automatiques" information
 #'
 #' Read a specific sheet of an xlsx object and perform some basic cleaning.
+#' Compute predicates that are later user for clustering classification
 #'
 #' @param file xlsx file, Workbook object or URL to xlsx file
 #' @param sheet Name of the worksheet containing "comptages_automatiques" information.
 #'
 #' @return a data.frame
-#' @keywords internal
+#' @export
 read_compt_auto <- function(file, sheet = "comptages_automatiques"){
   ## header
   header_data <- openxlsx::read.xlsx(file,
@@ -193,7 +194,7 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
     dplyr::rename(date = 1) %>%
     ## Remove non-existing date (like winter> summer time) before conversion
     dplyr::filter(dplyr::if_any(c(where(is.numeric), -date),
-                         ~ !is.na(.x))) %>%
+                                ~ !is.na(.x))) %>%
     ## Transform "x" to TRUE or FALSE
     dplyr::mutate(dplyr::across(where(is.character),
                                 ~ !is.na(.x))) %>%
@@ -217,8 +218,33 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
     return(NULL)
   }
 
+  # Compute predicates --------------------------------------------------------------------------
 
-  return(load_data)
+
+  pred <- load_data %>%
+    dplyr::group_by(site_name, id_site, id_channel, name) %>%
+    dplyr::summarize(
+      ## Weekday proportion excluding holiday (working period)
+      pred_wd_wp = sum_prod(!vacances, !week_end, !pont, count) / sum_prod(!vacances, count),
+      ## Weekday proportion during holiday
+      pred_wd_ho = sum_prod(vacances, !week_end, count) / sum_prod(vacances, count),
+      ## July August over total
+      pred_jul_aug = sum_prod(july_august, count) / sum_prod(count),
+      ## Pont 14 juillet et 15 aout dans fréquentation mois aout juillet
+      pred_pont_jul_aug = sum_prod(july_august, pont, count) / sum_prod(july_august, count),
+      ## Proportion of count after 17:00 and before 9:00 (on weekday / working period)
+      pred_wp_17_9 = sum_prod(!dplyr::between(lubridate::hour(date),9,17), !vacances, !week_end, !pont, count) /
+        sum_prod(!vacances, !week_end, !pont, count),
+      ## Proportion of counts between 9h and 11h in week-end
+      pred_we_09_11 = sum_prod(dplyr::between(lubridate::hour(date),9,11), week_end, count) /
+        sum_prod(week_end, count),
+      ## Proportion of missing data
+      missing_perc = sum(is.na(count)) / dplyr::n(),
+      n_missing_days = dplyr::n_distinct(as.Date(date)) - dplyr::n_distinct(as.Date(date[!is.na(count)])),
+      .groups = "drop"
+    )
+
+  return(pred)
 }
 
 
