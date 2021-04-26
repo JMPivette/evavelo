@@ -148,7 +148,7 @@ read_calendrier <- function(file, sheet = "calendrier_sites"){
 #' Read and clean "comptages_automatiques" information
 #'
 #' Read a specific sheet of an xlsx object and perform some basic cleaning.
-#' Compute predicates that are later user for clustering classification
+#' Compute predictors that are later user for clustering classification
 #'
 #' @param file xlsx file, Workbook object or URL to xlsx file
 #' @param sheet Name of the worksheet containing "comptages_automatiques" information.
@@ -218,7 +218,7 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
     return(NULL)
   }
 
-  # Compute predicates --------------------------------------------------------------------------
+  # Compute predictors --------------------------------------------------------------------------
 
 
   pred <- load_data %>%

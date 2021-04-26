@@ -2,7 +2,7 @@
 title: "Classification des sites"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{site_classification}
+  %\VignetteIndexEntry{Classification des sites}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -40,24 +40,24 @@ La fonction `read_compt_auto()` permet de lire les comptages automatiques et de 
 ```{r file_open}
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 
-predicates_data <- evavelo::read_compt_auto(xlsx_path)
+predictors <- evavelo::read_compt_auto(xlsx_path)
 
-predicates_data
+predictors
 
 ```
 
 ## Classification hierarchique
 
 ```{r, fig.width=7, fig.height=5}
-pred_df <- predicates_data %>% 
+pred_df <- predictors %>% 
   select(starts_with("pred")) %>% 
   as.data.frame() 
-rownames(pred_df) <- paste0(predicates_data$name,"(",predicates_data$id_site, ")")
+rownames(pred_df) <- paste0(predictors$name,"(",predictors$id_site, ")")
 
 
 clust <- pred_df %>% 
   dist() %>% 
-  hclust(.,method = "ward.D2") 
+  hclust(method = "ward.D2") 
 
 fviz_dend(clust, cex = 0.6,k = 5, rect = TRUE, horiz = TRUE)
 

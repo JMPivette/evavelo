@@ -44,7 +44,10 @@ Imports:
     tidyr,
     utils
 Suggests: 
+    here,
     knitr,
+    pkgload,
+    processx,
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder: 

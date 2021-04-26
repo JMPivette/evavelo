@@ -25,7 +25,7 @@ mod_visualize_classification_ui <- function(id){
 mod_visualize_classification_server <- function(input, output, session, r){
   ns <- session$ns
 
-  data_to_analyse <- reactive({ ## Remove NAs from predicate
+  data_to_analyse <- reactive({ ## Remove NAs from predictors
     req(r$clust$data)
     data_to_analyse <- r$clust$data %>%
       tidyr::drop_na(dplyr::starts_with("pred"))
@@ -48,8 +48,8 @@ mod_visualize_classification_server <- function(input, output, session, r){
     rownames(pred) <- paste0(data_to_analyse()$name,"(",data_to_analyse()$id_site, ")")
 
     pred %>%
-      dist() %>%
-      hclust(method = "ward.D2")
+      stats::dist() %>%
+      stats::hclust(method = "ward.D2")
   })
 
   output$dendogram <- renderPlot({
@@ -75,7 +75,7 @@ mod_visualize_classification_server <- function(input, output, session, r){
   final_result <- reactive({ ## Reinclude sites that haven't been analyzed
     group_affectation <- dplyr::bind_cols(
       id_channel = data_to_analyse()$id_channel,
-      group = cutree(clust(), k = input$k_clust))
+      group = stats::cutree(clust(), k = input$k_clust))
 
     r$clust$data %>%
       dplyr::select(-dplyr::any_of(c("n_missing_days"))) %>%
