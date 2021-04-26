@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 0.8.1
+Version: 1.0.0
 Authors@R: 
     person(given = "Jean-Marie",
            family = "Pivette",
@@ -20,9 +20,12 @@ Imports:
     bslib,
     countrycode,
     dplyr (>= 1.0.0),
+    factoextra,
     fuzzyjoin,
     geodist,
+    ggplot2,
     janitor,
+    lubridate,
     magrittr,
     openxlsx,
     purrr,
@@ -41,10 +44,12 @@ Imports:
     tidyr,
     utils
 Suggests: 
+    here,
     knitr,
+    pkgload,
+    processx,
     rmarkdown,
-    testthat (>= 3.0.0),
-    tictoc
+    testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
 Remotes:

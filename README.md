@@ -14,14 +14,14 @@ coverage](https://codecov.io/gh/JMPivette/evavelo/branch/master/graph/badge.svg)
 
 ## Résumé
 
-Le but du package `evavelo` est d’appliquer des traitements automatiques
-sur des fichiers d’enquêtes liés à la méthode
+Le package `evavelo` applique des traitements automatiques sur les
+fichiers d’enquêtes liés à la méthode
 [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo)
 (Méthode nationale evaluation des retombées des vélo-routes) développée
 par **Vélo et Territoires**
 
 Ce projet est en cours de developpement et ne peut pas encore être
-utilisé. Il sera composé de fonctions de traitements de fichier mais
+utilisé. Il est composé de fonctions de traitements de fichier mais
 aussi d’une interface web.
 
 ## Installation
@@ -60,13 +60,13 @@ lapply(eva_data_processed, head)
 #> 6     <NA>                                <NA>
 #> 
 #> $enquetes_post_traitement
-#>   id_quest categorie_corrige distance_domicile_enq
-#> 1   106aA1           Sportif              0.468112
-#> 2   106aA2        Utilitaire                    NA
-#> 3   106aA3           Sportif              5.112044
-#> 4   106aA4            Loisir              0.468112
-#> 5   106aA5           Sportif                    NA
-#> 6   106aA6            Loisir            157.044731
+#>   id_quest categorie_corrige distance_domicile_enq distance_dom_enq_reelle
+#> 1   106aA1           Sportif              0.468112               0.6521081
+#> 2   106aA2        Utilitaire                    NA                      NA
+#> 3   106aA3           Sportif              5.112044               6.8109554
+#> 4   106aA4            Loisir              0.468112               0.6521081
+#> 5   106aA5           Sportif                    NA                      NA
+#> 6   106aA6            Loisir            157.044731             172.7675257
 #>   distance_dom_enq_reelle_regions distance_dom_enq_reelle_france
 #> 1                       0.6521081                              0
 #> 2                              NA                             NA
@@ -74,27 +74,27 @@ lapply(eva_data_processed, head)
 #> 4                       0.6521081                              0
 #> 5                              NA                             NA
 #> 6                     172.7675257                              0
-#>   distance_heb_enq distance_dom_enq_reelle distance_heb_enq_reelle
-#> 1               NA               0.6521081                      NA
-#> 2               NA                      NA                      NA
-#> 3               NA               6.8109554                      NA
-#> 4               NA               0.6521081                      NA
-#> 5               NA                      NA                      NA
-#> 6               NA             172.7675257                      NA
-#>   distance_dom_enq_reelle_etranger iti_dep_iti_valide id_section_origine
-#> 1                                0               <NA>                 NA
-#> 2                               NA               <NA>                 NA
-#> 3                                0               <NA>                 NA
-#> 4                                0               <NA>                 NA
-#> 5                               NA               <NA>                 NA
-#> 6                                0               <NA>                 NA
-#>   iti_arr_iti_valide id_section_dest ville_heb_cog_lau ville_res_cog_lau
-#> 1               <NA>              NA              <NA>             17300
-#> 2               <NA>              NA              <NA>              <NA>
-#> 3               <NA>              NA              <NA>             17028
-#> 4               <NA>              NA              <NA>             17300
-#> 5               <NA>              NA              <NA>              <NA>
-#> 6               <NA>              NA              <NA>             33318
+#>   distance_dom_enq_reelle_etranger distance_heb_enq distance_heb_enq_reelle
+#> 1                                0               NA                      NA
+#> 2                               NA               NA                      NA
+#> 3                                0               NA                      NA
+#> 4                                0               NA                      NA
+#> 5                               NA               NA                      NA
+#> 6                                0               NA                      NA
+#>   iti_dep_iti_valide id_section_origine iti_arr_iti_valide id_section_dest
+#> 1               <NA>                 NA               <NA>              NA
+#> 2               <NA>                 NA               <NA>              NA
+#> 3               <NA>                 NA               <NA>              NA
+#> 4               <NA>                 NA               <NA>              NA
+#> 5               <NA>                 NA               <NA>              NA
+#> 6               <NA>                 NA               <NA>              NA
+#>   ville_heb_cog_lau ville_res_cog_lau
+#> 1              <NA>             17300
+#> 2              <NA>              <NA>
+#> 3              <NA>             17028
+#> 4              <NA>             17300
+#> 5              <NA>              <NA>
+#> 6              <NA>             33318
 ```
 
 ## Traitement étapes par étapes
@@ -206,3 +206,9 @@ La fonction `evavelo::app_run()` permet d’utiliser le package via une
 interface web:
 
 ![UI Screenshot](man/figures/eva-scan-ui.png?raw=true "Title")
+
+## Classification de compteurs similaires
+
+Le package `eva-scan` permet aussi de créer une classification
+hiérarchique des compteurs à partir de données de comptages
+automatiques. Cette classification est disponible dans l’interface Web.

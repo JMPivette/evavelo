@@ -1,0 +1,65 @@
+---
+title: "Classification des sites"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Classification des sites}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, message=FALSE}
+library(evavelo)
+library(openxlsx)
+library(dplyr)
+library(ggplot2)
+library(factoextra)
+```
+
+## Introduction
+
+L'objectif de ce document de travail est d'ouvrir et de lire le contenu d'un fichier xlsx contenant des données dans l'onglet `comptages_automatiques` et de réaliser une classification hierarchiques des sites
+
+## Ouverture du fichier
+
+La fonction `read_compt_auto()` permet de lire les comptages automatiques et de calculer les indicateurs utilisés pour la classification hierarchique
+
+-   **pred_wd_wp** (Working Day proportion on Working period): La proportion de donnée en jours ouvrés dans la données en excluant les vacances
+-   **pred_wd_ho** (Working Day proportion on Holiday): La proportion de donnée en jours ouvrés pendant les vacances
+-   **pred_jul_aug** (July-August proportion): La proportion de donnée en Juillet-Août par rapport au total.
+-   **pred_pont_jul_aug**: La proportion de données pendant les ponts de Juillet-Août par rapport à toute la période Juillet-Août
+-   **pred_wp_17_9** :La proportion de données avant 9h et après 17h pour les jours ouvrés de la semaine
+-   **pred_we_09_11**: La proportion de données entre 9h et 11h pendant les week-end
+
+```{r file_open}
+xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
+
+predictors <- evavelo::read_compt_auto(xlsx_path)
+
+predictors
+
+```
+
+## Classification hierarchique
+
+```{r, fig.width=7, fig.height=5}
+pred_df <- predictors %>% 
+  select(starts_with("pred")) %>% 
+  as.data.frame() 
+rownames(pred_df) <- paste0(predictors$name,"(",predictors$id_site, ")")
+
+
+clust <- pred_df %>% 
+  dist() %>% 
+  hclust(method = "ward.D2") 
+
+fviz_dend(clust, cex = 0.6,k = 5, rect = TRUE, horiz = TRUE)
+
+```
+

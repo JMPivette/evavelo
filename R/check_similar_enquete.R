@@ -64,7 +64,7 @@ check_similar_enquete <- function(enquete){
                      res = keep_potential_duplicated(.data$nb_na,.data$heure_enq,
                                                      .data$age, .data$km_sortie, .data$ville_res),
                      ## Spot groups that were already identified
-                     n_radical = length(unique(radical_quest(.data$id_quest)))) %>%
+                     n_radical = dplyr::n_distinct(radical_quest(.data$id_quest))) %>%
     dplyr::ungroup() %>%
     dplyr::filter(.data$res == TRUE & .data$n_radical > 1) %>%
     dplyr::select(.data$enq_list)

@@ -1,8 +1,8 @@
 ---
-title: "geocode_distance"
+title: "Géocodage des distance"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{geocode_distance}
+  %\VignetteIndexEntry{Géocodage des distance}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

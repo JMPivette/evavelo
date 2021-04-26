@@ -44,6 +44,8 @@ mod_check_file_ui <- function(id){
     shinyjs::hidden(
       downloadLink(ns("download_outliers"), "Valeurs anormales")
     ),
+    br(), br(),
+    mod_classify_sites_ui(ns("classify_sites_ui_1"))
   )
 }
 
@@ -53,6 +55,7 @@ mod_check_file_ui <- function(id){
 mod_check_file_server <- function(input, output, session, r){
   ns <- session$ns
   callModule(mod_process_file_server, "process_file_ui_2", r = r)
+  callModule(mod_classify_sites_server, "classify_sites_ui_1", r = r)
 
   # Observer on action buttons ------------------------------------------------------------------
 

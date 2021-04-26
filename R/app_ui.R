@@ -44,7 +44,16 @@ app_ui <- function(request) {
                    href = utils::packageDescription("evavelo")$URL,
                    target = "_blank")),
         ),
-        mainPanel(mod_show_log_ui("show_log_ui_1"))
+        mainPanel(
+          tabsetPanel(id = "tabs",
+            tabPanel("Log",
+                     mod_show_log_ui("show_log_ui_1")),
+            tabPanel("Cluster", value = "cluster",
+                     mod_visualize_classification_ui("visualize_classification_ui_1"))
+          )
+
+
+        )
       ),
 
       br(),br(),

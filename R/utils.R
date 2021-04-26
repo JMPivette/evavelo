@@ -173,3 +173,25 @@ rename_french_cities <- function(cities){
     stringr::str_replace_all("SAINT ", "ST ")%>%
     stringr::str_replace_all("SAINTE ", "STE ")
 }
+
+
+#' Multiply a list of vectors element-wise and and sum the result
+#'
+#' Useful function inside a summarize() to multiply columns together especially if some are booleans.
+#' This way we can summarize in a single command with different "pseudo-filters"
+#'
+#' @param ... a list of vectors
+#' @param na.rm Remove NA during the summation. Default to TRUE
+#'
+#' @return a single value
+#' @keywords internal
+#'
+
+sum_prod <- function(..., na.rm = TRUE){
+  sum(purrr::reduce(list(...), `*`),
+      na.rm = na.rm)
+
+}
+
+# not_in function
+"%ni%" <- Negate("%in%")
