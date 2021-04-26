@@ -24,9 +24,9 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 
 ## Résumé
 
-Le but du package `evavelo` est d'appliquer des traitements automatiques sur des fichiers d'enquêtes liés à la méthode [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo) (Méthode nationale evaluation des retombées des vélo-routes) développée par **Vélo et Territoires**
+Le package `evavelo` applique des traitements automatiques sur les fichiers d'enquêtes liés à la méthode [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo) (Méthode nationale evaluation des retombées des vélo-routes) développée par **Vélo et Territoires**
 
-Ce projet est en cours de developpement et ne peut pas encore être utilisé. Il sera composé de fonctions de traitements de fichier mais aussi d'une interface web.
+Ce projet est en cours de developpement et ne peut pas encore être utilisé. Il est composé de fonctions de traitements de fichier mais aussi d'une interface web.
 
 ## Installation
 
@@ -85,8 +85,13 @@ La fonction `process_evavelo()` que nous avons déjà utilisé sur un fichier Ex
 eva_data_processed <- evavelo::process_evavelo(eva_data_geocoded)
 ```
 
+
 ## Interface Web
 
 La fonction `evavelo::app_run()` permet d'utiliser le package via une interface web: 
 
 ![UI Screenshot](man/figures/eva-scan-ui.png?raw=true "Title")
+
+## Classification de compteurs similaires
+
+Le package `eva-scan` permet aussi de créer une classification hiérarchique des compteurs à partir de données de comptages automatiques. Cette classification est disponible dans l'interface Web.
