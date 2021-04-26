@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -62,7 +62,10 @@
       <a href="articles/checking_input.html">Vérification de fichier</a>
     </li>
     <li>
-      <a href="articles/geocode_distance.html">geocode_distance</a>
+      <a href="articles/geocode_distance.html">Géocodage des distance</a>
+    </li>
+    <li>
+      <a href="articles/site_classification.html">Classification des sites</a>
     </li>
   </ul>
 </li>
@@ -98,8 +101,8 @@
 <div id="résumé" class="section level2">
 <h2 class="hasAnchor">
 <a href="#r%C3%A9sum%C3%A9" class="anchor"></a>Résumé</h2>
-<p>Le but du package <code>evavelo</code> est d’appliquer des traitements automatiques sur des fichiers d’enquêtes liés à la méthode <a href="https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo">EVA-VELO</a> (Méthode nationale evaluation des retombées des vélo-routes) développée par <strong>Vélo et Territoires</strong></p>
-<p>Ce projet est en cours de developpement et ne peut pas encore être utilisé. Il sera composé de fonctions de traitements de fichier mais aussi d’une interface web.</p>
+<p>Le package <code>evavelo</code> applique des traitements automatiques sur les fichiers d’enquêtes liés à la méthode <a href="https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo">EVA-VELO</a> (Méthode nationale evaluation des retombées des vélo-routes) développée par <strong>Vélo et Territoires</strong></p>
+<p>Ce projet est en cours de developpement et ne peut pas encore être utilisé. Il est composé de fonctions de traitements de fichier mais aussi d’une interface web.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -139,13 +142,13 @@
 <span class="co">#&gt; 6     &lt;NA&gt;                                &lt;NA&gt;</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $enquetes_post_traitement</span>
-<span class="co">#&gt;   id_quest categorie_corrige distance_domicile_enq</span>
-<span class="co">#&gt; 1   106aA1           Sportif              0.468112</span>
-<span class="co">#&gt; 2   106aA2        Utilitaire                    NA</span>
-<span class="co">#&gt; 3   106aA3           Sportif              5.112044</span>
-<span class="co">#&gt; 4   106aA4            Loisir              0.468112</span>
-<span class="co">#&gt; 5   106aA5           Sportif                    NA</span>
-<span class="co">#&gt; 6   106aA6            Loisir            157.044731</span>
+<span class="co">#&gt;   id_quest categorie_corrige distance_domicile_enq distance_dom_enq_reelle</span>
+<span class="co">#&gt; 1   106aA1           Sportif              0.468112               0.6521081</span>
+<span class="co">#&gt; 2   106aA2        Utilitaire                    NA                      NA</span>
+<span class="co">#&gt; 3   106aA3           Sportif              5.112044               6.8109554</span>
+<span class="co">#&gt; 4   106aA4            Loisir              0.468112               0.6521081</span>
+<span class="co">#&gt; 5   106aA5           Sportif                    NA                      NA</span>
+<span class="co">#&gt; 6   106aA6            Loisir            157.044731             172.7675257</span>
 <span class="co">#&gt;   distance_dom_enq_reelle_regions distance_dom_enq_reelle_france</span>
 <span class="co">#&gt; 1                       0.6521081                              0</span>
 <span class="co">#&gt; 2                              NA                             NA</span>
@@ -153,27 +156,27 @@
 <span class="co">#&gt; 4                       0.6521081                              0</span>
 <span class="co">#&gt; 5                              NA                             NA</span>
 <span class="co">#&gt; 6                     172.7675257                              0</span>
-<span class="co">#&gt;   distance_heb_enq distance_dom_enq_reelle distance_heb_enq_reelle</span>
-<span class="co">#&gt; 1               NA               0.6521081                      NA</span>
-<span class="co">#&gt; 2               NA                      NA                      NA</span>
-<span class="co">#&gt; 3               NA               6.8109554                      NA</span>
-<span class="co">#&gt; 4               NA               0.6521081                      NA</span>
-<span class="co">#&gt; 5               NA                      NA                      NA</span>
-<span class="co">#&gt; 6               NA             172.7675257                      NA</span>
-<span class="co">#&gt;   distance_dom_enq_reelle_etranger iti_dep_iti_valide id_section_origine</span>
-<span class="co">#&gt; 1                                0               &lt;NA&gt;                 NA</span>
-<span class="co">#&gt; 2                               NA               &lt;NA&gt;                 NA</span>
-<span class="co">#&gt; 3                                0               &lt;NA&gt;                 NA</span>
-<span class="co">#&gt; 4                                0               &lt;NA&gt;                 NA</span>
-<span class="co">#&gt; 5                               NA               &lt;NA&gt;                 NA</span>
-<span class="co">#&gt; 6                                0               &lt;NA&gt;                 NA</span>
-<span class="co">#&gt;   iti_arr_iti_valide id_section_dest ville_heb_cog_lau ville_res_cog_lau</span>
-<span class="co">#&gt; 1               &lt;NA&gt;              NA              &lt;NA&gt;             17300</span>
-<span class="co">#&gt; 2               &lt;NA&gt;              NA              &lt;NA&gt;              &lt;NA&gt;</span>
-<span class="co">#&gt; 3               &lt;NA&gt;              NA              &lt;NA&gt;             17028</span>
-<span class="co">#&gt; 4               &lt;NA&gt;              NA              &lt;NA&gt;             17300</span>
-<span class="co">#&gt; 5               &lt;NA&gt;              NA              &lt;NA&gt;              &lt;NA&gt;</span>
-<span class="co">#&gt; 6               &lt;NA&gt;              NA              &lt;NA&gt;             33318</span></code></pre></div>
+<span class="co">#&gt;   distance_dom_enq_reelle_etranger distance_heb_enq distance_heb_enq_reelle</span>
+<span class="co">#&gt; 1                                0               NA                      NA</span>
+<span class="co">#&gt; 2                               NA               NA                      NA</span>
+<span class="co">#&gt; 3                                0               NA                      NA</span>
+<span class="co">#&gt; 4                                0               NA                      NA</span>
+<span class="co">#&gt; 5                               NA               NA                      NA</span>
+<span class="co">#&gt; 6                                0               NA                      NA</span>
+<span class="co">#&gt;   iti_dep_iti_valide id_section_origine iti_arr_iti_valide id_section_dest</span>
+<span class="co">#&gt; 1               &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
+<span class="co">#&gt; 2               &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
+<span class="co">#&gt; 3               &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
+<span class="co">#&gt; 4               &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
+<span class="co">#&gt; 5               &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
+<span class="co">#&gt; 6               &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
+<span class="co">#&gt;   ville_heb_cog_lau ville_res_cog_lau</span>
+<span class="co">#&gt; 1              &lt;NA&gt;             17300</span>
+<span class="co">#&gt; 2              &lt;NA&gt;              &lt;NA&gt;</span>
+<span class="co">#&gt; 3              &lt;NA&gt;             17028</span>
+<span class="co">#&gt; 4              &lt;NA&gt;             17300</span>
+<span class="co">#&gt; 5              &lt;NA&gt;              &lt;NA&gt;</span>
+<span class="co">#&gt; 6              &lt;NA&gt;             33318</span></code></pre></div>
 </div>
 <div id="traitement-étapes-par-étapes" class="section level2">
 <h2 class="hasAnchor">
@@ -275,6 +278,11 @@
 <a href="#interface-web" class="anchor"></a>Interface Web</h2>
 <p>La fonction <code><a href="reference/app_run.html">evavelo::app_run()</a></code> permet d’utiliser le package via une interface web:</p>
 <p><img src="reference/figures/eva-scan-ui.png?raw=true" title="Title" alt="UI Screenshot"></p>
+</div>
+<div id="classification-de-compteurs-similaires" class="section level2">
+<h2 class="hasAnchor">
+<a href="#classification-de-compteurs-similaires" class="anchor"></a>Classification de compteurs similaires</h2>
+<p>Le package <code>eva-scan</code> permet aussi de créer une classification hiérarchique des compteurs à partir de données de comptages automatiques. Cette classification est disponible dans l’interface Web.</p>
 </div>
 </div>
   </div>

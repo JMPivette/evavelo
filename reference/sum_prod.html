@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • evavelo</title>
+<title>Multiply a list of vectors element-wise and and sum the result — sum_prod • evavelo</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Multiply a list of vectors element-wise and and sum the result — sum_prod" />
+<meta property="og:description" content="Useful function inside a summarize() to multiply columns together especially if some are booleans.
+This way we can summarize in a single command with different &quot;pseudo-filters&quot;" />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -129,96 +131,38 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Multiply a list of vectors element-wise and and sum the result</h1>
+    <small class="dont-index">Source: <a href='https://github.com/JMPivette/evavelo/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>sum_prod.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Useful function inside a summarize() to multiply columns together especially if some are booleans.
+This way we can summarize in a single command with different "pseudo-filters"</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>sum_prod</span><span class='op'>(</span><span class='va'>...</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="app_run.html">app_run()</a></code> </p>
-        </td>
-        <td><p>Run a Web User Interface</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="check_evavelo.html">check_evavelo()</a></code> </p>
-        </td>
-        <td><p>Check evadata object correctness</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="check_num_outliers.html">check_num_outliers()</a></code> </p>
-        </td>
-        <td><p>Search for outliers in numeric values</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="check_similar_enquete.html">check_similar_enquete()</a></code> </p>
-        </td>
-        <td><p>Detects similar response in enquete</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="find_wrong_geocoding.html">find_wrong_geocoding()</a></code> </p>
-        </td>
-        <td><p>Find all cities that failed to geocode when using geocode_evavelo()</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="geocode_evavelo.html">geocode_evavelo()</a></code> </p>
-        </td>
-        <td><p>Geocode an evadata object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="process_evavelo.html">process_evavelo()</a></code> </p>
-        </td>
-        <td><p>Process an eva-velo file or evadata object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_compt_auto.html">read_compt_auto()</a></code> </p>
-        </td>
-        <td><p>Read and clean "comptages_automatiques" information</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="read_evavelo.html">read_evavelo()</a></code> </p>
-        </td>
-        <td><p>Read and clean eva-velo xlsx file</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="update_wb.html">update_wb()</a></code> </p>
-        </td>
-        <td><p>Update a workbook with data from R object</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>...</th>
+      <td><p>a list of vectors</p></td>
+    </tr>
+    <tr>
+      <th>na.rm</th>
+      <td><p>Remove NA during the summation. Default to TRUE</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a single value</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

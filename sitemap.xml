@@ -118,6 +118,9 @@
     <loc>https://jmpivette.github.io/evavelo//reference/read_calendrier.html</loc>
   </url>
   <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/read_compt_auto.html</loc>
+  </url>
+  <url>
     <loc>https://jmpivette.github.io/evavelo//reference/read_comptage.html</loc>
   </url>
   <url>
@@ -134,6 +137,9 @@
   </url>
   <url>
     <loc>https://jmpivette.github.io/evavelo//reference/rename_french_cities.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/sum_prod.html</loc>
   </url>
   <url>
     <loc>https://jmpivette.github.io/evavelo//reference/unify_regions.html</loc>
@@ -155,5 +161,8 @@
   </url>
   <url>
     <loc>https://jmpivette.github.io/evavelo//articles/geocode_distance.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo//articles/site_classification.html</loc>
   </url>
 </urlset>
