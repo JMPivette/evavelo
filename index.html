@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -101,8 +101,8 @@
 <div id="résumé" class="section level2">
 <h2 class="hasAnchor">
 <a href="#r%C3%A9sum%C3%A9" class="anchor"></a>Résumé</h2>
-<p>Le package <code>evavelo</code> applique des traitements automatiques sur les fichiers d’enquêtes liés à la méthode <a href="https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo">EVA-VELO</a> (Méthode nationale evaluation des retombées des vélo-routes) développée par <strong>Vélo et Territoires</strong></p>
-<p>Ce projet est en cours de developpement et ne peut pas encore être utilisé. Il est composé de fonctions de traitements de fichier mais aussi d’une interface web.</p>
+<p>Le package <code>evavelo</code> applique des traitements automatiques sur les fichiers d’enquêtes liés à la méthode <a href="https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo">EVA-VELO</a> (Méthode nationale pour ’évaluation des retombées des véloroutes) développée par <strong>Vélo et Territoires</strong></p>
+<p>Ce projet est composé de fonctions de traitements de fichier mais aussi d’une interface web.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -143,19 +143,19 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $enquetes_post_traitement</span>
 <span class="co">#&gt;   id_quest categorie_corrige distance_domicile_enq distance_dom_enq_reelle</span>
-<span class="co">#&gt; 1   106aA1           Sportif              0.468112               0.6521081</span>
+<span class="co">#&gt; 1   106aA1           Sportif             0.5241257               0.7297089</span>
 <span class="co">#&gt; 2   106aA2        Utilitaire                    NA                      NA</span>
-<span class="co">#&gt; 3   106aA3           Sportif              5.112044               6.8109554</span>
-<span class="co">#&gt; 4   106aA4            Loisir              0.468112               0.6521081</span>
+<span class="co">#&gt; 3   106aA3           Sportif             5.0566412               6.7403990</span>
+<span class="co">#&gt; 4   106aA4            Loisir             0.5241257               0.7297089</span>
 <span class="co">#&gt; 5   106aA5           Sportif                    NA                      NA</span>
-<span class="co">#&gt; 6   106aA6            Loisir            157.044731             172.7675257</span>
+<span class="co">#&gt; 6   106aA6            Loisir           156.9983854             172.7165825</span>
 <span class="co">#&gt;   distance_dom_enq_reelle_regions distance_dom_enq_reelle_france</span>
-<span class="co">#&gt; 1                       0.6521081                              0</span>
+<span class="co">#&gt; 1                       0.7297089                              0</span>
 <span class="co">#&gt; 2                              NA                             NA</span>
-<span class="co">#&gt; 3                       6.8109554                              0</span>
-<span class="co">#&gt; 4                       0.6521081                              0</span>
+<span class="co">#&gt; 3                       6.7403990                              0</span>
+<span class="co">#&gt; 4                       0.7297089                              0</span>
 <span class="co">#&gt; 5                              NA                             NA</span>
-<span class="co">#&gt; 6                     172.7675257                              0</span>
+<span class="co">#&gt; 6                     172.7165825                              0</span>
 <span class="co">#&gt;   distance_dom_enq_reelle_etranger distance_heb_enq distance_heb_enq_reelle</span>
 <span class="co">#&gt; 1                                0               NA                      NA</span>
 <span class="co">#&gt; 2                               NA               NA                      NA</span>
@@ -181,7 +181,7 @@
 <div id="traitement-étapes-par-étapes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#traitement-%C3%A9tapes-par-%C3%A9tapes" class="anchor"></a>Traitement étapes par étapes</h2>
-<p>Il est possible de décomposer tous les traitement effectués par <code><a href="reference/process_evavelo.html">process_evavelo()</a></code> étape par étape:</p>
+<p>Il est possible de décomposer tous les traitements effectués par <code><a href="reference/process_evavelo.html">process_evavelo()</a></code> étape par étape:</p>
 <div id="lecture-du-fichier" class="section level3">
 <h3 class="hasAnchor">
 <a href="#lecture-du-fichier" class="anchor"></a>Lecture du fichier</h3>
@@ -254,7 +254,7 @@
 <div id="process" class="section level3">
 <h3 class="hasAnchor">
 <a href="#process" class="anchor"></a>Process</h3>
-<p>La fonction <code><a href="reference/process_evavelo.html">process_evavelo()</a></code> que nous avons déjà utilisé sur un fichier Excel peut aussi être utilisée directement sur un objet géocodé avec <code><a href="reference/geocode_evavelo.html">geocode_evavelo()</a></code></p>
+<p>La fonction <code><a href="reference/process_evavelo.html">process_evavelo()</a></code> que nous avons déjà utilisé sur un fichier Excel peut aussi être utilisée directement sur un objet précédemment géocodé avec <code><a href="reference/geocode_evavelo.html">geocode_evavelo()</a></code></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eva_data_processed</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="reference/process_evavelo.html">process_evavelo</a></span><span class="op">(</span><span class="va">eva_data_geocoded</span><span class="op">)</span>
 <span class="co">#&gt; Calcul des distances...</span>
