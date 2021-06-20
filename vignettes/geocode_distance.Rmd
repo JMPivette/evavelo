@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 ```
 
 
-Dans le package `evavelo`, différentes phases de geocoding et de mesures de distance sont réalisées.
+Différentes phases de geocoding et de mesures de distance sont réalisées dans le package `evavelo`
 
 ## Geocoding
 
@@ -39,9 +39,9 @@ Les champs suivants sont géocodés:
   
 Le gécodage de ces communes est d'abord réalisé localement en cherchant une correpondance exacte avec la [Base officielle des codes postaux](https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/) réalisé par La Poste. 
 
-Si aucun code postal ou code INSEE n'est fourni (ville_heb par exemple), nous supprimons de cette base les noms qui sont utilisés pour nommés des villes différentes (exemple: "St Denis").
+Les villes qui n'ont pas été détectées lors de cette recherche sont ensuite recherchées en utilisant le package [banR](https://github.com/joelgombin/banR) qui fait lui même appel à la [Base Adresse Nationale (BAN)](https://geo.api.gouv.fr/adresse).
 
-Les villes qui n'ont pas été détectés lors de cette recherche sont ensuite recherchée en utilisant le package [banR](https://github.com/joelgombin/banR) qui fait lui même appel à la [Base Adresse Nationale (BAN)](https://geo.api.gouv.fr/adresse)
+Cette deuxième recherche permet de faire une recherche "approximative" et ainsi interpréter des communes mal nommées ou proposer des corrections.
 
 ### Villes Etrangères
 La recherche de ville étrangère est réalisée uniquement sur le champ `ville_res` quand `pays_res` est différent de "France".
@@ -53,13 +53,26 @@ La description de cette base de données est la suivante:
 
 Les villes qui n'ont pu être géocodées sont ensuite recherchées en utilisant le package `{tidygeocoder}` qui fait appel au service [Nomatim](https://nominatim.org/) de Open Street Map
 
-Ce service étant gratuit, les requêtes sont bridées à 1 demande par seconde. Le géocodage peut donc prendre plusieurs minutes en fonction du nombre de ville étrangères à géocodé.
+Ce service étant gratuit, les requêtes sont bridées à 1 demande par seconde. Le géocodage peut donc prendre plusieurs minutes en fonction du nombre de villes étrangères à géocoder.
 
 ## Mesure de distance
 
-### Distance itinéraire
+### Détection de la ville d'itinéraire la plus proche
 
-### Distances point d'enquête
+Les champs `iti_dep_iti_valide` et `iti_arr_iti_valide` sont renseignés en indiquant la commune appartenant à `table_commune` etant la plus proche des champs respectifs `iti_depart_itineraire` et `iti_arrivee_itineraire`
+
+Ces champs ne sont pas renseignés si la commune la plus proche est située à une distance à vol d'oiseau de plus de **30km**.
+
+### Distance [hébergement - lieu d'enquête] et [domicile - lieu d'enquête]
+
+La distance hébergement - lieu d'enquête (`distance_heb_enq`) est calculée en utilisant la méthode d'[Haversine](https://fr.wikipedia.org/wiki/Formule_de_haversine) entre les points `ville_res` et `nom_site_enq`.
+
+Nous déterminons ensuite une distance réelle (`distance_heb_enq_reelle`) en utilisant la formule du cabinet Indiggo:
+
+> `[distance_heb_enq_reelle] = [distance_heb_enq]*(1,1 + 0,3*EXP(-[distance_heb_enq] / 20))` 
+
+La même méthode de calcul est utilisée pour calculer les distances `distance_domicile_enq` et `distance_dom_enq_reelle`
+
 
 
 

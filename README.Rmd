@@ -24,9 +24,9 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 
 ## Résumé
 
-Le package `evavelo` applique des traitements automatiques sur les fichiers d'enquêtes liés à la méthode [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo) (Méthode nationale evaluation des retombées des vélo-routes) développée par **Vélo et Territoires**
+Le package `evavelo` applique des traitements automatiques sur les fichiers d'enquêtes liés à la méthode [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo) (Méthode nationale pour 'évaluation des retombées des véloroutes) développée par **Vélo et Territoires**
 
-Ce projet est en cours de developpement et ne peut pas encore être utilisé. Il est composé de fonctions de traitements de fichier mais aussi d'une interface web.
+Ce projet est composé de fonctions de traitements de fichier mais aussi d'une interface web.
 
 ## Installation
 
@@ -58,7 +58,7 @@ lapply(eva_data_processed, head)
 
 ## Traitement étapes par étapes
 
-Il est possible de décomposer tous les traitement effectués par `process_evavelo()` étape par étape:
+Il est possible de décomposer tous les traitements effectués par `process_evavelo()` étape par étape:
 
 ### Lecture du fichier
 
@@ -79,7 +79,7 @@ eva_data_geocoded <- evavelo::geocode_evavelo(eva_data)
 
 ### Process
 
-La fonction `process_evavelo()` que nous avons déjà utilisé sur un fichier Excel peut aussi être utilisée directement sur un objet géocodé avec `geocode_evavelo()`
+La fonction `process_evavelo()` que nous avons déjà utilisé sur un fichier Excel peut aussi être utilisée directement sur un objet précédemment géocodé avec `geocode_evavelo()`
 
 ```{r process}
 eva_data_processed <- evavelo::process_evavelo(eva_data_geocoded)
