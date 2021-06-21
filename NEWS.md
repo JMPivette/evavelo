@@ -1,5 +1,7 @@
 # evavelo 1.0.1
 
+- Update documentation
+
 # evavelo 1.0.0
 
 - Read counting data from worksheet `comptages_automatiques` 
