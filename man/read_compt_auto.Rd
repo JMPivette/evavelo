@@ -16,5 +16,5 @@ a data.frame
 }
 \description{
 Read a specific sheet of an xlsx object and perform some basic cleaning.
-Compute predicates that are later user for clustering classification
+Compute predictors that are later user for clustering classification
 }
