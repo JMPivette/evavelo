@@ -2,7 +2,7 @@
 title: "Valeurs numériques extrêmes"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{numerical_outliers}
+  %\VignetteIndexEntry{Valeurs numériques extrêmes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -55,6 +55,7 @@ La méthode de détection des valeurs extrêmes sur `km_sortie` est la même que
 ### Durée moyenne de séjour [dms]
 
 Les valeurs de dms suivantes sont identifiées:
+
 * Le premier et le dernier centile
 * La méthode "1,5 x IQR"
 * Les valeurs inférieures à 1
@@ -108,4 +109,3 @@ check_num_outliers(evadata = evavelo_example_geocoded,
 
 
 ```
-

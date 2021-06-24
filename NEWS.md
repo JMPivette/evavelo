@@ -1,4 +1,4 @@
-# evavelo (development version)
+# evavelo 1.0.2
 
 # evavelo 1.0.1
 
