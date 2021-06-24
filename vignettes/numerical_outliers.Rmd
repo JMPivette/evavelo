@@ -39,6 +39,7 @@ La vérification s'effectue par l'appel à la fonction `check_num_outliers()` ou
 ### Revenu [revenu]
 
 L'ensemble des revenus de l'enquête sont analysés:
+
 * Le premier et le dernier centile sont identifiés
 * Des valeurs supplémentaire sont identifiées en utilisant la méthode du "1,5 x IQR":
 
@@ -87,13 +88,24 @@ Les dépenses suivantes sont regroupées par `mode_heb_regroupe` avant la recher
 
 #### Dépenses de transport [tour_dep_transp]
 
-La détection d'anomalies sur  `tour_dep_transp` est effectuant un regroupement par la variable `mode_transp_jour` à condition qu'il y ait a minima 100 réponses par mode de transport. Les modes de transports plus rares sont regroupés ensemble.
+La détection d'anomalies sur  `tour_dep_transp` est réalisée en effectuant un regroupement par la variable `mode_transp_jour` à condition qu'il y ait a minima 100 réponses par mode de transport. Les modes de transports plus rares sont regroupés ensemble.
 
 Eva-Scan va aussi détecter les cas pour lesquels `mode_transport_jour` vaut "aucun" et qui ont cependant une valeur non nulle pour `tour_dep_transp`
 
 ## Exemple de traitement
 
-```{r example}
+```{r example, message=FALSE}
+## Calcul des categories corrigées
+categorie_corrige <- process_evavelo(
+  evavelo::evavelo_example_geocoded
+)$enquetes_post_traitement$categorie_corrige
+```
+
+```{r}
+## Recherche des valeurs anormales
+check_num_outliers(evadata = evavelo_example_geocoded,
+                   categorie_corrige =  categorie_corrige)
+
 
 ```
 
