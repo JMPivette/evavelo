@@ -10,6 +10,8 @@ usethis::use_vignette("ba-using_package")
 usethis::use_coverage()
 
 usethis::use_news_md()
+usethis::use_vignette("numerical_outliers")
+
 ## Pkgdown
 usethis::use_pkgdown()
 usethis::use_github_action("pkgdown")
