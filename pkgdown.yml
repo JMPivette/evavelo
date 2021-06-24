@@ -5,8 +5,9 @@ articles:
   ba-using_package: ba-using_package.html
   checking_input: checking_input.html
   geocode_distance: geocode_distance.html
+  numerical_outliers: numerical_outliers.html
   site_classification: site_classification.html
-last_built: 2021-06-21T06:46Z
+last_built: 2021-06-24T09:57Z
 urls:
   reference: https://jmpivette.github.io/evavelo//reference
   article: https://jmpivette.github.io/evavelo//articles

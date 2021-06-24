@@ -58,6 +58,12 @@
     <loc>https://jmpivette.github.io/evavelo//reference/equal_with_na.html</loc>
   </url>
   <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/evavelo_example.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo//reference/evavelo_example_geocoded.html</loc>
+  </url>
+  <url>
     <loc>https://jmpivette.github.io/evavelo//reference/find_wrong_cities.html</loc>
   </url>
   <url>
@@ -161,6 +167,9 @@
   </url>
   <url>
     <loc>https://jmpivette.github.io/evavelo//articles/geocode_distance.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo//articles/numerical_outliers.html</loc>
   </url>
   <url>
     <loc>https://jmpivette.github.io/evavelo//articles/site_classification.html</loc>
