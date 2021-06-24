@@ -1,0 +1,99 @@
+---
+title: "Valeurs numériques extrêmes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{numerical_outliers}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, include = FALSE}
+library(evavelo)
+```
+
+## Introduction
+
+La méthode EVA-VELO propose de vérifier différentes valeurs numériques afin d'éliminer les valeurs extrêmes qui seraient liées à une erreur de saisie.
+
+Les champs de l'enquête à vérifier sont:
+
+* `km_sortie`
+* `revenu`
+* `dms`
+* `tour_dep_xxx`
+
+
+Eva-Scan permet d'identifier ces valeurs "extrêmes" sans pour autant modifier le fichier Excel. Ces valeurs identifiées doivent en effet être revues manuellement pour vérifier s'il s'agit d'une erreur de saisie ou non.
+
+La vérification s'effectue par l'appel à la fonction `check_num_outliers()` ou en cliquant sur **Chercher valeurs numériques anormales** dans l'application web.
+
+## Valeurs anormales
+
+### Revenu [revenu]
+
+L'ensemble des revenus de l'enquête sont analysés:
+* Le premier et le dernier centile sont identifiés
+* Des valeurs supplémentaire sont identifiées en utilisant la méthode du "1,5 x IQR":
+
+Cette méthode consiste à détecter le premier quartile (Q1) et le dernier quartile (Q3) puis de calculer l'[écart interquartile](https://fr.wikipedia.org/wiki/%C3%89cart_interquartile) IQR = Q3 - Q1 .
+
+Nous détectons ensuite toutes les valeurs supérieures à `Q3 + 1,5 x IQR` et toutes celles inférieures à `Q1 - 1,5 x IQR`.
+
+### Distance de la sortie [km_sortie]
+
+La méthode de détection des valeurs extrêmes sur `km_sortie` est la même que pour `revenu` avec une analyse séparée pour chacune des `categorie_corrigee`.
+
+
+### Durée moyenne de séjour [dms]
+
+Les valeurs de dms suivantes sont identifiées:
+* Le premier et le dernier centile
+* La méthode "1,5 x IQR"
+* Les valeurs inférieures à 1
+* Les valeurs égales à 365
+
+Pour ces analyses, le regroupement se fait par `mode_heb_regroupe`. Si jamais un groupe a plus de 200 réponses, il est subdivisé en fonction de  `categorie_corrige_corrige` sans pour autant créer de groupes de moins de 50 réponses.
+
+
+### Dépenses [tour_dep_xxx]
+
+8 variables de type `tour_dep_xxx` sont analysées en cherchant en cherchant le premier et dernier centile et en utilisant la méthode "1,5 x IQR".
+
+Le regroupement va dépendre des variables:
+
+#### Regroupement par [categorie_corrige]
+
+Les dépenses suivantes sont regroupées par `categorie_corrige` avant la recherche de valeurs anormales:
+
+* `tour_dep_alim`,
+* `tour_dep_activites`
+* `tour_dep_souvenirs`
+* `tour_dep_location`
+* `tour_dep_autres`
+
+#### Regroupement par [mode_heb_regroupe]
+
+Les dépenses suivantes sont regroupées par `mode_heb_regroupe` avant la recherche de valeurs anormales:
+
+* `tour_dep_to_jour`,
+* `tour_dep_heb`
+
+#### Dépenses de transport [tour_dep_transp]
+
+La détection d'anomalies sur  `tour_dep_transp` est effectuant un regroupement par la variable `mode_transp_jour` à condition qu'il y ait a minima 100 réponses par mode de transport. Les modes de transports plus rares sont regroupés ensemble.
+
+Eva-Scan va aussi détecter les cas pour lesquels `mode_transport_jour` vaut "aucun" et qui ont cependant une valeur non nulle pour `tour_dep_transp`
+
+## Exemple de traitement
+
+```{r example}
+
+```
+
