@@ -1,5 +1,6 @@
 ## code to prepare `DATASET` dataset goes here
 library(evavelo)
+library(dplyr)
 
 ## Dataset example for tests
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
@@ -46,7 +47,7 @@ regions_shape <- raster::getData(name="GADM", country="FRA", level=1) %>%
   sf::st_as_sf() %>% #Convert to sf
   sf::st_transform(crs = 2154) %>%  # Project in Lambert 93
   sf::st_simplify(dTolerance = 1000) %>% # reduce size
-  dplyr::transmute(id = row_number(),name = NAME_1, geometry) # keep relevant information
+  dplyr::transmute(id = dplyr::row_number(),name = NAME_1, geometry) # keep relevant information
 
 
 ## France
@@ -70,7 +71,7 @@ world_cities <- maps::world.cities %>%
 ## All cities France
 france_cities <- system.file("extdata", "laposte_hexasmal.csv", package = "evavelo") %>%
   data.table::fread(colClasses = "character") %>%
-  filter(coordonnees_gps != "")%>%
+  dplyr::filter(coordonnees_gps != "")%>%
   tidyr::separate(coordonnees_gps,
                   into = c("lat", "lon"),
                   sep = ",",
@@ -101,9 +102,11 @@ france_cities_unique_names <- france_cities %>%
   select(city, lon, lat, cog)
 
 
-usethis::use_data(evavelo_example, evavelo_example_geocoded,
-                  quest_mismatch_example, all_enquete_example,
+usethis::use_data(quest_mismatch_example, all_enquete_example,
                   comptage_colnames, enquete_colnames, calendrier_colnames,
                   regions_shape, france_shape,
                   world_cities, france_cities, france_cities_unique_names,
                   overwrite = TRUE, internal = TRUE)
+
+usethis::use_data(evavelo_example, evavelo_example_geocoded,
+                  overwrite = TRUE, internal = FALSE)
