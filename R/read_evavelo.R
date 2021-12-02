@@ -92,6 +92,10 @@ read_enquete <- function(file, init = FALSE) {
   enquete <- openxlsx::read.xlsx(file, sheet)
   enquete <- enquete %>%
     janitor::clean_names() %>%
+    dplyr::mutate( ## Deal with empty case that are considered as logical after import
+      dplyr::across(dplyr::starts_with("type_"), as.character),
+      dms = as.numeric(.data$dms)
+    ) %>%
     dplyr::mutate(
       type_sortie = dplyr::case_when(
         type_sortie == "Demi journ\u00e9e" ~ "Demi-journ\u00e9e",
