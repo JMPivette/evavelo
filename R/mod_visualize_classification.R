@@ -68,7 +68,7 @@ mod_visualize_classification_server <- function(input, output, session, r){
                      axis.text.x=ggplot2::element_blank(),
                      axis.ticks.x=ggplot2::element_blank())
   },
-  height = function(){ifelse(nrow(r$clust$data) < 30,
+  height = function(){ifelse(is.null(r$clust$data) || nrow(r$clust$data) < 30,
                              600,
                              nrow(r$clust$data)*20)})
 
