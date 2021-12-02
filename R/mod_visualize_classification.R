@@ -53,9 +53,15 @@ mod_visualize_classification_server <- function(input, output, session, r){
   })
 
   output$dendogram <- renderPlot({
-    req(r$clust$data)
     validate(
-      need(input$k_clust %% 1 == 0, "Utilisez une valeur enti\u00e8re")
+      need(
+        !is.null(r$clust$data),
+        "Chargez un fichier et cliquez sur 'Grouper sites similaires' pour afficher le graphique."
+      ),
+      need(
+        input$k_clust %% 1 == 0,
+        "Utilisez une valeur enti\u00e8re"
+      )
       # need(data_to_analyse(), "Pas de donn\u00e9es \u00e0 analyser")
     )
     clust() %>%
