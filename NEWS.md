@@ -1,4 +1,12 @@
+# evavelo 1.0.3
+
+- Remove dependency to dev version of openxlsx (folowing release of 4.2.4)
+
 # evavelo 1.0.2
+
+- Update documentation
+
+- add examples as exported objects
 
 # evavelo 1.0.1
 
