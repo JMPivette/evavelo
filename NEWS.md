@@ -1,4 +1,16 @@
+# evavelo 1.0.3
+
+- Remove dependency to dev version of openxlsx (following release of 4.2.4)
+
+- Fix bug when trying to display cluster graph without clicking on the button
+
+- Fix bug when importing a file with empty "enquetes" sheet.
+
 # evavelo 1.0.2
+
+- Update documentation
+
+- add examples as exported objects
 
 # evavelo 1.0.1
 

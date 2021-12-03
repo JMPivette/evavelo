@@ -79,7 +79,7 @@ mod_load_file_server <- function(input, output, session, r){
         message = function(m) r$log<- paste(r$log,"\n[1]", m$message),
         warning = function(w) r$log <- paste(r$log,"\n[1] Warning:", w$message)),
       error = function(e){
-        r$log <- paste(r$log, "\n[2] ERREUR pendant l\'e chargement\'ouverture du fichier:\n", e)
+        r$log <- paste(r$log, "\n[2] ERREUR pendant le chargement du fichier:\n", e)
         r$process_error <- TRUE
         updateProgressBar(session = session, id = "load_progress",
                           status = "danger", value = 2, total = nb_step)
