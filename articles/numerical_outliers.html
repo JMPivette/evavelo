@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
       </span>
     </div>
 
@@ -198,7 +198,7 @@
 <span class="fu"><a href="../reference/check_num_outliers.html">check_num_outliers</a></span><span class="op">(</span>evadata <span class="op">=</span> <span class="va">evavelo_example_geocoded</span>,
                    categorie_corrige <span class="op">=</span>  <span class="va">categorie_corrige</span><span class="op">)</span>
 <span class="co">#&gt; $km_sortie</span>
-<span class="co">#&gt; # A tibble: 12 x 4</span>
+<span class="co">#&gt; # A tibble: 12 × 4</span>
 <span class="co">#&gt; # Groups:   categorie_corrige [4]</span>
 <span class="co">#&gt;    id_quest categorie_corrige km_sortie raison         </span>
 <span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;          </span>
@@ -216,7 +216,7 @@
 <span class="co">#&gt; 12 4A1      Utilitaire                4 premier centile</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $dms</span>
-<span class="co">#&gt; # A tibble: 15 x 6</span>
+<span class="co">#&gt; # A tibble: 15 × 6</span>
 <span class="co">#&gt; # Groups:   mode_heb_regroupe, categorie_lump [6]</span>
 <span class="co">#&gt;    id_quest mode_heb_regroupe      categorie_corri… categorie_lump   dms raison </span>
 <span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;                  &lt;chr&gt;            &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;  </span>
@@ -245,25 +245,25 @@
 <span class="co">#&gt; 5  106bA50  10000       1.5 x IQR</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $tour_dep_cat</span>
-<span class="co">#&gt; # A tibble: 0 x 4</span>
+<span class="co">#&gt; # A tibble: 0 × 4</span>
 <span class="co">#&gt; # Groups:   depense, categorie_corrige [0]</span>
 <span class="co">#&gt; # … with 4 variables: id_quest &lt;chr&gt;, categorie_corrige &lt;chr&gt;, depense &lt;chr&gt;,</span>
 <span class="co">#&gt; #   valeur &lt;dbl&gt;</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $tour_dep_heb</span>
-<span class="co">#&gt; # A tibble: 6 x 5</span>
+<span class="co">#&gt; # A tibble: 6 × 5</span>
 <span class="co">#&gt; # Groups:   depense, mode_heb_regroupe [4]</span>
-<span class="co">#&gt;   id_quest mode_heb_regroupe                      depense    valeur raison      </span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;                                  &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;       </span>
-<span class="co">#&gt; 1 106aA12  Hôtels/Chambres d'hôtes                tour_dep_…    160 dernier cen…</span>
-<span class="co">#&gt; 2 141A28   Campings                               tour_dep_…     75 dernier cen…</span>
-<span class="co">#&gt; 3 106bA5   Hébergements locatifs                  tour_dep_…    300 dernier cen…</span>
-<span class="co">#&gt; 4 38A19    Hébergements locatifs                  tour_dep_…      9 premier cen…</span>
-<span class="co">#&gt; 5 38A24    Auberges de jeunesse, gîte d’étapes, … tour_dep_…     50 dernier cen…</span>
-<span class="co">#&gt; 6 38A25    Auberges de jeunesse, gîte d’étapes, … tour_dep_…     35 premier cen…</span>
+<span class="co">#&gt;   id_quest mode_heb_regroupe                               depense valeur raison</span>
+<span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;                                           &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt; </span>
+<span class="co">#&gt; 1 106aA12  Hôtels/Chambres d'hôtes                         tour_d…    160 derni…</span>
+<span class="co">#&gt; 2 141A28   Campings                                        tour_d…     75 derni…</span>
+<span class="co">#&gt; 3 106bA5   Hébergements locatifs                           tour_d…    300 derni…</span>
+<span class="co">#&gt; 4 38A19    Hébergements locatifs                           tour_d…      9 premi…</span>
+<span class="co">#&gt; 5 38A24    Auberges de jeunesse, gîte d’étapes, de groupes tour_d…     50 derni…</span>
+<span class="co">#&gt; 6 38A25    Auberges de jeunesse, gîte d’étapes, de groupes tour_d…     35 premi…</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $tour_dep_transp</span>
-<span class="co">#&gt; # A tibble: 0 x 4</span>
+<span class="co">#&gt; # A tibble: 0 × 4</span>
 <span class="co">#&gt; # Groups:   mode_transp_lump [0]</span>
 <span class="co">#&gt; # … with 4 variables: id_quest &lt;chr&gt;, mode_transp_jour &lt;chr&gt;,</span>
 <span class="co">#&gt; #   tour_dep_transp &lt;dbl&gt;, mode_transp_lump &lt;chr&gt;</span></code></pre></div>
