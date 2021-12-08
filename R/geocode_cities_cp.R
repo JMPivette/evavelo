@@ -25,7 +25,6 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col){
   ## Define names of new columns
   new_cols <- list(NA_real_, NA_real_, NA_character_)
   names(new_cols) <- paste0(city_col_name, c("_lat", "_lon", "_cog"))
-
   # Geocode Cities -----------------------------------------------------------------------
   message("\n...V\u00e9rification de ",
           city_col_name, ".............")
@@ -109,7 +108,6 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::slice_max(.data$pop) %>% ## Get biggest city in case of multiple result
     dplyr::ungroup() %>%
     dplyr::select(.data$id_rows, .data$lat, .data$lon)
-
   ## Search approximate values in local database----------------
   if(nrow(geocoding) != nrow(foreign_cities)){
     remaining <- foreign_cities %>%
@@ -134,16 +132,18 @@ geocode_df_foreign_cities <- function(.data,
       dplyr::ungroup()
 
     ## Warn user of interpretation:
-    geocoding_approx_recap <- geocoding_approx %>%
-      dplyr::select(.data$id_rows, .data$city.y) %>%
-      dplyr::left_join(foreign_cities, by = "id_rows") %>%
-      dplyr::distinct(.data$city, .data$country, .data$city.y) %>%
-      dplyr::arrange(.data$country, .data$city)
+    if(nrow(geocoding_approx) != 0){
+      geocoding_approx_recap <- geocoding_approx %>%
+        dplyr::select(.data$id_rows, .data$city.y) %>%
+        dplyr::left_join(foreign_cities, by = "id_rows") %>%
+        dplyr::distinct(.data$city, .data$country, .data$city.y) %>%
+        dplyr::arrange(.data$country, .data$city)
 
-    message("Interpr\u00e9tation de noms de communes \u00e9trang\u00e8res:\n\t",
-            paste0(geocoding_approx_recap$country, " : ", geocoding_approx_recap$city,
-                   " -> ",geocoding_approx_recap$city.y,
-                   collapse = "\n\t"))
+      message("Interpr\u00e9tation de noms de communes \u00e9trang\u00e8res:\n\t",
+              paste0(geocoding_approx_recap$country, " : ", geocoding_approx_recap$city,
+                     " -> ",geocoding_approx_recap$city.y,
+                     collapse = "\n\t"))
+    }
 
     geocoding <- geocoding_approx %>%
       dplyr::select(.data$id_rows, .data$lat, .data$lon) %>%
@@ -157,16 +157,29 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::anti_join(geocoding, by = "id_rows")
 
   if(nrow(remaining_cities) != 0){
+    ## Create a function to geocode with nomatim and output result in good format
+    nomatim_geocode <- function(df, city = city, country = country){
+      df %>%
+        tidygeocoder::geocode(
+          city = city,
+          country = country,
+          method = "osm",
+          full_results = TRUE,
+          progress_bar = FALSE,
+          quiet = TRUE
+        ) %>%
+        dplyr::filter(
+          .data$type %in% c("city", "administrative")
+        ) %>%
+        dplyr::select(
+          .data$id_rows,
+          .data$lat,
+          lon = .data$long
+        )
+    }
     tryCatch(
-      { nomatim_geocoding <- remaining_cities %>%
-        tidygeocoder::geocode(city = city,
-                              country = country,
-                              method = "osm",
-                              full_results = TRUE) %>%
-        dplyr::filter(.data$type %in% c("city", "administrative")) %>%
-        dplyr::select(.data$id_rows,
-                      .data$lat,
-                      lon = .data$long)
+      {
+        nomatim_geocoding <- nomatim_geocode(remaining_cities)
       },
       error = function(e){
         nomatim_error <<- TRUE
@@ -175,18 +188,10 @@ geocode_df_foreign_cities <- function(.data,
     ## Insist on Nomatim if it fails (to be tested)
     if(nomatim_error){
       tryCatch(
-        {nomatim_error <- FALSE
-        tidygeocoder::geo("", method = "osm") ## Test to avoid being blacklisted with 2 times the same request in a row
-        nomatim_geocoding <- foreign_cities %>%
-          dplyr::anti_join(geocoding, by = "id_rows") %>%
-          tidygeocoder::geocode(city = city,
-                                country = country,
-                                method = "osm",
-                                full_results = TRUE) %>%
-          dplyr::filter(.data$type %in% c("city", "administrative")) %>%
-          dplyr::select(.data$id_rows,
-                        .data$lat,
-                        lon = .data$long)
+        {
+          nomatim_error <- FALSE
+          tidygeocoder::geo("", method = "osm") ## Test to avoid being blacklisted with 2 times the same request in a row
+          nomatim_geocoding <- nomatim_geocode(remaining_cities)
         },
         error = function(e){
           nomatim_error <<- TRUE
@@ -377,7 +382,6 @@ geocode_df_cities_cp <- function(.data,
 #' @return invisible(0)
 #' @keywords internal
 check_warn_cities_cp <- function(data){
-
   # Checking for "name" mispelling (wrong name with correct postcode)
   ## . Mispelling wih correct postcode -------------------------
   mispelling <- data %>%

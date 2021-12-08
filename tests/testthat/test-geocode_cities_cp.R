@@ -75,4 +75,28 @@ test_that("geocode_cities_cp works", {
 
 })
 
+test_that("geocode_df_foreign_cities works", {
+
+  df <- tibble::tribble(
+    ~city, ~postcode, ~a, ~b, ~country,
+    "Nantes", "44000", 1, 1.0, "France",
+    "Canberra", "22000", 2, 2.0, "Australie",
+    "Yamba", NA, 3, 3.0, "Australia" ## Small city can only be found using Nomatim
+  )
+  ## Expect no message when geocoding
+
+  expect_message({
+    geo_df <- geocode_df_foreign_cities(
+      df,
+      city_col = city,
+      country_col = country
+    )},
+    regexp = NA
+  )
+
+  expect_snapshot_output(
+    geo_df
+  )
+
+})
 

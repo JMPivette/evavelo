@@ -38,3 +38,12 @@
     1 Nantes   44000        1     1 France        47.2    -1.55 44109   
     2 Canberra 22000        2     2 Australie    -35.3   149.   <NA>    
 
+# geocode_df_foreign_cities works
+
+    # A tibble: 3 x 8
+      city     postcode     a     b country   city_lat city_lon city_cog
+      <chr>    <chr>    <dbl> <dbl> <chr>        <dbl>    <dbl> <chr>   
+    1 Nantes   44000        1     1 France        NA        NA  <NA>    
+    2 Canberra 22000        2     2 Australie    -35.3     149. <NA>    
+    3 Yamba    <NA>         3     3 Australia    -29.4     153. <NA>    
+
