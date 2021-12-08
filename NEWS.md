@@ -4,6 +4,8 @@
 
 - Fix #75 that displayed a progress bar in the logs
 
+- Fix a bug on check_evavelo() when a column was missing from *_post_traitement version of one of the sheets (linked to #78)
+
 # evavelo 1.0.3
 
 - Remove dependency to dev version of openxlsx (following release of 4.2.4)
