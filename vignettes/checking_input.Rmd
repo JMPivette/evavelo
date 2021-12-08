@@ -26,7 +26,7 @@ Ces vérifications obligatoires testent l'intégrité du fichier xlsx. Si ces te
 
 ## Ouverture du fichier xlsx
 
-Pour qu'un fichier xlsx puisse être ouvert avec `read_evavelo()`, il doit comporter au moins les 6 onglets suivants:
+Pour qu'un fichier xlsx puisse être ouvert avec `read_evavelo()`, il doit comporter au moins les 7 onglets suivants:
 
 * calendrier_sites
 * table_communes
@@ -37,6 +37,8 @@ Pour qu'un fichier xlsx puisse être ouvert avec `read_evavelo()`, il doit compo
 * comptages_automatiques
 
 L'absence de ces onglets ou un nommage différent entrainera une erreur lors de la lecture avec `read_evavelo()` ou `process_evavelo()`
+
+Si l'un de ces onglets est vide (ou ne comporte que les en-têtes), une erreur sera aussi créée au moment de la lecture du fichier (mis à part pour `comptages_automatiques` où seul un warning non bloquant sera créé).
 
 ## Vérification de cohérence
 
