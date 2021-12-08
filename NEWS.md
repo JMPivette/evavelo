@@ -1,3 +1,7 @@
+# evavelo (development version)
+
+- Fix #75 that displayed a progress bar in the logs
+
 # evavelo 1.0.3
 
 - Remove dependency to dev version of openxlsx (following release of 4.2.4)
