@@ -34,6 +34,7 @@ Pour qu'un fichier xlsx puisse être ouvert avec `read_evavelo()`, il doit compo
 * comptages_man_post_traitements
 * enquetes_saisies
 * enquetes_post_traitement
+* comptages_automatiques
 
 L'absence de ces onglets ou un nommage différent entrainera une erreur lors de la lecture avec `read_evavelo()` ou `process_evavelo()`
 
