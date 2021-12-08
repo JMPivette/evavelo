@@ -10,3 +10,16 @@ test_that("find_wrong_geocoding works", {
   purrr::walk(wrong_geo,
               ~ expect_s3_class(., "data.frame"))
 })
+
+test_that("geocode_evavelo() works", {
+
+
+    geocoded_eva <- geocode_evavelo(evavelo_example) %>%
+      suppressMessages()
+
+    expect_true(
+      attr(geocoded_eva, "geocoded")
+      )
+
+
+})

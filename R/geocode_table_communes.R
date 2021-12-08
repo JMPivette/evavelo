@@ -7,6 +7,7 @@
 #' @param table_communes a data.frame containing columns nom_commune and cog
 #'
 #' @return a data.frame similar to table_communes with latitude and longitude added.
+#' And also proposition_nom_commune and proposition_cog
 #' @importFrom rlang .data
 #'
 #' @keywords internal
@@ -29,8 +30,6 @@ geocode_table_communes <- function(table_communes){
     dplyr::group_by(.data$cog) %>%
     dplyr::slice_head() %>%
     dplyr::ungroup()
-
-
 
 
   ## Geocode ont founds with banR
@@ -86,8 +85,23 @@ geocode_table_communes <- function(table_communes){
     dplyr::bind_rows(local_result)
 
   ## add lon. and lat. to original table
-  table_communes %>%
-    dplyr::left_join(result,
-                     by = "cog")
+  result <- table_communes %>%
+    dplyr::left_join(
+      result,
+      by = "cog"
+    )
+
+  ## Add proposal correction inside the data:
+  old_cities <- old_cities %>%
+    dplyr::transmute(
+      .data$cog,
+      proposition_nom_commune = .data$result_city,
+      proposition_cog = .data$result_citycode
+    )
+
+  dplyr::left_join( ## store information of proposal correction
+    result,
+    old_cities,
+    by = "cog")
 
 }

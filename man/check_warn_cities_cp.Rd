@@ -8,13 +8,14 @@ check_warn_cities_cp(data)
 }
 \arguments{
 \item{data}{a data.frame with the following columns:
-city (string), postcode(string), result_type, result_score, result_label, result_postcode.
+id_rows, city (string), postcode(string), result_type, result_score, result_label, result_postcode.
 This data.frame is produced using banR::geocode_tbl()}
 }
 \value{
 invisible(0)
 }
 \description{
-Information is printed in warnings. This function doesn't return any values.
+Information is printed in warnings.
+This function returns a data.frame containing correction proposition
 }
 \keyword{internal}

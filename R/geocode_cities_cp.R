@@ -313,19 +313,29 @@ geocode_df_cities_cp <- function(.data,
     anomaly_to_check <- result %>%
       dplyr::filter(is.na(.data$geocode_ok) | .data$geocode_ok == FALSE) %>%
       dplyr::select(
+        .data$id_rows,
         city = !!city_col, postcode = !!cp_col,
-        .data$result_type, .data$result_score, .data$result_label, .data$result_postcode) %>%
-      dplyr::distinct()
-
-    if(nrow(anomaly_to_check) !=0)
-      check_warn_cities_cp(anomaly_to_check)
+        .data$result_type, .data$result_score,
+        .data$result_label, .data$result_postcode
+      )
+    ## Store propositions
+    proposition <- check_warn_cities_cp(anomaly_to_check) %>%
+      dplyr::rename(
+        !!city_col_name := .data$proposition_city,
+        !!cp_col_name := .data$proposition_cp
+      ) %>%
+      dplyr::rename_with(
+        .fn = ~ paste0("proposition_", .x),
+        .cols = -.data$id_rows
+      )
 
     result <- result %>%
       dplyr::filter(.data$geocode_ok) %>%
       dplyr::select(.data$id_rows,
                     .data$latitude,
                     .data$longitude,
-                    cog = .data$result_citycode)
+                    cog = .data$result_citycode) %>%
+      dplyr::bind_rows(proposition)
   }
 
   ## Format data for output ----------------------------
@@ -337,8 +347,11 @@ geocode_df_cities_cp <- function(.data,
     dplyr::right_join(index, by = "id_rows") %>%
     dplyr::arrange(.data$id_rows) %>%
     dplyr::select(-.data$id_rows) %>%
-    dplyr::rename_with(~ paste0(city_col_name, "_",
-                                stringr::str_sub(.x, 1, 3)))
+    dplyr::rename_with(
+      ~ paste0(city_col_name, "_",
+               stringr::str_sub(.x, 1, 3)),
+      .cols = c(.data$latitude, .data$longitude, .data$cog)
+    )
 
   ## "Coalesce" new values with potential existing values.
   col_to_add <- col_to_add %>%
@@ -353,15 +366,29 @@ geocode_df_cities_cp <- function(.data,
 
 #' Check a list of cities and try to find replacement values
 #'
-#' Information is printed in warnings. This function doesn't return any values.
+#' Information is printed in warnings.
+#' This function returns a data.frame containing correction proposition
 #'
 #' @param data a data.frame with the following columns:
-#' city (string), postcode(string), result_type, result_score, result_label, result_postcode.
+#' id_rows, city (string), postcode(string), result_type, result_score, result_label, result_postcode.
 #' This data.frame is produced using banR::geocode_tbl()
 #'
 #' @return invisible(0)
 #' @keywords internal
 check_warn_cities_cp <- function(data){
+  ## check input------------------
+  df_has_cols(
+    data,
+    c("id_rows", "city", "postcode", "result_type", "result_score", "result_label", "result_postcode")
+  )
+  if(is_empty_df(data))
+    return(
+      tibble::tibble(
+        id_rows = integer(),
+        proposition_city = character(),
+        proposition_cp = character()
+      )
+    )
   # Checking for "name" mispelling (wrong name with correct postcode)
   ## . Mispelling wih correct postcode -------------------------
   mispelling <- data %>%
@@ -436,11 +463,24 @@ check_warn_cities_cp <- function(data){
     message("Villes inconnues:",
             paste0("\n\t", wrong_no_proposal$city, "(", wrong_no_proposal$postcode, ")"))
 
-
   if(nrow(wrong_with_proposal) != 0){
     message("Les villes suivantes ont ete ignor\u00e9es. Propositions de corrections:",
             paste0("\n\t",wrong_with_proposal$city," (", wrong_with_proposal$postcode,") -> \t",
                    wrong_with_proposal$result_label, " (",wrong_with_proposal$result_postcode, ")"))
   }
-  invisible(0)
+
+  ## . Return propositions-----------------
+
+  data %>%
+    dplyr::select(.data$id_rows, .data$postcode, .data$city) %>%
+    dplyr::left_join(
+      wrong_with_proposal,
+      by = c("postcode", "city")
+    ) %>%
+    dplyr::select(
+      .data$id_rows,
+      proposition_city = .data$result_label,
+      proposition_cp = .data$result_postcode
+    )
+
 }
