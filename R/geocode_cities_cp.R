@@ -157,29 +157,9 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::anti_join(geocoding, by = "id_rows")
 
   if(nrow(remaining_cities) != 0){
-    ## Create a function to geocode with nomatim and output result in good format
-    nomatim_geocode <- function(df, city = city, country = country){
-      df %>%
-        tidygeocoder::geocode(
-          city = city,
-          country = country,
-          method = "osm",
-          full_results = TRUE,
-          progress_bar = FALSE,
-          quiet = TRUE
-        ) %>%
-        dplyr::filter(
-          .data$type %in% c("city", "administrative")
-        ) %>%
-        dplyr::select(
-          .data$id_rows,
-          .data$lat,
-          lon = .data$long
-        )
-    }
     tryCatch(
       {
-        nomatim_geocoding <- nomatim_geocode(remaining_cities)
+        nomatim_geocoding <- geocode_nomatim(remaining_cities)
       },
       error = function(e){
         nomatim_error <<- TRUE
@@ -191,7 +171,7 @@ geocode_df_foreign_cities <- function(.data,
         {
           nomatim_error <- FALSE
           tidygeocoder::geo("", method = "osm") ## Test to avoid being blacklisted with 2 times the same request in a row
-          nomatim_geocoding <- nomatim_geocode(remaining_cities)
+          nomatim_geocoding <- geocode_nomatim(remaining_cities)
         },
         error = function(e){
           nomatim_error <<- TRUE
