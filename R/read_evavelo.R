@@ -19,8 +19,18 @@ read_evavelo <- function(file){
     comptages_automatiques = read_compt_auto(file)
   )
 
-  ## TODO Create an error if one of the table is empty (except for comptages_automatiques)
+  ## Check if any DF is empty (except for comptages_automatiques)
+  empty_dfs <- out %>%
+    purrr::keep(is.data.frame) %>%
+    purrr::map_lgl(is_empty_df)
 
+  if(any(empty_dfs)){
+    stop(
+      "Des onglets n\'ont aucune donn\u00e9es"
+    )
+  }
+
+  ## Add attributes to output (S3 Object)
   class(out) <- c("evadata", class(out))
   attr(out, "geocoded") <- FALSE
   out
@@ -41,7 +51,8 @@ read_table_communes <- function(file, sheet = "table_communes"){
   openxlsx::read.xlsx(file,
                       sheet,
                       startRow = 2) %>%  # We skip the first row that contains global information and not data.
-    janitor::clean_names()
+    janitor::clean_names() %>%
+    warning_empty_sheet(sheetname = sheet)
   # geocode_table_communes()
 
 }
@@ -74,7 +85,8 @@ read_comptage <- function(file, init = FALSE){
     dplyr::mutate(
       date_enq = openxlsx::convertToDate(.data$date_enq),
       id_quest = as.character(.data$id_quest)
-    )
+    ) %>%
+    warning_empty_sheet(sheetname = sheet)
 
 }
 
@@ -124,7 +136,8 @@ read_enquete <- function(file, init = FALSE) {
                         "ville_heb", "ville_res")),
         stringr::str_trim
       )
-    )
+    ) %>%
+    warning_empty_sheet(sheetname = sheet)
 
   enquete
 
@@ -147,7 +160,8 @@ read_calendrier <- function(file, sheet = "calendrier_sites"){
     dplyr::mutate(
       date_enq = openxlsx::convertToDate(.data$date_enq)
     ) %>%
-    janitor::clean_names()
+    janitor::clean_names() %>%
+    warning_empty_sheet(sheetname = sheet)
 
 }
 
@@ -260,4 +274,12 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
   return(pred)
 }
 
+## Utils function to check for empty sheet and create a warning
+warning_empty_sheet <- function(df, sheetname){
+  if(is_empty_df(df))
+    warning("L\'onglet ", sheetname, " n\'a aucune donn\u00e9e.",
+            immediate. = TRUE,
+            call. = FALSE)
+  return(df)
+}
 

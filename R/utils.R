@@ -195,3 +195,15 @@ sum_prod <- function(..., na.rm = TRUE){
 
 # not_in function
 "%ni%" <- Negate("%in%")
+
+
+#' Check if  data.frame has 0 row
+#'
+#' @param df
+#'
+#' @return a boolean
+#' @keywords internal
+
+is_empty_df <- function(df){
+  nrow(df) == 0
+}

@@ -1,5 +1,7 @@
 # evavelo (development version)
 
+- Fix #77 Missing data in one of the input worksheets now creates an error. Empty worksheet `comptages_automatiques` is allowed but creates a warning.
+
 - Fix #75 that displayed a progress bar in the logs
 
 # evavelo 1.0.3
