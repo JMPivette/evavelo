@@ -14,6 +14,7 @@ This value will also be used to name the new columns.}
 }
 \value{
 the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
+In case of correction proposition, a new colmuns starting with proposition_ is also added
 }
 \description{
 This function will try to find the best match in case of mispelling.
