@@ -12,6 +12,7 @@
 #' @param country_col contry_col (used to define the type of geocoding)
 #'
 #' @return the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
+#' If the function propose a new city / postcode then 2 other columns are added based on city_col and cp_col (proposition_)
 #' @keywords internal
 #'
 
@@ -72,9 +73,12 @@ geocode_df_foreign_cities <- function(.data,
   city_col <- rlang::enquo(city_col)
   city_col_name <- rlang::as_name(city_col)
   country_col <- rlang::enquo(country_col)
+  country_col_name <- rlang::as_name(country_col)
   input_data <- .data
   nomatim_error <- FALSE
+
   ## Geocode ----------------------
+  ## Clean df and detect foreign cities
   foreign_cities <- input_data %>%
     dplyr::transmute(
       id_rows = dplyr::row_number(),
@@ -112,8 +116,10 @@ geocode_df_foreign_cities <- function(.data,
   if(nrow(geocoding) != nrow(foreign_cities)){
     remaining <- foreign_cities %>%
       dplyr::anti_join(geocoding, by = "id_rows") %>%
-      dplyr::mutate(country = countrycode::countryname(.data$country),
-                    city = stringi::stri_trans_general(.data$city, id = "Latin-ASCII")) %>%
+      dplyr::mutate(
+        country = countrycode::countryname(.data$country),
+        city = stringi::stri_trans_general(.data$city, id = "Latin-ASCII")
+      ) %>%
       tidyr::drop_na(.data$city, .data$country)
 
     geocoding_approx <- remaining %>%
@@ -131,7 +137,7 @@ geocode_df_foreign_cities <- function(.data,
       dplyr::slice_max(.data$pop) %>% ## Get biggest city in case of multiple result
       dplyr::ungroup()
 
-    ## Warn user of interpretation:
+    ## Warn user of interpretation and store the interpretation
     if(nrow(geocoding_approx) != 0){
       geocoding_approx_recap <- geocoding_approx %>%
         dplyr::select(.data$id_rows, .data$city.y) %>%
@@ -143,12 +149,14 @@ geocode_df_foreign_cities <- function(.data,
               paste0(geocoding_approx_recap$country, " : ", geocoding_approx_recap$city,
                      " -> ",geocoding_approx_recap$city.y,
                      collapse = "\n\t"))
+
+      geocoding <- geocoding_approx %>%
+        dplyr::transmute(
+          .data$id_rows, .data$lat, .data$lon,
+          proposition_city = .data$city.y
+        ) %>%
+        dplyr::bind_rows(geocoding)
     }
-
-    geocoding <- geocoding_approx %>%
-      dplyr::select(.data$id_rows, .data$lat, .data$lon) %>%
-      dplyr::bind_rows(geocoding)
-
   }
 
   ## Search remaining cities on Open Street Map (Nomatim)-----------
@@ -156,7 +164,7 @@ geocode_df_foreign_cities <- function(.data,
   remaining_cities <- foreign_cities %>%
     dplyr::anti_join(geocoding, by = "id_rows")
 
-  if(nrow(remaining_cities) != 0){
+  if(!is_empty_df(remaining_cities)){
     tryCatch(
       {
         nomatim_geocoding <- geocode_nomatim(remaining_cities)
@@ -193,7 +201,7 @@ geocode_df_foreign_cities <- function(.data,
 
   wrong <- foreign_cities %>%
     dplyr::anti_join(geocoding, by = "id_rows")
-  if(nrow(wrong) != 0)
+  if(!is_empty_df(wrong))
     message("Villes inconnues:",
             paste0("\n\t", wrong$city, " (", wrong$country, ")"))
 
@@ -207,9 +215,14 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::right_join(index, by = "id_rows") %>%
     dplyr::arrange(.data$id_rows) %>%
     dplyr::select(-.data$id_rows) %>%
-    dplyr::mutate(cog = NA_character_) %>% ## For compatibility with other functions (French)
-    dplyr::rename_with(~ paste0(city_col_name, "_",
-                                stringr::str_sub(.x, 1, 3)))
+    dplyr::mutate(city_cog = NA_character_) %>% ## For compatibility with other functions (French)
+    dplyr::rename(
+      city_lat = .data$lat,
+      city_lon = .data$lon,
+    ) %>%
+    dplyr::rename_with(
+      ~ stringr::str_replace(.x, "city", city_col_name)
+    )
   ## "Coalesce" new values with potential existing values.
   col_to_add <- col_to_add %>%
     dplyr::coalesce(input_data %>%
@@ -217,7 +230,11 @@ geocode_df_foreign_cities <- function(.data,
   ## update input data
   input_data %>%
     dplyr::select(-dplyr::any_of(names(col_to_add))) %>%
-    dplyr::bind_cols(col_to_add)
+    dplyr::bind_cols(col_to_add) %>%
+    dplyr::relocate(
+      dplyr::starts_with("proposition"),
+      .after = dplyr::last_col()
+    )
 }
 
 #' geocode df with postal code
