@@ -1,177 +1,204 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://jmpivette.github.io/evavelo//index.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/404.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/add_coherence.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/app_run.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/bind_list_df.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/articles/ba-using_package.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/calc_distance.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/articles/checking_input.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/check_diff.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/articles/geocode_distance.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/check_evavelo.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/check_multiple_volume.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/articles/numerical_outliers.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/check_num_outliers.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/articles/site_classification.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/check_similar_enquete.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/authors.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/check_warn_cities_cp.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/index.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/correct_categ.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/news/index.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/correct_itinerant.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/add_coherence.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/correct_spor_lois.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/app_run.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/correct_util_lois.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/bind_list_df.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/correct_util_sport.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/calc_distance.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/df_compare.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/check_diff.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/df_has_cols.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/check_evavelo.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/equal_with_na.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/check_multiple_volume.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/evavelo_example.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/check_num_outliers.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/evavelo_example_geocoded.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/check_similar_enquete.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/find_wrong_cities.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/check_warn_cities_cp.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/find_wrong_geocoding.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/correct_categ.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_cities.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/correct_itinerant.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_cities_cp.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/correct_spor_lois.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_city.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/correct_util_lois.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_df_cities.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/correct_util_sport.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_df_cities_cp.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/df_compare.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_df_foreign_cities.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/df_has_cols.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_evavelo.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/equal_with_na.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_row_by_row.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/evavelo_example.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/geocode_table_communes.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/evavelo_example_geocoded.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/get_closest_point.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/find_wrong_cities.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/intersection_traj_reg.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/find_wrong_geocoding.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/is_iti_coherent.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_cities.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/log_in_x_not_in_y.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_cities_cp.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/measure_dist_vec.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_city.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/outliers_std_detect.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_df_cities.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/process_evavelo.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_df_cities_cp.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/radical_quest.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_df_foreign_cities.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/read_calendrier.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_evavelo.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/read_compt_auto.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_nomatim.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/read_comptage.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_row_by_row.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/read_enquete.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/geocode_table_communes.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/read_evavelo.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/get_closest_point.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/read_table_communes.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/real_distance.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/intersection_traj_reg.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/rename_french_cities.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/is_empty_df.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/sum_prod.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/is_iti_coherent.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/unify_regions.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/log_in_x_not_in_y.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/update_wb.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/measure_dist_vec.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/update_ws.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/outliers_std_detect.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//reference/which_min.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/process_evavelo.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//articles/ba-using_package.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/radical_quest.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//articles/checking_input.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/read_calendrier.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//articles/geocode_distance.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/read_compt_auto.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//articles/numerical_outliers.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/read_comptage.html</loc>
   </url>
   <url>
-    <loc>https://jmpivette.github.io/evavelo//articles/site_classification.html</loc>
+    <loc>https://jmpivette.github.io/evavelo/reference/read_enquete.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/read_evavelo.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/read_table_communes.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/real_distance.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/rename_french_cities.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/sum_prod.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/unify_regions.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/update_wb.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/update_ws.html</loc>
+  </url>
+  <url>
+    <loc>https://jmpivette.github.io/evavelo/reference/which_min.html</loc>
   </url>
 </urlset>

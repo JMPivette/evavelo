@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -76,7 +72,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/JMPivette/evavelo/">
+  <a href="https://github.com/JMPivette/evavelo/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -97,16 +93,16 @@
       <h1 data-toc-skip>Utilisation de Eva-Scan</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JMPivette/evavelo/blob/master/vignettes/ba-using_package.Rmd"><code>vignettes/ba-using_package.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JMPivette/evavelo/blob/HEAD/vignettes/ba-using_package.Rmd" class="external-link"><code>vignettes/ba-using_package.Rmd</code></a></small>
       <div class="hidden name"><code>ba-using_package.Rmd</code></div>
 
     </div>
 
     
     
-<div id="import-and-clean-file" class="section level2">
-<h2 class="hasAnchor">
-<a href="#import-and-clean-file" class="anchor"></a>Import and clean file</h2>
+<div class="section level2">
+<h2 id="import-and-clean-file">Import and clean file<a class="anchor" aria-label="anchor" href="#import-and-clean-file"></a>
+</h2>
 <p>Import des données</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Full data</span>
@@ -114,14 +110,14 @@
 <span class="co"># Corrected data</span>
 <span class="co">#xlsx_path &lt;- here::here("inst", "example-data", "01a_all_correct.xlsx")</span>
 <span class="co"># Reduced size data</span>
-<span class="va">xlsx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"example-data/02_simplified.xlsx"</span>, package <span class="op">=</span> <span class="st">"evavelo"</span><span class="op">)</span>
+<span class="va">xlsx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"example-data/02_simplified.xlsx"</span>, package <span class="op">=</span> <span class="st">"evavelo"</span><span class="op">)</span>
 <span class="co">#xlsx_path &lt;- here::here("inst", "example-data", "02_simplified.xlsx")</span>
 
 
 <span class="va">eva_data</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="../reference/read_evavelo.html">read_evavelo</a></span><span class="op">(</span><span class="va">xlsx_path</span><span class="op">)</span></code></pre></div>
-<div id="test-input-values" class="section level3">
-<h3 class="hasAnchor">
-<a href="#test-input-values" class="anchor"></a>Test input values</h3>
+<div class="section level3">
+<h3 id="test-input-values">Test input values<a class="anchor" aria-label="anchor" href="#test-input-values"></a>
+</h3>
 <p>Si l’object eva_data n’a pas été géocodé au préalable, <code><a href="../reference/process_evavelo.html">process_evavelo()</a></code> va géocoder les villes avant de faire le traitement. Un log du géocodage apparaitra dans les messages.</p>
 <p>La fonction retourne une liste de valeurs créées ou modifiées.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -160,8 +156,6 @@
 <span class="co">#&gt;  Saint-Pol-de-Léon (22250) -&gt;    Saint-Pol-de-Léon (29250)</span>
 <span class="co">#&gt; Interprétation de noms de communes étrangères:</span>
 <span class="co">#&gt;  Chine : Benjing -&gt; Beijing</span>
-<span class="co">#&gt; Passing 3 addresses to the Nominatim single address geocoder</span>
-<span class="co">#&gt; Query completed in: 3.2 seconds</span>
 <span class="co">#&gt; Villes inconnues:</span>
 <span class="co">#&gt;  Noor mout (Pays-Bas)</span>
 <span class="co">#&gt; </span>
@@ -198,7 +192,7 @@
 <span class="co">#&gt;  La catégorie du déclarant sera utilisée:</span>
 <span class="co">#&gt;  141A35, 38A45, 38A46</span>
 
-<span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">result</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span>
+<span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">result</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; $comptages_man_post_traitements</span>
 <span class="co">#&gt;    id_quest categorie_visuelle_cycliste_corrige</span>
 <span class="co">#&gt; 1      &lt;NA&gt;                                &lt;NA&gt;</span>
@@ -283,11 +277,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jean-Marie Pivette.</p>
+  <p></p>
+<p>Developed by Jean-Marie Pivette.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -295,6 +291,8 @@
 
   
 
+
+  
 
   </body>
 </html>

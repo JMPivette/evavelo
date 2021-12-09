@@ -21,6 +21,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -33,18 +35,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -78,7 +74,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/JMPivette/evavelo/">
+  <a href="https://github.com/JMPivette/evavelo/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -95,29 +91,29 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="eva-scan" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#eva-scan" class="anchor"></a>Eva-Scan</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="eva-scan">Eva-Scan<a class="anchor" aria-label="anchor" href="#eva-scan"></a>
+</h1></div>
 <!-- badges: start -->
 
 <!-- badges: end -->
-<div id="résumé" class="section level2">
-<h2 class="hasAnchor">
-<a href="#r%C3%A9sum%C3%A9" class="anchor"></a>Résumé</h2>
-<p>Le package <code>evavelo</code> applique des traitements automatiques sur les fichiers d’enquêtes liés à la méthode <a href="https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo">EVA-VELO</a> (Méthode nationale pour ’évaluation des retombées des véloroutes) développée par <strong>Vélo et Territoires</strong></p>
+<div class="section level2">
+<h2 id="résumé">Résumé<a class="anchor" aria-label="anchor" href="#r%C3%A9sum%C3%A9"></a>
+</h2>
+<p>Le package <code>evavelo</code> applique des traitements automatiques sur les fichiers d’enquêtes liés à la méthode <a href="https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo" class="external-link">EVA-VELO</a> (Méthode nationale pour ’évaluation des retombées des véloroutes) développée par <strong>Vélo et Territoires</strong></p>
 <p>Ce projet est composé de fonctions de traitements de fichier mais aussi d’une interface web.</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Development version from GitHub</span>
 <span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"JMPivette/evavelo"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="traitement-denquête-eva-velo" class="section level2">
-<h2 class="hasAnchor">
-<a href="#traitement-denqu%C3%AAte-eva-velo" class="anchor"></a>Traitement d’enquête Eva-Velo</h2>
+<div class="section level2">
+<h2 id="traitement-denquête-eva-velo">Traitement d’enquête Eva-Velo<a class="anchor" aria-label="anchor" href="#traitement-denqu%C3%AAte-eva-velo"></a>
+</h2>
 <p>La function principale <code><a href="reference/process_evavelo.html">process_evavelo()</a></code> permet de traiter un fichier d’enquête xlsx avec la méthode Eva-Vélo. Cette function va notamment:</p>
 <ul>
 <li>Vérifier l’intégrité du fichier</li>
@@ -129,12 +125,12 @@
 </li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">xlsx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"example-data/02_simplified.xlsx"</span>, package <span class="op">=</span> <span class="st">"evavelo"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">xlsx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"example-data/02_simplified.xlsx"</span>, package <span class="op">=</span> <span class="st">"evavelo"</span><span class="op">)</span>
 
 
 <span class="va">eva_data_processed</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="reference/process_evavelo.html">process_evavelo</a></span><span class="op">(</span><span class="va">xlsx_path</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">eva_data_processed</span>, <span class="va">head</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">eva_data_processed</span>, <span class="va">head</span><span class="op">)</span>
 <span class="co">#&gt; $comptages_man_post_traitements</span>
 <span class="co">#&gt;   id_quest categorie_visuelle_cycliste_corrige</span>
 <span class="co">#&gt; 1     &lt;NA&gt;                                &lt;NA&gt;</span>
@@ -181,20 +177,20 @@
 <span class="co">#&gt; 5              &lt;NA&gt;              &lt;NA&gt;</span>
 <span class="co">#&gt; 6              &lt;NA&gt;             33318</span></code></pre></div>
 </div>
-<div id="traitement-étapes-par-étapes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#traitement-%C3%A9tapes-par-%C3%A9tapes" class="anchor"></a>Traitement étapes par étapes</h2>
+<div class="section level2">
+<h2 id="traitement-étapes-par-étapes">Traitement étapes par étapes<a class="anchor" aria-label="anchor" href="#traitement-%C3%A9tapes-par-%C3%A9tapes"></a>
+</h2>
 <p>Il est possible de décomposer tous les traitements effectués par <code><a href="reference/process_evavelo.html">process_evavelo()</a></code> étape par étape:</p>
-<div id="lecture-du-fichier" class="section level3">
-<h3 class="hasAnchor">
-<a href="#lecture-du-fichier" class="anchor"></a>Lecture du fichier</h3>
+<div class="section level3">
+<h3 id="lecture-du-fichier">Lecture du fichier<a class="anchor" aria-label="anchor" href="#lecture-du-fichier"></a>
+</h3>
 <p>La fonction <code><a href="reference/read_evavelo.html">read_evavelo()</a></code> permet de lire un fichier xlsx et de récupérer un objet avec toutes les informations intéressantes pour le traitement.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eva_data</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="reference/read_evavelo.html">read_evavelo</a></span><span class="op">(</span><span class="va">xlsx_path</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="géocodage-des-villes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#g%C3%A9ocodage-des-villes" class="anchor"></a>Géocodage des villes</h3>
+<div class="section level3">
+<h3 id="géocodage-des-villes">Géocodage des villes<a class="anchor" aria-label="anchor" href="#g%C3%A9ocodage-des-villes"></a>
+</h3>
 <p>La fonction <code><a href="reference/geocode_evavelo.html">geocode_evavelo()</a></code> permet de modifier l’objet en géocodant les noms de communes</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eva_data_geocoded</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="reference/geocode_evavelo.html">geocode_evavelo</a></span><span class="op">(</span><span class="va">eva_data</span><span class="op">)</span>
@@ -254,9 +250,9 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ...Vérification de nom_site_enq.............</span></code></pre></div>
 </div>
-<div id="process" class="section level3">
-<h3 class="hasAnchor">
-<a href="#process" class="anchor"></a>Process</h3>
+<div class="section level3">
+<h3 id="process">Process<a class="anchor" aria-label="anchor" href="#process"></a>
+</h3>
 <p>La fonction <code><a href="reference/process_evavelo.html">process_evavelo()</a></code> que nous avons déjà utilisé sur un fichier Excel peut aussi être utilisée directement sur un objet précédemment géocodé avec <code><a href="reference/geocode_evavelo.html">geocode_evavelo()</a></code></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eva_data_processed</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="reference/process_evavelo.html">process_evavelo</a></span><span class="op">(</span><span class="va">eva_data_geocoded</span><span class="op">)</span>
@@ -276,15 +272,17 @@
 <span class="co">#&gt;  141A35, 38A45, 38A46</span></code></pre></div>
 </div>
 </div>
-<div id="interface-web" class="section level2">
-<h2 class="hasAnchor">
-<a href="#interface-web" class="anchor"></a>Interface Web</h2>
+<div class="section level2">
+<h2 id="interface-web">Interface Web<a class="anchor" aria-label="anchor" href="#interface-web"></a>
+</h2>
 <p>La fonction <code><a href="reference/app_run.html">evavelo::app_run()</a></code> permet d’utiliser le package via une interface web:</p>
-<p><img src="reference/figures/eva-scan-ui.png?raw=true" title="Title" alt="UI Screenshot"></p>
+<div class="figure">
+<img src="reference/figures/eva-scan-ui.png?raw=true" title="Title" alt=""><p class="caption">UI Screenshot</p>
 </div>
-<div id="classification-de-compteurs-similaires" class="section level2">
-<h2 class="hasAnchor">
-<a href="#classification-de-compteurs-similaires" class="anchor"></a>Classification de compteurs similaires</h2>
+</div>
+<div class="section level2">
+<h2 id="classification-de-compteurs-similaires">Classification de compteurs similaires<a class="anchor" aria-label="anchor" href="#classification-de-compteurs-similaires"></a>
+</h2>
 <p>Le package <code>eva-scan</code> permet aussi de créer une classification hiérarchique des compteurs à partir de données de comptages automatiques. Cette classification est disponible dans l’interface Web.</p>
 </div>
 </div>
@@ -292,45 +290,56 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/JMPivette/evavelo/">https://​github.com/​JMPivette/​evavelo/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/JMPivette/evavelo/issues">https://​github.com/​JMPivette/​evavelo/​issues</a>
-</li>
+<li><a href="https://github.com/JMPivette/evavelo/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/JMPivette/evavelo/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing evavelo</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Jean-Marie Pivette <br><small class="roles"> Maintainer, author </small>  </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://codecov.io/gh/JMPivette/evavelo?branch=master"><img src="https://codecov.io/gh/JMPivette/evavelo/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://www.tidyverse.org/lifecycle/#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://codecov.io/gh/JMPivette/evavelo?branch=master" class="external-link"><img src="https://codecov.io/gh/JMPivette/evavelo/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jean-Marie Pivette.</p>
+  <p></p>
+<p>Developed by Jean-Marie Pivette.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -338,6 +347,8 @@
 
   
 
+
+  
 
   </body>
 </html>

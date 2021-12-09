@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -76,7 +72,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/JMPivette/evavelo/">
+  <a href="https://github.com/JMPivette/evavelo/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -97,7 +93,7 @@
       <h1 data-toc-skip>Géocodage des distance</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JMPivette/evavelo/blob/master/vignettes/geocode_distance.Rmd"><code>vignettes/geocode_distance.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JMPivette/evavelo/blob/HEAD/vignettes/geocode_distance.Rmd" class="external-link"><code>vignettes/geocode_distance.Rmd</code></a></small>
       <div class="hidden name"><code>geocode_distance.Rmd</code></div>
 
     </div>
@@ -105,13 +101,13 @@
     
     
 <p>Différentes phases de geocoding et de mesures de distance sont réalisées dans le package <code>evavelo</code></p>
-<div id="geocoding" class="section level2">
-<h2 class="hasAnchor">
-<a href="#geocoding" class="anchor"></a>Geocoding</h2>
+<div class="section level2">
+<h2 id="geocoding">Geocoding<a class="anchor" aria-label="anchor" href="#geocoding"></a>
+</h2>
 <p>Le géocodage est réalisé lors de l’appel à la fonction <code><a href="../reference/geocode_evavelo.html">geocode_evavelo()</a></code> qui est elle-même appelée par <code><a href="../reference/process_evavelo.html">process_evavelo()</a></code></p>
-<div id="ville-françaises" class="section level3">
-<h3 class="hasAnchor">
-<a href="#ville-fran%C3%A7aises" class="anchor"></a>Ville françaises</h3>
+<div class="section level3">
+<h3 id="ville-françaises">Ville françaises<a class="anchor" aria-label="anchor" href="#ville-fran%C3%A7aises"></a>
+</h3>
 <p>Les champs suivants sont géocodés:</p>
 <ul>
 <li>onglet table_communes
@@ -131,35 +127,35 @@
 </ul>
 </li>
 </ul>
-<p>Le gécodage de ces communes est d’abord réalisé localement en cherchant une correpondance exacte avec la <a href="https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/">Base officielle des codes postaux</a> réalisé par La Poste.</p>
-<p>Les villes qui n’ont pas été détectées lors de cette recherche sont ensuite recherchées en utilisant le package <a href="https://github.com/joelgombin/banR">banR</a> qui fait lui même appel à la <a href="https://geo.api.gouv.fr/adresse">Base Adresse Nationale (BAN)</a>.</p>
+<p>Le gécodage de ces communes est d’abord réalisé localement en cherchant une correpondance exacte avec la <a href="https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/" class="external-link">Base officielle des codes postaux</a> réalisé par La Poste.</p>
+<p>Les villes qui n’ont pas été détectées lors de cette recherche sont ensuite recherchées en utilisant le package <a href="https://github.com/joelgombin/banR" class="external-link">banR</a> qui fait lui même appel à la <a href="https://geo.api.gouv.fr/adresse" class="external-link">Base Adresse Nationale (BAN)</a>.</p>
 <p>Cette deuxième recherche permet de faire une recherche “approximative” et ainsi interpréter des communes mal nommées ou proposer des corrections.</p>
 </div>
-<div id="villes-etrangères" class="section level3">
-<h3 class="hasAnchor">
-<a href="#villes-etrang%C3%A8res" class="anchor"></a>Villes Etrangères</h3>
+<div class="section level3">
+<h3 id="villes-etrangères">Villes Etrangères<a class="anchor" aria-label="anchor" href="#villes-etrang%C3%A8res"></a>
+</h3>
 <p>La recherche de ville étrangère est réalisée uniquement sur le champ <code>ville_res</code> quand <code>pays_res</code> est différent de “France”.</p>
 <p>Un premier géocodage est réalisé localement en utilisant la Base de données <code>world.cities</code> du package <code>{maps}</code>. La description de cette base de données est la suivante:</p>
 <blockquote>
 <p>This database is primarily of world cities of population greater than about 40,000. Also included are capital cities of any population size, and many smaller towns.</p>
 </blockquote>
-<p>Les villes qui n’ont pu être géocodées sont ensuite recherchées en utilisant le package <a href="https://jessecambon.github.io/tidygeocoder/">tidygeocoder</a> qui fait appel au service <a href="https://nominatim.org/">Nomatim</a> de Open Street Map</p>
+<p>Les villes qui n’ont pu être géocodées sont ensuite recherchées en utilisant le package <a href="https://jessecambon.github.io/tidygeocoder/" class="external-link">tidygeocoder</a> qui fait appel au service <a href="https://nominatim.org/" class="external-link">Nomatim</a> de Open Street Map</p>
 <p>Ce service étant gratuit, les requêtes sont bridées à 1 demande par seconde. Le géocodage peut donc prendre plusieurs minutes en fonction du nombre de villes étrangères à géocoder.</p>
 </div>
 </div>
-<div id="mesure-de-distance" class="section level2">
-<h2 class="hasAnchor">
-<a href="#mesure-de-distance" class="anchor"></a>Mesure de distance</h2>
-<div id="détection-de-la-ville-ditinéraire-la-plus-proche" class="section level3">
-<h3 class="hasAnchor">
-<a href="#d%C3%A9tection-de-la-ville-ditin%C3%A9raire-la-plus-proche" class="anchor"></a>Détection de la ville d’itinéraire la plus proche</h3>
+<div class="section level2">
+<h2 id="mesure-de-distance">Mesure de distance<a class="anchor" aria-label="anchor" href="#mesure-de-distance"></a>
+</h2>
+<div class="section level3">
+<h3 id="détection-de-la-ville-ditinéraire-la-plus-proche">Détection de la ville d’itinéraire la plus proche<a class="anchor" aria-label="anchor" href="#d%C3%A9tection-de-la-ville-ditin%C3%A9raire-la-plus-proche"></a>
+</h3>
 <p>Les champs <code>iti_dep_iti_valide</code> et <code>iti_arr_iti_valide</code> sont renseignés en indiquant la commune appartenant à <code>table_commune</code> etant la plus proche des champs respectifs <code>iti_depart_itineraire</code> et <code>iti_arrivee_itineraire</code></p>
 <p>Ces champs ne sont pas renseignés si la commune la plus proche est située à une distance à vol d’oiseau de plus de <strong>30km</strong>.</p>
 </div>
-<div id="distance-hébergement---lieu-denquête-et-domicile---lieu-denquête" class="section level3">
-<h3 class="hasAnchor">
-<a href="#distance-h%C3%A9bergement---lieu-denqu%C3%AAte-et-domicile---lieu-denqu%C3%AAte" class="anchor"></a>Distance [hébergement - lieu d’enquête] et [domicile - lieu d’enquête]</h3>
-<p>La distance hébergement - lieu d’enquête (<code>distance_heb_enq</code>) est calculée en utilisant la méthode d’<a href="https://fr.wikipedia.org/wiki/Formule_de_haversine">Haversine</a> entre les points <code>ville_res</code> et <code>nom_site_enq</code>.</p>
+<div class="section level3">
+<h3 id="distance-hébergement---lieu-denquête-et-domicile---lieu-denquête">Distance [hébergement - lieu d’enquête] et [domicile - lieu d’enquête]<a class="anchor" aria-label="anchor" href="#distance-h%C3%A9bergement---lieu-denqu%C3%AAte-et-domicile---lieu-denqu%C3%AAte"></a>
+</h3>
+<p>La distance hébergement - lieu d’enquête (<code>distance_heb_enq</code>) est calculée en utilisant la méthode d’<a href="https://fr.wikipedia.org/wiki/Formule_de_haversine" class="external-link">Haversine</a> entre les points <code>ville_res</code> et <code>nom_site_enq</code>.</p>
 <p>Nous déterminons ensuite une distance réelle (<code>distance_heb_enq_reelle</code>) en utilisant la formule du cabinet Indiggo:</p>
 <blockquote>
 <p><code>[distance_heb_enq_reelle] = [distance_heb_enq]*(1,1 + 0,3*EXP(-[distance_heb_enq] / 20))</code></p>
@@ -180,11 +176,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jean-Marie Pivette.</p>
+  <p></p>
+<p>Developed by Jean-Marie Pivette.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -192,6 +190,8 @@
 
   
 
+
+  
 
   </body>
 </html>
