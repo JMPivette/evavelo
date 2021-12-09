@@ -13,7 +13,6 @@ test_that("find_wrong_geocoding works", {
 
 test_that("geocode_evavelo() works", {
 
-
     geocoded_eva <- geocode_evavelo(evavelo_example) %>%
       suppressMessages()
 

@@ -2,9 +2,14 @@
 % Please edit documentation in R/geocode_evavelo.R
 \name{find_wrong_cities}
 \alias{find_wrong_cities}
-\title{Find cities that couldn't be geocoded by geocode_cities()}
+\title{Find cities that couldn't be geocoded by geocode_cities() or that have been interpreted due to a mispelling}
 \usage{
-find_wrong_cities(var_name, enquete, fields_to_keep = "id_quest")
+find_wrong_cities(
+  var_name,
+  enquete,
+  fields_to_keep = "id_quest",
+  include_interpretation = TRUE
+)
 }
 \arguments{
 \item{var_name}{string corresponding to the city name variable to check}
@@ -12,11 +17,13 @@ find_wrong_cities(var_name, enquete, fields_to_keep = "id_quest")
 \item{enquete}{data.frame containing the var_name variable and an associated *_cog}
 
 \item{fields_to_keep}{fields that will be exported along with var_name}
+
+\item{include_interpretation}{Should we include geocoding interpretation? if FALSE only errors will be output.}
 }
 \value{
 a data.frame with cities that couldn't be geocoded
 }
 \description{
-Find cities that couldn't be geocoded by geocode_cities()
+Find cities that couldn't be geocoded by geocode_cities() or that have been interpreted due to a mispelling
 }
 \keyword{internal}
