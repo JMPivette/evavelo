@@ -1,4 +1,4 @@
-# evavelo (development version)
+# evavelo 1.1.0
 
 - Store correction proposition during geocoding phase. These proposition were only displayed in the log before. They now appear in new columns called "proposition_*" (Fix #65 # 76)
 
