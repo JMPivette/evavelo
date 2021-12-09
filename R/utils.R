@@ -97,21 +97,23 @@ df_compare <- function(x, y, verbose = TRUE) {
 
 
 compare_init_post <- function(init, post_trait){
+  ## Don't worry about additional variables in post_trait version
   post_trait <- post_trait %>%
-    dplyr::select(names(init))
-
+    dplyr::select(
+      dplyr::any_of(names(init))
+    )
   mismatch_col <- janitor::compare_df_cols(
     post = post_trait,
     init = init
   ) %>%
-    dplyr::filter(.data$init != .data$post) %>%
+    dplyr::filter(.data$init != .data$post | is.na(.data$post)) %>%
     dplyr::pull(.data$column_name)
 
   if(length(mismatch_col != 0))
     warning("Les colonnes suivantes sont diff\u00e9rentes: \n\t", paste(mismatch_col, collapse = ", "),
             call. = FALSE)
   df_compare(dplyr::select(init, -dplyr::all_of(mismatch_col)),
-             dplyr::select(post_trait, -dplyr::all_of(mismatch_col)))
+             dplyr::select(post_trait, -dplyr::any_of(mismatch_col)))
 
 
 }
@@ -195,3 +197,15 @@ sum_prod <- function(..., na.rm = TRUE){
 
 # not_in function
 "%ni%" <- Negate("%in%")
+
+
+#' Check if  data.frame has 0 row
+#'
+#' @param df
+#'
+#' @return a boolean
+#' @keywords internal
+
+is_empty_df <- function(df){
+  nrow(df) == 0
+}

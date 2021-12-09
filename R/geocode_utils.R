@@ -195,3 +195,37 @@ geocode_city <- function(city_name, score_limit = 0.4){
   res
 
 }
+
+#' Geocode foreeign cities using Nomatim (OSM) API
+#'
+#' Wrapper around tidygeocoder::geocode() that removes unnecessary messages and progress bars
+#' and format the output data.table with needed variables
+#'
+#' @param df a data.frame containing at least id_rows variable and 2 other with city and country information
+#' @param city name of the column containing the city
+#' @param country name of the column containing the city
+#'
+#' @return a data.frame containing 3 columns: id_rows, lat and lon
+#'
+#' @export
+geocode_nomatim <- function(df,
+                            city = city,
+                            country = country){
+  df %>%
+    tidygeocoder::geocode(
+      city = city,
+      country = country,
+      method = "osm",
+      full_results = TRUE,
+      progress_bar = FALSE,
+      quiet = TRUE
+    ) %>%
+    dplyr::filter(
+      .data$type %in% c("city", "administrative")
+    ) %>%
+    dplyr::select(
+      .data$id_rows,
+      .data$lat,
+      lon = .data$long
+    )
+}

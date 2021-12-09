@@ -11,6 +11,7 @@ geocode_table_communes(table_communes)
 }
 \value{
 a data.frame similar to table_communes with latitude and longitude added.
+And also proposition_nom_commune and proposition_cog
 }
 \description{
 This function check that the municipalities defined in tables_communes are correct

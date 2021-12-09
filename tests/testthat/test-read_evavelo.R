@@ -13,3 +13,35 @@ test_that("read_evavelo works", {
 
 })
 
+
+test_that("missing data in comptages_automatiques creates only a warning (#77)",{
+
+  ## Empty woksheet
+  xlsx_path <- system.file("example-data/05_missing_comptages.xlsx", package = "evavelo")
+
+  expect_warning(
+    read_evavelo(xlsx_path),
+    regexp = "onglet comptages_automatiques"
+  ) %>%
+    suppressWarnings()
+
+  ## Worksheet with header but no data
+  xlsx_path <- system.file("example-data/05_missing_comptages_bis.xlsx", package = "evavelo")
+
+  expect_warning(
+    read_evavelo(xlsx_path),
+    regexp = "onglet comptages_automatiques"
+  )
+})
+
+test_that("missing data in other sheets creates an error (#77)",{
+
+  ## Empty enquetes woksheets
+  xlsx_path <- system.file("example-data/06_missing_enquetes.xlsx", package = "evavelo")
+  expect_error(
+    read_evavelo(xlsx_path) %>%
+      suppressWarnings()
+  )
+
+
+})

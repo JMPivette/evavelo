@@ -1,3 +1,13 @@
+# evavelo 1.1.0
+
+- Store correction proposition during geocoding phase. These proposition were only displayed in the log before. They now appear in new columns called "proposition_*" (Fix #65 # 76)
+
+- Fix #77 Missing data in one of the input worksheets now creates an error. Empty worksheet `comptages_automatiques` is allowed but creates a warning.
+
+- Fix #75 that displayed a progress bar in the logs
+
+- Fix a bug on check_evavelo() when a column was missing from *_post_traitement version of one of the sheets (linked to #78)
+
 # evavelo 1.0.3
 
 - Remove dependency to dev version of openxlsx (following release of 4.2.4)

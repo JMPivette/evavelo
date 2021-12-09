@@ -12,6 +12,7 @@
 #' @param country_col contry_col (used to define the type of geocoding)
 #'
 #' @return the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
+#' If the function propose a new city / postcode then 2 other columns are added based on city_col and cp_col (proposition_)
 #' @keywords internal
 #'
 
@@ -25,7 +26,6 @@ geocode_cities_cp <- function(.data, city_col, cp_col, country_col){
   ## Define names of new columns
   new_cols <- list(NA_real_, NA_real_, NA_character_)
   names(new_cols) <- paste0(city_col_name, c("_lat", "_lon", "_cog"))
-
   # Geocode Cities -----------------------------------------------------------------------
   message("\n...V\u00e9rification de ",
           city_col_name, ".............")
@@ -73,9 +73,12 @@ geocode_df_foreign_cities <- function(.data,
   city_col <- rlang::enquo(city_col)
   city_col_name <- rlang::as_name(city_col)
   country_col <- rlang::enquo(country_col)
+  country_col_name <- rlang::as_name(country_col)
   input_data <- .data
   nomatim_error <- FALSE
+
   ## Geocode ----------------------
+  ## Clean df and detect foreign cities
   foreign_cities <- input_data %>%
     dplyr::transmute(
       id_rows = dplyr::row_number(),
@@ -109,13 +112,14 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::slice_max(.data$pop) %>% ## Get biggest city in case of multiple result
     dplyr::ungroup() %>%
     dplyr::select(.data$id_rows, .data$lat, .data$lon)
-
   ## Search approximate values in local database----------------
   if(nrow(geocoding) != nrow(foreign_cities)){
     remaining <- foreign_cities %>%
       dplyr::anti_join(geocoding, by = "id_rows") %>%
-      dplyr::mutate(country = countrycode::countryname(.data$country),
-                    city = stringi::stri_trans_general(.data$city, id = "Latin-ASCII")) %>%
+      dplyr::mutate(
+        country = countrycode::countryname(.data$country),
+        city = stringi::stri_trans_general(.data$city, id = "Latin-ASCII")
+      ) %>%
       tidyr::drop_na(.data$city, .data$country)
 
     geocoding_approx <- remaining %>%
@@ -133,22 +137,26 @@ geocode_df_foreign_cities <- function(.data,
       dplyr::slice_max(.data$pop) %>% ## Get biggest city in case of multiple result
       dplyr::ungroup()
 
-    ## Warn user of interpretation:
-    geocoding_approx_recap <- geocoding_approx %>%
-      dplyr::select(.data$id_rows, .data$city.y) %>%
-      dplyr::left_join(foreign_cities, by = "id_rows") %>%
-      dplyr::distinct(.data$city, .data$country, .data$city.y) %>%
-      dplyr::arrange(.data$country, .data$city)
+    ## Warn user of interpretation and store the interpretation
+    if(nrow(geocoding_approx) != 0){
+      geocoding_approx_recap <- geocoding_approx %>%
+        dplyr::select(.data$id_rows, .data$city.y) %>%
+        dplyr::left_join(foreign_cities, by = "id_rows") %>%
+        dplyr::distinct(.data$city, .data$country, .data$city.y) %>%
+        dplyr::arrange(.data$country, .data$city)
 
-    message("Interpr\u00e9tation de noms de communes \u00e9trang\u00e8res:\n\t",
-            paste0(geocoding_approx_recap$country, " : ", geocoding_approx_recap$city,
-                   " -> ",geocoding_approx_recap$city.y,
-                   collapse = "\n\t"))
+      message("Interpr\u00e9tation de noms de communes \u00e9trang\u00e8res:\n\t",
+              paste0(geocoding_approx_recap$country, " : ", geocoding_approx_recap$city,
+                     " -> ",geocoding_approx_recap$city.y,
+                     collapse = "\n\t"))
 
-    geocoding <- geocoding_approx %>%
-      dplyr::select(.data$id_rows, .data$lat, .data$lon) %>%
-      dplyr::bind_rows(geocoding)
-
+      geocoding <- geocoding_approx %>%
+        dplyr::transmute(
+          .data$id_rows, .data$lat, .data$lon,
+          proposition_city = .data$city.y
+        ) %>%
+        dplyr::bind_rows(geocoding)
+    }
   }
 
   ## Search remaining cities on Open Street Map (Nomatim)-----------
@@ -156,17 +164,10 @@ geocode_df_foreign_cities <- function(.data,
   remaining_cities <- foreign_cities %>%
     dplyr::anti_join(geocoding, by = "id_rows")
 
-  if(nrow(remaining_cities) != 0){
+  if(!is_empty_df(remaining_cities)){
     tryCatch(
-      { nomatim_geocoding <- remaining_cities %>%
-        tidygeocoder::geocode(city = city,
-                              country = country,
-                              method = "osm",
-                              full_results = TRUE) %>%
-        dplyr::filter(.data$type %in% c("city", "administrative")) %>%
-        dplyr::select(.data$id_rows,
-                      .data$lat,
-                      lon = .data$long)
+      {
+        nomatim_geocoding <- geocode_nomatim(remaining_cities)
       },
       error = function(e){
         nomatim_error <<- TRUE
@@ -175,18 +176,10 @@ geocode_df_foreign_cities <- function(.data,
     ## Insist on Nomatim if it fails (to be tested)
     if(nomatim_error){
       tryCatch(
-        {nomatim_error <- FALSE
-        tidygeocoder::geo("", method = "osm") ## Test to avoid being blacklisted with 2 times the same request in a row
-        nomatim_geocoding <- foreign_cities %>%
-          dplyr::anti_join(geocoding, by = "id_rows") %>%
-          tidygeocoder::geocode(city = city,
-                                country = country,
-                                method = "osm",
-                                full_results = TRUE) %>%
-          dplyr::filter(.data$type %in% c("city", "administrative")) %>%
-          dplyr::select(.data$id_rows,
-                        .data$lat,
-                        lon = .data$long)
+        {
+          nomatim_error <- FALSE
+          tidygeocoder::geo("", method = "osm") ## Test to avoid being blacklisted with 2 times the same request in a row
+          nomatim_geocoding <- geocode_nomatim(remaining_cities)
         },
         error = function(e){
           nomatim_error <<- TRUE
@@ -208,7 +201,7 @@ geocode_df_foreign_cities <- function(.data,
 
   wrong <- foreign_cities %>%
     dplyr::anti_join(geocoding, by = "id_rows")
-  if(nrow(wrong) != 0)
+  if(!is_empty_df(wrong))
     message("Villes inconnues:",
             paste0("\n\t", wrong$city, " (", wrong$country, ")"))
 
@@ -222,9 +215,14 @@ geocode_df_foreign_cities <- function(.data,
     dplyr::right_join(index, by = "id_rows") %>%
     dplyr::arrange(.data$id_rows) %>%
     dplyr::select(-.data$id_rows) %>%
-    dplyr::mutate(cog = NA_character_) %>% ## For compatibility with other functions (French)
-    dplyr::rename_with(~ paste0(city_col_name, "_",
-                                stringr::str_sub(.x, 1, 3)))
+    dplyr::mutate(city_cog = NA_character_) %>% ## For compatibility with other functions (French)
+    dplyr::rename(
+      city_lat = .data$lat,
+      city_lon = .data$lon,
+    ) %>%
+    dplyr::rename_with(
+      ~ stringr::str_replace(.x, "city", city_col_name)
+    )
   ## "Coalesce" new values with potential existing values.
   col_to_add <- col_to_add %>%
     dplyr::coalesce(input_data %>%
@@ -232,7 +230,11 @@ geocode_df_foreign_cities <- function(.data,
   ## update input data
   input_data %>%
     dplyr::select(-dplyr::any_of(names(col_to_add))) %>%
-    dplyr::bind_cols(col_to_add)
+    dplyr::bind_cols(col_to_add) %>%
+    dplyr::relocate(
+      dplyr::starts_with("proposition"),
+      .after = dplyr::last_col()
+    )
 }
 
 #' geocode df with postal code
@@ -328,19 +330,29 @@ geocode_df_cities_cp <- function(.data,
     anomaly_to_check <- result %>%
       dplyr::filter(is.na(.data$geocode_ok) | .data$geocode_ok == FALSE) %>%
       dplyr::select(
+        .data$id_rows,
         city = !!city_col, postcode = !!cp_col,
-        .data$result_type, .data$result_score, .data$result_label, .data$result_postcode) %>%
-      dplyr::distinct()
-
-    if(nrow(anomaly_to_check) !=0)
-      check_warn_cities_cp(anomaly_to_check)
+        .data$result_type, .data$result_score,
+        .data$result_label, .data$result_postcode
+      )
+    ## Store propositions
+    proposition <- check_warn_cities_cp(anomaly_to_check) %>%
+      dplyr::rename(
+        !!city_col_name := .data$proposition_city,
+        !!cp_col_name := .data$proposition_cp
+      ) %>%
+      dplyr::rename_with(
+        .fn = ~ paste0("proposition_", .x),
+        .cols = -.data$id_rows
+      )
 
     result <- result %>%
       dplyr::filter(.data$geocode_ok) %>%
       dplyr::select(.data$id_rows,
                     .data$latitude,
                     .data$longitude,
-                    cog = .data$result_citycode)
+                    cog = .data$result_citycode) %>%
+      dplyr::bind_rows(proposition)
   }
 
   ## Format data for output ----------------------------
@@ -352,8 +364,11 @@ geocode_df_cities_cp <- function(.data,
     dplyr::right_join(index, by = "id_rows") %>%
     dplyr::arrange(.data$id_rows) %>%
     dplyr::select(-.data$id_rows) %>%
-    dplyr::rename_with(~ paste0(city_col_name, "_",
-                                stringr::str_sub(.x, 1, 3)))
+    dplyr::rename_with(
+      ~ paste0(city_col_name, "_",
+               stringr::str_sub(.x, 1, 3)),
+      .cols = c(.data$latitude, .data$longitude, .data$cog)
+    )
 
   ## "Coalesce" new values with potential existing values.
   col_to_add <- col_to_add %>%
@@ -368,16 +383,29 @@ geocode_df_cities_cp <- function(.data,
 
 #' Check a list of cities and try to find replacement values
 #'
-#' Information is printed in warnings. This function doesn't return any values.
+#' Information is printed in warnings.
+#' This function returns a data.frame containing correction proposition
 #'
 #' @param data a data.frame with the following columns:
-#' city (string), postcode(string), result_type, result_score, result_label, result_postcode.
+#' id_rows, city (string), postcode(string), result_type, result_score, result_label, result_postcode.
 #' This data.frame is produced using banR::geocode_tbl()
 #'
 #' @return invisible(0)
 #' @keywords internal
 check_warn_cities_cp <- function(data){
-
+  ## check input------------------
+  df_has_cols(
+    data,
+    c("id_rows", "city", "postcode", "result_type", "result_score", "result_label", "result_postcode")
+  )
+  if(is_empty_df(data))
+    return(
+      tibble::tibble(
+        id_rows = integer(),
+        proposition_city = character(),
+        proposition_cp = character()
+      )
+    )
   # Checking for "name" mispelling (wrong name with correct postcode)
   ## . Mispelling wih correct postcode -------------------------
   mispelling <- data %>%
@@ -452,11 +480,24 @@ check_warn_cities_cp <- function(data){
     message("Villes inconnues:",
             paste0("\n\t", wrong_no_proposal$city, "(", wrong_no_proposal$postcode, ")"))
 
-
   if(nrow(wrong_with_proposal) != 0){
     message("Les villes suivantes ont ete ignor\u00e9es. Propositions de corrections:",
             paste0("\n\t",wrong_with_proposal$city," (", wrong_with_proposal$postcode,") -> \t",
                    wrong_with_proposal$result_label, " (",wrong_with_proposal$result_postcode, ")"))
   }
-  invisible(0)
+
+  ## . Return propositions-----------------
+
+  data %>%
+    dplyr::select(.data$id_rows, .data$postcode, .data$city) %>%
+    dplyr::left_join(
+      wrong_with_proposal,
+      by = c("postcode", "city")
+    ) %>%
+    dplyr::select(
+      .data$id_rows,
+      proposition_city = .data$result_label,
+      proposition_cp = .data$result_postcode
+    )
+
 }

@@ -9,6 +9,7 @@
 #' This value will also be used to name the new columns.
 #'
 #' @return the input data.frame with 3 new columns with a name based on city_col (_lat, _long, _cog)
+#' In case of correction proposition, a new colmuns starting with proposition_ is also added
 #' @keywords internal
 #'
 
@@ -30,31 +31,61 @@ geocode_cities <- function(.data, city_col){
     sort()
 
   replaced_to_check <- result %>%
+    dplyr::mutate(row_id = dplyr::row_number()) %>%
     dplyr::filter(.data$result_score < 0.9) %>%
     dplyr::rename(city = !!city_col) %>%
-    dplyr::distinct(.data$city,
-                    .data$result_name,
-                    .data$result_cog) %>%
-    dplyr::arrange(.data$city)
+    dplyr::select(
+      .data$row_id,
+      .data$city,
+      .data$result_name,
+      .data$result_cog)
 
 
   if(length(errors) != 0)
     message("Impossible de trouver les communes suivantes:",
             paste("\n\t",errors))
 
-  if(nrow(replaced_to_check) != 0)
+  ## Warn on interpretation and store the information
+  if(nrow(replaced_to_check) != 0){
+    ## Warns
+    replaced_recap <- replaced_to_check %>%
+      dplyr::distinct(.data$city,
+                      .data$result_name,
+                      .data$result_cog) %>%
+      dplyr::arrange(.data$city)
     message("Interpretation de communes mal nomm\u00e9es:",
-            paste0("\n\t",replaced_to_check$city, " -> ",
-                   replaced_to_check$result_name, " (",
-                   replaced_to_check$result_cog, ") ")
-            )
+            paste0("\n\t",replaced_recap$city, " -> ",
+                   replaced_recap$result_name, " (",
+                   replaced_recap$result_cog, ") ")
+    )
+
+    ## Store interpretation
+    proposition_name <- paste0("proposition_", city_col_name )
+    col_to_add <- replaced_to_check %>%
+      dplyr::select(
+        .data$row_id,
+        !!proposition_name := .data$result_name
+      ) %>%
+      dplyr::left_join(
+        x = data.frame(row_id = seq_len(nrow(result))),
+        y = .,
+        by = "row_id"
+      ) %>%
+      dplyr::select(-.data$row_id)
+
+    result <- result %>%
+      dplyr::bind_cols(col_to_add)
+
+  }
   ## reformat output------------------------------------------
   result %>%
     dplyr::select(-.data$result_name, -.data$result_score) %>%
     dplyr::rename_with(
-      .fn = ~ paste0(city_col_name, "_",
-                     stringr::str_sub(stringr::str_remove(.x, "^result_"),
-                                      1,3)),
-      .cols = dplyr::starts_with("result_"))
+      .fn = ~ stringr::str_replace(
+        .x,
+        "^result_",
+        paste0(city_col_name, "_")
+      )
+    )
 
 }
