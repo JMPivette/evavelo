@@ -1,6 +1,6 @@
 # evavelo (development version)
 
-- Store correction proposition during geocoding phase. These proposition were only displayed in the log before. They now appear in new columns called "proposition_*"
+- Store correction proposition during geocoding phase. These proposition were only displayed in the log before. They now appear in new columns called "proposition_*" (Fix #65 # 76)
 
 - Fix #77 Missing data in one of the input worksheets now creates an error. Empty worksheet `comptages_automatiques` is allowed but creates a warning.
 
