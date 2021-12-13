@@ -18,21 +18,25 @@ check_evavelo <- function(eva_data){
   log <- "\nV\u00e9rification du fichier...\n---------------------------------" ## string to store log information
   err <- FALSE ## boolean output to tell if an error occurred
 
-
   ## Check sheets with their associated post_traitement----------------------
-
-  log <- add_message_log(log, "Comparaison de enquetes_saisies et enquetes_post_traitement...")
+  log <- add_message_log(
+    log,
+    "Comparaison de enquetes_saisies et enquetes_post_traitement..."
+  )
   withCallingHandlers(enq_diff <- compare_init_post(init = eva_data$enquete_init,
-                                             post_trait = eva_data$enquete),
+                                                    post_trait = eva_data$enquete),
                       warning = function(w) {
                         log <<- add_message_log(log, w$message)
                         err <<- TRUE
                       }) %>%
     suppressWarnings()
 
-  log <- add_message_log(log, "Comparaison de comptages_manuels et comptages_man_post_traitements...")
+  log <- add_message_log(
+    log,
+    "Comparaison de comptages_manuels et comptages_man_post_traitements..."
+  )
   withCallingHandlers(compt_diff <- compare_init_post(init = eva_data$comptage_init,
-                                             post_trait = eva_data$comptage),
+                                                      post_trait = eva_data$comptage),
                       warning = function(w) {
                         log <<- add_message_log(log, w$message)
                         err <<- TRUE
@@ -45,9 +49,11 @@ check_evavelo <- function(eva_data){
   if (!all(comptage_colnames %in% names(eva_data$comptage))) {
     not_present <- setdiff(comptage_colnames, names(eva_data$comptage))
     err <- TRUE
-    log <- add_message_log(log,
-                           " ERREUR:", paste(not_present, collapse = ", "),
-                           " est absent de comptages_man_post_traitements.")
+    log <- add_message_log(
+      log,
+      " ERREUR:", paste(not_present, collapse = ", "),
+      " est absent de comptages_man_post_traitements."
+    )
   }
   # Check uniqueness of id_quest
   dupli_id <- eva_data$comptage %>%
@@ -56,14 +62,18 @@ check_evavelo <- function(eva_data){
     dplyr::filter(!is.na(.data$id_quest) & .data$n > 1)
   if (nrow(dupli_id) != 0) {
     err <- TRUE
-    log <- add_message_log(log, " ERREUR: id_quest dupliqu\u00e9 dans  \'comptages_man_post_traitements\':\n",
-                           paste(dupli_id$id_quest, "(", dupli_id$n, "), ", collapse = "")
+    log <- add_message_log(
+      log, " ERREUR: id_quest dupliqu\u00e9 dans  \'comptages_man_post_traitements\':\n",
+      paste(dupli_id$id_quest, "(", dupli_id$n, "), ", collapse = ""
+      )
     )
   }
 
   # Check values of categorie_visuelle_cycliste
-  wrong_cat <- dplyr::setdiff(unique(eva_data$comptage$categorie_visuelle_cycliste),
-          c("Loisir","Sportif","Utilitaire","Itin\u00e9rant", NA))
+  wrong_cat <- dplyr::setdiff(
+    unique(eva_data$comptage$categorie_visuelle_cycliste),
+    c("Loisir","Sportif","Utilitaire","Itin\u00e9rant", NA)
+  )
   if (length(wrong_cat) != 0 ) {
     err <- TRUE
     log <- add_message_log(
@@ -75,6 +85,16 @@ check_evavelo <- function(eva_data){
 
   # Check relationship between categorie_visuelle_cycliste and categorie_visuelle (Not implemented yet)
   ## Extra check but will need to take in account children
+
+  ## In the example, the match is not complete:
+  # categorie_visuelle categorie_visuelle_cycliste   n
+  # 1        Autres vélos                      Loisir   7
+  # 2 Enfant non autonome                      Loisir   5
+  # 3           Itinérant                   Itinérant  40
+  # 4              Loisir                      Loisir 345
+  # 5             Sportif                     Sportif 113
+  # 6          Utilitaire                  Utilitaire  57
+
   # mismatch_categorie_vis <- comptage %>%
   #   dplyr::transmute(.data$categorie_visuelle,
   #                    .data$categorie_visuelle_cycliste,
@@ -97,9 +117,11 @@ check_evavelo <- function(eva_data){
   if (!all(enquete_colnames %in% names(eva_data$enquete))) {
     not_present <- dplyr::setdiff(enquete_colnames, names(eva_data$enquete))
     err <- TRUE
-    log <- add_message_log(log,
-                           " ERREUR", paste(not_present, collapse = ", "),
-                           " absent de enquetes_post_traitement")
+    log <- add_message_log(
+      log,
+      " ERREUR", paste(not_present, collapse = ", "),
+      " absent de enquetes_post_traitement"
+    )
   }
 
   # Check uniqueness of id_quest
@@ -109,8 +131,9 @@ check_evavelo <- function(eva_data){
     dplyr::filter(!is.na(.data$id_quest) & .data$n > 1)
   if (nrow(dupli_id) != 0) {
     err <- TRUE
-    log <- add_message_log(log, " ERREUR: id_quest dupliqu\u00e9 dans \'enquetes_post_traitement\':\n",
-                           paste(dupli_id$id_quest, collapse = ", ")
+    log <- add_message_log(
+      log, " ERREUR: id_quest dupliqu\u00e9 dans \'enquetes_post_traitement\':\n",
+      paste(dupli_id$id_quest, collapse = ", ")
     )
   }
 
@@ -120,52 +143,55 @@ check_evavelo <- function(eva_data){
   if (!all(calendrier_colnames %in% names(eva_data$calendrier))) {
     not_present <- dplyr::setdiff(calendrier_colnames, names(eva_data$calendrier))
     err <- TRUE
-    log <- add_message_log(log,
-                           " ERREUR", paste(not_present, collapse = ", "),
-                           " absent de calendrier")
+    log <- add_message_log(
+      log,
+      " ERREUR", paste(not_present, collapse = ", "),
+      " absent de calendrier"
+    )
   }
 
-
-
   ## Check relationship between comptage and enquete-------------------------------
-  log <- add_message_log(log, "V\u00e9rification des liens entre comptages_man_post_traitements et enquetes_post_traitement...")
+  log <- add_message_log(
+    log,
+    "V\u00e9rification des liens entre comptages_man_post_traitements et enquetes_post_traitement..."
+  )
   # Find id_quest with no relationship
   enquete_id_quest <- radical_quest(eva_data$enquete$id_quest)%>% ## remove id_quest suffixes that can appear in 'enquete' when using multiple 'enquete'
     unique()
   id_notin_enq <- dplyr::setdiff(eva_data$comptage$id_quest,
-                          c(enquete_id_quest, NA))
+                                 c(enquete_id_quest, NA))
   id_notin_compt <- dplyr::setdiff(enquete_id_quest,
-                            c(eva_data$comptage$id_quest, NA))
+                                   c(eva_data$comptage$id_quest, NA))
   if(length(id_notin_compt) != 0){
     err <- TRUE
-    log <- add_message_log(log,
-                           " ERREUR: Les id_quest suivants sont absents de \'comptages_man_post_traitements\':\n",
-                           paste(id_notin_compt, collapse = ", "))
+    log <- add_message_log(
+      log,
+      " ERREUR: Les id_quest suivants sont absents de \'comptages_man_post_traitements\':\n",
+      paste(id_notin_compt, collapse = ", ")
+    )
   }
   if(length(id_notin_enq) != 0){
     err <- TRUE
-    log <- add_message_log(log,
-                           " ERREUR: Les id_quest suivants sont absents de \'enquetes_post_traitement\':\n",
-                           paste(id_notin_enq, collapse = ", "))
+    log <- add_message_log(
+      log,
+      " ERREUR: Les id_quest suivants sont absents de \'enquetes_post_traitement\':\n",
+      paste(id_notin_enq, collapse = ", ")
+    )
   }
   ## Check mismatch in in volume multiple questionnaire 3.1.5.2----------------------------
-  log <- add_message_log(log, "V\u00e9rification de volume_manuel et de taille_totale_groupe pour les questionnaires multiples...")
+  log <- add_message_log(
+    log,
+    "V\u00e9rification de volume_manuel et de taille_totale_groupe pour les questionnaires multiples..."
+  )
   volume_mismatch_mult <- check_multiple_volume(eva_data)
   if(nrow(volume_mismatch_mult) != 0){
     err <- TRUE
-    log <- add_message_log(log,
-                           " ERREUR: Incoh\u00e9rence entre volume_manuel et taille_totale_groupe sur les questionnaires multiples suivants:\n",
-                           paste(volume_mismatch_mult$id_quest, collapse = ", "))
+    log <- add_message_log(
+      log,
+      " ERREUR: Incoh\u00e9rence entre volume_manuel et taille_totale_groupe sur les questionnaires multiples suivants:\n",
+      paste(volume_mismatch_mult$id_quest, collapse = ", ")
+    )
   }
-
-  ## Check potential undetected multiple id_quest:
-  # log <- add_message_log(log, "Recherche de questionnaires multiples non identifi\u00e9s...")
-  # simil_enq <- check_similar_enquete(eva_data$enquete)
-  # if(nrow(simil_enq) != 0){
-  #   log <- add_message_log(log,
-  #                          " WARNING: Les questionnaires suivants sont peut-\u00eatre multiples:\n\t",
-  #                          paste(simil_enq$enq_list, collapse = "\n\t"))
-  # }
 
   ## Check relationship with calendrier_sites-------------------------
   log <- add_message_log(log, "V\u00e9rification des id_site_enq et date de \'calendrier\'...")
@@ -180,25 +206,20 @@ check_evavelo <- function(eva_data){
     log <- add_message_log(log, cal_compt_difflog, cal_enq_difflog)
   }
 
-
   ## Final message-----------------------
   if(err == FALSE){
     log <- add_message_log(log, "Aucune erreur dans le fichier!")
   }
 
-
   return(list(error = err,
               log = log))
 }
 
-
-
+## Utils function to append log messages:
 add_message_log <- function(log, ...){
   message <- paste(list(...), collapse = " ")
   paste(log, message, sep = "\n")
 }
-
-
 
 
 #' Check correctness of id_site_enq and date_enq between 2 data.frames
@@ -229,7 +250,6 @@ check_diff <- function(a, b, name_a = NULL, name_b = NULL) {
     log_in_x_not_in_y(a, b, name_a, name_b),
     log_in_x_not_in_y(b, a, name_b, name_a)
   )
-
 }
 
 
@@ -296,8 +316,6 @@ check_multiple_volume <- function(eva_data){
 
   mult_quest %>%
     dplyr::anti_join(quest_ok, by = "id_quest")
-
-
 }
 
 
