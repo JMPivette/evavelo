@@ -1,6 +1,8 @@
 # evavelo (development version)
 
-- Allow `categorie_visuelle_cycliste` with plural version (Utilitaires instead of Utilitaire for example) #79 
+- Allow `categorie_visuelle_cycliste` with plural version (Utilitaires instead of Utilitaire for example) #79
+
+- Fix #81 to improve information on logs displayed in case of duplicated ids
 
 # evavelo 1.1.0
 

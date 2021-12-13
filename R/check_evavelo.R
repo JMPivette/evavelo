@@ -64,7 +64,10 @@ check_evavelo <- function(eva_data){
     err <- TRUE
     log <- add_message_log(
       log, " ERREUR: id_quest dupliqu\u00e9 dans  \'comptages_man_post_traitements\':\n",
-      paste(dupli_id$id_quest, "(", dupli_id$n, "), ", collapse = ""
+      paste(
+        dupli_id$id_quest,
+        "(", dupli_id$n, "), ",
+        collapse = ""
       )
     )
   }
@@ -133,7 +136,11 @@ check_evavelo <- function(eva_data){
     err <- TRUE
     log <- add_message_log(
       log, " ERREUR: id_quest dupliqu\u00e9 dans \'enquetes_post_traitement\':\n",
-      paste(dupli_id$id_quest, collapse = ", ")
+      paste(
+        dupli_id$id_quest,
+        "(", dupli_id$n, "), ",
+        collapse = ""
+      )
     )
   }
 
