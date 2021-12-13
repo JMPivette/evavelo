@@ -50,6 +50,9 @@ Les onglets `enquetes_saisies` et `comptages_manuels` doivent être respectiveme
 
 Nous vérifions donc d'abord que c'est bien le cas et qu'aucune information présente dans ces 2 onglets n'est différente dans l'équivalent `*_post_traitement`
 
+Il est important de noter que dans le cas de `comptages_manuels` et `comptages_man_post_traitements`, les lignes du fichier Excel doivent être exactement dans le même ordre pour que la comparaison puisse fonctionner.
+Ce problème n'est pas présent dans la vérification de `enquetes_saisies` et `enquetes_post_traitement` pour lesquels le champ `id_quest` est utilisé comme clé.
+
 ### Variables dans les différents onglets
 
 Eva-Scan vérifie ensuite que les variables utilsées dans les différents traitement sont bien disponibles dans le fichier.
