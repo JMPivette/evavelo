@@ -55,13 +55,15 @@ Les villes qui n'ont pu être géocodées sont ensuite recherchées en utilisant
 
 Ce service étant gratuit, les requêtes sont bridées à 1 demande par seconde. Le géocodage peut donc prendre plusieurs minutes en fonction du nombre de villes étrangères à géocoder.
 
-## Mesure de distance
+## Mesures de distance
 
 ### Détection de la ville d'itinéraire la plus proche
 
-Les champs `iti_dep_iti_valide` et `iti_arr_iti_valide` sont renseignés en indiquant la commune appartenant à `table_commune` etant la plus proche des champs respectifs `iti_depart_itineraire` et `iti_arrivee_itineraire`
+Les champs `iti_dep_iti_valide` et `iti_arr_iti_valide` sont renseignés en indiquant la commune appartenant à `table_commune` étant la plus proche des champs respectifs `iti_depart_itineraire` et `iti_arrivee_itineraire`
 
 Ces champs ne sont pas renseignés si la commune la plus proche est située à une distance à vol d'oiseau de plus de **30km**.
+
+La détection de la commune la plus proche ainsi que la limite des 30km sont calculées en utilisant la méthode [mapbbox cheap ruler](www.mapbox.com/blog/cheap-ruler/) qui permet de faire des calculs de distance extrêmement rapidement avec une précision suffisamment élevée pour ce type de distances.
 
 ### Distance [hébergement - lieu d'enquête] et [domicile - lieu d'enquête]
 
@@ -71,10 +73,8 @@ Nous déterminons ensuite une distance réelle (`distance_heb_enq_reelle`) en ut
 
 > `[distance_heb_enq_reelle] = [distance_heb_enq]*(1,1 + 0,3*EXP(-[distance_heb_enq] / 20))` 
 
-La même méthode de calcul est utilisée pour calculer les distances `distance_domicile_enq` et `distance_dom_enq_reelle`
+### Distance [domicile - lieu d'enquête]
 
-
-
-
+De la même manière que pour la distance, hébergement-lieu d'enquête, la méthode Haversine est utilisée pour calculer `distance_domicile_enq` et la méthode Indiggo pour calculer `distance_dom_enq_reelle`.
 
 
