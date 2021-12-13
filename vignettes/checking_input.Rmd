@@ -28,13 +28,13 @@ Ces vérifications obligatoires testent l'intégrité du fichier xlsx. Si ces te
 
 Pour qu'un fichier xlsx puisse être ouvert avec `read_evavelo()`, il doit comporter au moins les 7 onglets suivants:
 
-* calendrier_sites
-* table_communes
-* comptages_manuels
-* comptages_man_post_traitements
-* enquetes_saisies
-* enquetes_post_traitement
-* comptages_automatiques
+-   calendrier_sites
+-   table_communes
+-   comptages_manuels
+-   comptages_man_post_traitements
+-   enquetes_saisies
+-   enquetes_post_traitement
+-   comptages_automatiques
 
 L'absence de ces onglets ou un nommage différent entrainera une erreur lors de la lecture avec `read_evavelo()` ou `process_evavelo()`
 
@@ -44,8 +44,7 @@ Si l'un de ces onglets est vide (ou ne comporte que les en-têtes), une erreur s
 
 La function `check_evavelo()` qui est aussi intégrée à `process_evavelo()` procède à différentes vérifications de cohérence du fichier Eva-Velo:
 
-
-### Onglets avec leurs équivalents "_post-traitement"
+### Onglets avec leurs équivalents "\_post-traitement"
 
 Les onglets `enquetes_saisies` et `comptages_manuels` doivent être respectivement reportés à l'identique dans les onglets `enquetes_post_traitement` et `comptages_man_post_traitements`.
 
@@ -54,7 +53,6 @@ Nous vérifions donc d'abord que c'est bien le cas et qu'aucune information pré
 ### Variables dans les différents onglets
 
 Eva-Scan vérifie ensuite que les variables utilsées dans les différents traitement sont bien disponibles dans le fichier.
-
 
 Pour l'onglet **enquetes_post_traitement**, il s'agit des variables:
 
@@ -74,20 +72,19 @@ Pour l'onglet **calendrier_sites**, des variables:
 cat(paste('- `', sort(evavelo:::calendrier_colnames), "`"), sep = '\n')
 ```
 
-La variable `categorie_visuelle_cycliste` de **comptages_man_post_traitements** et aussi vérifiées et ne doit contenir que les valeurs suivantes: `Loisir`, `Sportif`, `Utilitaire` et `Itinérant`.
+La variable `categorie_visuelle_cycliste` de **comptages_man_post_traitements** et aussi vérifiées et ne doit contenir que les valeurs suivantes: `Loisir`, `Sportif`, `Utilitaire` et `Itinérant`. (La présence de ces variables au pluriel est aussi tolérée. exemple: Utilitaire**s**)
 
 ### Variable id_quest
 
-La variable `id_quest` est une clé unique qui permet de relier comptages_man_post_traitements et enquetes_post_traitement. 
+La variable `id_quest` est une clé unique qui permet de relier comptages_man_post_traitements et enquetes_post_traitement.
 
 Eva-Scan va d'abord vérifier que dans chacun de ces 2 onglets, la variable `id_quest` est bien unique et créer une erreur en cas de doublon.
 
-Chaque `id_quest` présent dans comptages_man_post_traitements doit l'être dans enquetes_post_traitement et inversement. Eva-Scan va donc chercher les `id_quest` manquants 
-
+Chaque `id_quest` présent dans comptages_man_post_traitements doit l'être dans enquetes_post_traitement et inversement. Eva-Scan va donc chercher les `id_quest` manquants
 
 ### Cohérence entre volume_manuel et taille_totale_groupe pour les questionnaires multiples
 
-Dans le cas de questionnaire multiples (identifiés par un id_quest de la forme XXXX-YY), Eva-Scan va vérifier la cohérence entre `volume_manuel` de comptage et `taille_totale_groupe` de enquête. 
+Dans le cas de questionnaire multiples (identifiés par un id_quest de la forme XXXX-YY), Eva-Scan va vérifier la cohérence entre `volume_manuel` de comptage et `taille_totale_groupe` de enquête.
 
 En cas d'incohérence, le traitement est stoppé.
 
@@ -96,4 +93,3 @@ En cas d'incohérence, le traitement est stoppé.
 Pour s'assurer qu'aucune enquête n'a été oubliée, Eva-Scan va vérifier l'ensemble de combinaison `id_site_enq` et `date_enq` dans les onglets **calendrier_sites**, **comptages_man_post_traitements** et **enquetes_post_traitement**.
 
 L'ensemble des combinaisons doit être présent dans les 3 onglets.
-

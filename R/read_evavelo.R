@@ -75,19 +75,23 @@ read_comptage <- function(file, init = FALSE){
   comptage <- openxlsx::read.xlsx(file, sheet)
 
   comptage %>%
-    dplyr::select(starts_with("[")) %>%  ## Don't take in account "old" col names that could create duplicated entries
+    dplyr::select(dplyr::starts_with("[")) %>%  ## Don't take in account "old" col names that could create duplicated entries
     janitor::clean_names() %>%
     dplyr::mutate(
-      dplyr::across(starts_with("categorie"), as.character),
-      dplyr::across(starts_with("categorie_visuelle"),
-                    ~ dplyr::if_else(.x == "Loisirs", "Loisir", .x)) ## Fix error in test input file
+      dplyr::across(
+        dplyr::starts_with("categorie"),
+        as.character
+      ),
+      dplyr::across(
+        dplyr::starts_with("categorie_visuelle"),
+        ~ stringr::str_remove(.x, "s$") ## Remove s from plurar (common user mistake)
+      )
     ) %>%
     dplyr::mutate(
       date_enq = openxlsx::convertToDate(.data$date_enq),
       id_quest = as.character(.data$id_quest)
     ) %>%
     warning_empty_sheet(sheetname = sheet)
-
 }
 
 #' Read and clean "enquete" information
