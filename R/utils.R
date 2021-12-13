@@ -108,6 +108,7 @@ df_compare <- function(x, y, verbose = TRUE) {
 #' @param key by default (NULL) the row order of both data.frame has to be the same.
 #' by using a key column name, both data.frames are ordered before being compared.
 #'
+#' @importFrom utils head
 #' @return invisible(0)
 #' @keywords internal
 #'
@@ -123,7 +124,7 @@ compare_init_post <- function(init,
   ## Test number of rows
   if(nrow(post) != nrow(init)){
     warning(
-      "Le nombre de lignes est diff\u00e9rent (",
+      " Le nombre de lignes est diff\u00e9rent (",
       nrow(init), " / ", nrow(post), ")",
       call. = FALSE
     )
@@ -144,7 +145,7 @@ compare_init_post <- function(init,
 
   if(length(mismatch_col != 0))
     warning(
-      "Les colonnes suivantes sont diff\u00e9rentes: \n\t",
+      " Les colonnes suivantes sont diff\u00e9rentes: \n\t",
       paste(mismatch_col, collapse = ", "),
       call. = FALSE
     )
@@ -153,8 +154,8 @@ compare_init_post <- function(init,
   if(!is.null(key)){
     ## remove duplicated key if any (no warnings since the check is done later.)
     if(anyDuplicated(init[[key]]) | anyDuplicated(post[[key]])){
-      warning("Il y a des doublons dans '", key,
-              "', la comparaison des valeurs ne peut pas être effectu\u00e9e",
+      warning(" Il y a des doublons dans '", key,
+              "', la comparaison des valeurs ne peut pas \u00eatre effectu\u00e9e",
               call. = FALSE)
       return(invisible(0))
     } else {
