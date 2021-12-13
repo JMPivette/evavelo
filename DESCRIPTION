@@ -1,6 +1,6 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 1.1.0.9000
+Version: 1.1.1
 Authors@R: 
     person("Jean-Marie", "Pivette", , "jmpivette@gmail.com", role = c("cre", "aut"))
 Description: Applique differents traitement automatique en lien avec la
