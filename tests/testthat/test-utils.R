@@ -124,7 +124,7 @@ test_that("compare_init_post() works:", {
     expect_warning(NA)
 
   ## duplicated keys...
-    ## . inside init
+  ## . inside init
   compare_init_post(init = df_init_dupl_key, post = df_post_newcol) %>%
     expect_warning("Le nombre de ligne")
   compare_init_post(init = df_init_dupl_key, post = df_post_newcol, key = "a") %>%
@@ -138,6 +138,37 @@ test_that("compare_init_post() works:", {
   ## . inside both but different
   compare_init_post(init = df_init_dupl_key, post = df_post_dupl_key, key = "a") %>%
     expect_warning("Il y a des doublons")
+
+  ## Missing row in init
+  compare_init_post(
+    init = tail(df_init, n = 9),
+    post = df_post_newcol
+  ) %>%
+    expect_warning("Le nombre de ligne") %>%
+    expect_warning("0.00%")
+
+  compare_init_post(
+    init = tail(df_init, n = 9),
+    post = df_post_newcol,
+    key = "a"
+  ) %>%
+    expect_warning("Le nombre de ligne")
+
+  ## Missing row in post
+  compare_init_post(
+    init = df_init,
+    post = tail(df_post_newcol, n = 9)
+  ) %>%
+    expect_warning("Le nombre de ligne") %>%
+    expect_warning("0.00%")
+
+  compare_init_post(
+    init = df_init,
+    post = tail(df_post_newcol, n = 9),
+    key = "a"
+  ) %>%
+    expect_warning("Le nombre de ligne") %>%
+    expect_warning("90.00%")
 
 
 })
