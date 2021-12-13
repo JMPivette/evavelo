@@ -23,24 +23,30 @@ check_evavelo <- function(eva_data){
     log,
     "Comparaison de enquetes_saisies et enquetes_post_traitement..."
   )
-  withCallingHandlers(enq_diff <- compare_init_post(init = eva_data$enquete_init,
-                                                    post_trait = eva_data$enquete),
-                      warning = function(w) {
-                        log <<- add_message_log(log, w$message)
-                        err <<- TRUE
-                      }) %>%
+  withCallingHandlers(
+    compare_init_post(
+      init = eva_data$enquete_init,
+      post = eva_data$enquete, key = "id_quest"
+    ),
+    warning = function(w) {
+      log <<- add_message_log(log, w$message)
+      err <<- TRUE
+    }) %>%
     suppressWarnings()
 
   log <- add_message_log(
     log,
     "Comparaison de comptages_manuels et comptages_man_post_traitements..."
   )
-  withCallingHandlers(compt_diff <- compare_init_post(init = eva_data$comptage_init,
-                                                      post_trait = eva_data$comptage),
-                      warning = function(w) {
-                        log <<- add_message_log(log, w$message)
-                        err <<- TRUE
-                      }) %>%
+  withCallingHandlers(
+    compare_init_post(
+      init = eva_data$comptage_init,
+      post = eva_data$comptage
+    ),
+    warning = function(w) {
+      log <<- add_message_log(log, w$message)
+      err <<- TRUE
+    }) %>%
     suppressWarnings()
 
   ## Check integrity of comptage-------------------------
