@@ -96,25 +96,81 @@ df_compare <- function(x, y, verbose = TRUE) {
 }
 
 
-compare_init_post <- function(init, post_trait){
-  ## Don't worry about additional variables in post_trait version
-  post_trait <- post_trait %>%
+#' Compare two data.frames (initial and  post treatment)
+#'
+#' In this comparison, all elements from init data.frame should appear inside post data.frame
+#' post data.frame can only have new columns but no new rows.
+#'
+#' This function doesn't return anything but creates warnings if there are mismatches.
+#'
+#' @param init a data.frame (initial data.frame)
+#' @param post a data.frame (post treatment data.frame)
+#' @param key by default (NULL) the row order of both data.frame has to be the same.
+#' by using a key column name, both data.frames are ordered before being compared.
+#'
+#' @importFrom utils head
+#' @return invisible(0)
+#' @keywords internal
+#'
+compare_init_post <- function(init,
+                              post,
+                              key = NULL){
+  ## Select only columns from init data.frame
+  post <- post %>%
     dplyr::select(
       dplyr::any_of(names(init))
     )
+
+  ## Test number of rows
+  if(nrow(post) != nrow(init)){
+    warning(
+      " Le nombre de lignes est diff\u00e9rent (",
+      nrow(init), " / ", nrow(post), ")",
+      call. = FALSE
+    )
+    if(is.null(key)){ ## Truncate and keep same number of rows if no key is provided.
+      min_row <- min(nrow(init), nrow(post))
+      init <- head(init, n = min_row)
+      post <- head(post, n = min_row)
+    }
+
+  }
+  ## Test for missing columns or different data type
   mismatch_col <- janitor::compare_df_cols(
-    post = post_trait,
+    post = post,
     init = init
   ) %>%
     dplyr::filter(.data$init != .data$post | is.na(.data$post)) %>%
     dplyr::pull(.data$column_name)
 
   if(length(mismatch_col != 0))
-    warning("Les colonnes suivantes sont diff\u00e9rentes: \n\t", paste(mismatch_col, collapse = ", "),
-            call. = FALSE)
-  df_compare(dplyr::select(init, -dplyr::all_of(mismatch_col)),
-             dplyr::select(post_trait, -dplyr::any_of(mismatch_col)))
+    warning(
+      " Les colonnes suivantes sont diff\u00e9rentes: \n\t",
+      paste(mismatch_col, collapse = ", "),
+      call. = FALSE
+    )
 
+  ## Reorder post compared to init if key is provided. Keep the same number of rows otherwise
+  if(!is.null(key)){
+    ## remove duplicated key if any (no warnings since the check is done later.)
+    if(anyDuplicated(init[[key]]) | anyDuplicated(post[[key]])){
+      warning(" Il y a des doublons dans '", key,
+              "', la comparaison des valeurs ne peut pas \u00eatre effectu\u00e9e",
+              call. = FALSE)
+      return(invisible(0))
+    } else {
+      ## order post as init. (and keep the same number of lines)
+      post <- post[match(init[[key]], post[[key]]),]
+    }
+  }
+
+  ## On other columns, check for exactly the same values
+  df_compare(
+    dplyr::select(init, -dplyr::all_of(mismatch_col)),
+    dplyr::select(post, -dplyr::any_of(mismatch_col))
+  )
+
+  invisible(0)
 
 }
 

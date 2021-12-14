@@ -1,6 +1,14 @@
+# evavelo 1.1.1
+
+- Allow `categorie_visuelle_cycliste` with plural version (Utilitaires instead of Utilitaire for example) #79
+
+- Fix #81 to improve information on logs displayed in case of duplicated ids
+
+- Fix #84 for better mismatch detection based on 'id_quest' value.
+
 # evavelo 1.1.0
 
-- Store correction proposition during geocoding phase. These proposition were only displayed in the log before. They now appear in new columns called "proposition_*" (Fix #65 # 76)
+- Store correction proposition during geocoding phase. These proposition were only displayed in the log before. They now appear in new columns called "proposition_*" (Fix #65 #76)
 
 - Fix #77 Missing data in one of the input worksheets now creates an error. Empty worksheet `comptages_automatiques` is allowed but creates a warning.
 

@@ -44,8 +44,8 @@ La function principale `process_evavelo()` permet de traiter un fichier d'enquê
 -   Vérifier l'intégrité du fichier
 -   Remplir le champ `categorie_corrige`
 -   Calculer les différentes distances par rapport au point d'enquête
--   Trouver les codes COG des communes de résidence et d'herbergement
--   Remplir le champ `id_section_origine`
+-   Trouver les codes COG des communes de résidence et d'hébergement
+-   Remplir les champs `id_section_origine` et `id_section_dest`
 
 ```{r full_process, message=FALSE}
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
