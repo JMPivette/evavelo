@@ -1,3 +1,7 @@
+# evavelo 1.1.2
+
+- Update README
+
 # evavelo 1.1.1
 
 - Allow `categorie_visuelle_cycliste` with plural version (Utilitaires instead of Utilitaire for example) #79

@@ -17,8 +17,9 @@ coverage](https://codecov.io/gh/JMPivette/evavelo/branch/master/graph/badge.svg)
 Le package `evavelo` applique des traitements automatiques sur les
 fichiers d’enquêtes liés à la méthode
 [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo)
-(Méthode nationale pour ’évaluation des retombées des véloroutes)
-développée par **Vélo et Territoires**
+(Méthode nationale pour l’évaluation des retombées des véloroutes)
+développée par [**Vélo et
+Territoires**](https://www.velo-territoires.org/)
 
 Ce projet est composé de fonctions de traitements de fichier mais aussi
 d’une interface web.
@@ -39,15 +40,16 @@ d’enquête xlsx avec la méthode Eva-Vélo. Cette function va notamment:
 -   Vérifier l’intégrité du fichier
 -   Remplir le champ `categorie_corrige`
 -   Calculer les différentes distances par rapport au point d’enquête
--   Trouver les codes COG des communes de résidence et d’herbergement
--   Remplir le champ `id_section_origine`
+-   Trouver les codes COG des communes de résidence et d’hébergement
+-   Remplir les champs `id_section_origine` et `id_section_dest`
 
 ``` r
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 
-
+## Process File
 eva_data_processed <- evavelo::process_evavelo(xlsx_path)
 
+## Read outputs
 lapply(eva_data_processed, head)
 #> $comptages_man_post_traitements
 #>   id_quest categorie_visuelle_cycliste_corrige
@@ -125,10 +127,10 @@ eva_data_geocoded <- evavelo::geocode_evavelo(eva_data)
 #>  Hiers-Brouage(17189) -> Marennes-Hiers-Brouage(17219)
 #>  Marennes(17219) -> Marennes-Hiers-Brouage(17219)
 #>  Locmaria-Berrien(29129) -> Poullaouen(29227)
-#>  Les Forges(56059) -> Forges de Lanouée(56102)
-#>  Lanouée(56102) -> Forges de Lanouée(56102)
 #>  Château-d'Olonne(85060) -> Les Sables-d'Olonne(85194)
 #>  Olonne-sur-Mer(85166) -> Les Sables-d'Olonne(85194)
+#> Impossible de reconnaître les communes suivantes:
+#>  Lanouée(56102)
 #> 
 #> ...Vérification de ville_res.............
 #> Les villes suivantes ont ete ignorées. Propositions de corrections:

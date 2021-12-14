@@ -24,7 +24,7 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 
 ## Résumé
 
-Le package `evavelo` applique des traitements automatiques sur les fichiers d'enquêtes liés à la méthode [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo) (Méthode nationale pour 'évaluation des retombées des véloroutes) développée par **Vélo et Territoires**
+Le package `evavelo` applique des traitements automatiques sur les fichiers d'enquêtes liés à la méthode [EVA-VELO](https://www.velo-territoires.org/ressources/categorie/publication-reference/?resource-id=18202#resource-eva-velo) (Méthode nationale pour l'évaluation des retombées des véloroutes) développée par [**Vélo et Territoires**](https://www.velo-territoires.org/)
 
 Ce projet est composé de fonctions de traitements de fichier mais aussi d'une interface web.
 
@@ -35,7 +35,6 @@ Ce projet est composé de fonctions de traitements de fichier mais aussi d'une i
 # install.packages("devtools")
 devtools::install_github("JMPivette/evavelo")
 ```
-
 
 ## Traitement d'enquête Eva-Velo
 
@@ -50,9 +49,10 @@ La function principale `process_evavelo()` permet de traiter un fichier d'enquê
 ```{r full_process, message=FALSE}
 xlsx_path <- system.file("example-data/02_simplified.xlsx", package = "evavelo")
 
-
+## Process File
 eva_data_processed <- evavelo::process_evavelo(xlsx_path)
 
+## Read outputs
 lapply(eva_data_processed, head)
 ```
 
@@ -85,10 +85,9 @@ La fonction `process_evavelo()` que nous avons déjà utilisé sur un fichier Ex
 eva_data_processed <- evavelo::process_evavelo(eva_data_geocoded)
 ```
 
-
 ## Interface Web
 
-La fonction `evavelo::app_run()` permet d'utiliser le package via une interface web: 
+La fonction `evavelo::app_run()` permet d'utiliser le package via une interface web:
 
 ![UI Screenshot](man/figures/eva-scan-ui.png?raw=true "Title")
 
