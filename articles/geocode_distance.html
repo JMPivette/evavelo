@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -144,13 +144,14 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="mesure-de-distance">Mesure de distance<a class="anchor" aria-label="anchor" href="#mesure-de-distance"></a>
+<h2 id="mesures-de-distance">Mesures de distance<a class="anchor" aria-label="anchor" href="#mesures-de-distance"></a>
 </h2>
 <div class="section level3">
 <h3 id="détection-de-la-ville-ditinéraire-la-plus-proche">Détection de la ville d’itinéraire la plus proche<a class="anchor" aria-label="anchor" href="#d%C3%A9tection-de-la-ville-ditin%C3%A9raire-la-plus-proche"></a>
 </h3>
-<p>Les champs <code>iti_dep_iti_valide</code> et <code>iti_arr_iti_valide</code> sont renseignés en indiquant la commune appartenant à <code>table_commune</code> etant la plus proche des champs respectifs <code>iti_depart_itineraire</code> et <code>iti_arrivee_itineraire</code></p>
+<p>Les champs <code>iti_dep_iti_valide</code> et <code>iti_arr_iti_valide</code> sont renseignés en indiquant la commune appartenant à <code>table_commune</code> étant la plus proche des champs respectifs <code>iti_depart_itineraire</code> et <code>iti_arrivee_itineraire</code></p>
 <p>Ces champs ne sont pas renseignés si la commune la plus proche est située à une distance à vol d’oiseau de plus de <strong>30km</strong>.</p>
+<p>La détection de la commune la plus proche ainsi que la limite des 30km sont calculées en utilisant la méthode <a href="www.mapbox.com/blog/cheap-ruler/">mapbbox cheap ruler</a> qui permet de faire des calculs de distance extrêmement rapidement avec une précision suffisamment élevée pour ce type de distances.</p>
 </div>
 <div class="section level3">
 <h3 id="distance-hébergement---lieu-denquête-et-domicile---lieu-denquête">Distance [hébergement - lieu d’enquête] et [domicile - lieu d’enquête]<a class="anchor" aria-label="anchor" href="#distance-h%C3%A9bergement---lieu-denqu%C3%AAte-et-domicile---lieu-denqu%C3%AAte"></a>
@@ -160,7 +161,11 @@
 <blockquote>
 <p><code>[distance_heb_enq_reelle] = [distance_heb_enq]*(1,1 + 0,3*EXP(-[distance_heb_enq] / 20))</code></p>
 </blockquote>
-<p>La même méthode de calcul est utilisée pour calculer les distances <code>distance_domicile_enq</code> et <code>distance_dom_enq_reelle</code></p>
+</div>
+<div class="section level3">
+<h3 id="distance-domicile---lieu-denquête">Distance [domicile - lieu d’enquête]<a class="anchor" aria-label="anchor" href="#distance-domicile---lieu-denqu%C3%AAte"></a>
+</h3>
+<p>De la même manière que pour la distance, hébergement-lieu d’enquête, la méthode Haversine est utilisée pour calculer <code>distance_domicile_enq</code> et la méthode Indiggo pour calculer <code>distance_dom_enq_reelle</code>.</p>
 </div>
 </div>
   </div>

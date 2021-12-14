@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">evavelo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
       </span>
     </div>
 
@@ -127,10 +127,11 @@
 </h2>
 <p>La function <code><a href="../reference/check_evavelo.html">check_evavelo()</a></code> qui est aussi intégrée à <code><a href="../reference/process_evavelo.html">process_evavelo()</a></code> procède à différentes vérifications de cohérence du fichier Eva-Velo:</p>
 <div class="section level3">
-<h3 id="onglets-avec-leurs-équivalents-_post-traitement">Onglets avec leurs équivalents "_post-traitement"<a class="anchor" aria-label="anchor" href="#onglets-avec-leurs-%C3%A9quivalents-_post-traitement"></a>
+<h3 id="onglets-avec-leurs-équivalents-_post-traitement">Onglets avec leurs équivalents “_post-traitement”<a class="anchor" aria-label="anchor" href="#onglets-avec-leurs-%C3%A9quivalents-_post-traitement"></a>
 </h3>
 <p>Les onglets <code>enquetes_saisies</code> et <code>comptages_manuels</code> doivent être respectivement reportés à l’identique dans les onglets <code>enquetes_post_traitement</code> et <code>comptages_man_post_traitements</code>.</p>
 <p>Nous vérifions donc d’abord que c’est bien le cas et qu’aucune information présente dans ces 2 onglets n’est différente dans l’équivalent <code>*_post_traitement</code></p>
+<p>Il est important de noter que dans le cas de <code>comptages_manuels</code> et <code>comptages_man_post_traitements</code>, les lignes du fichier Excel doivent être exactement dans le même ordre pour que la comparaison puisse fonctionner. Ce problème n’est pas présent dans la vérification de <code>enquetes_saisies</code> et <code>enquetes_post_traitement</code> pour lesquels le champ <code>id_quest</code> est utilisé comme clé.</p>
 </div>
 <div class="section level3">
 <h3 id="variables-dans-les-différents-onglets">Variables dans les différents onglets<a class="anchor" aria-label="anchor" href="#variables-dans-les-diff%C3%A9rents-onglets"></a>
@@ -202,7 +203,7 @@
 <li><code>date_enq</code></li>
 <li><code>id_site_enq</code></li>
 </ul>
-<p>La variable <code>categorie_visuelle_cycliste</code> de <strong>comptages_man_post_traitements</strong> et aussi vérifiées et ne doit contenir que les valeurs suivantes: <code>Loisir</code>, <code>Sportif</code>, <code>Utilitaire</code> et <code>Itinérant</code>.</p>
+<p>La variable <code>categorie_visuelle_cycliste</code> de <strong>comptages_man_post_traitements</strong> et aussi vérifiées et ne doit contenir que les valeurs suivantes: <code>Loisir</code>, <code>Sportif</code>, <code>Utilitaire</code> et <code>Itinérant</code>. (La présence de ces variables au pluriel est aussi tolérée. exemple: Utilitaire<strong>s</strong>)</p>
 </div>
 <div class="section level3">
 <h3 id="variable-id_quest">Variable id_quest<a class="anchor" aria-label="anchor" href="#variable-id_quest"></a>
