@@ -1,14 +1,13 @@
 Package: evavelo
 Title: Automatic Treatment on EVA-VELO Method
-Version: 1.1.2
+Version: 1.1.3
 Authors@R: 
     person("Jean-Marie", "Pivette", , "jmpivette@gmail.com", role = c("cre", "aut"))
 Description: Applique differents traitement automatique en lien avec la
     methode EVA-VELO (Methode nationale pour l'evaluation des retombées
     des veloroutes).
 License: MIT + file LICENSE
-URL: https://jmpivette.github.io/evavelo/,
-    https://github.com/JMPivette/evavelo
+URL: https://jmpivette.github.io/evavelo/
 BugReports: https://github.com/JMPivette/evavelo/issues
 Depends: 
     R (>= 3.5.0)

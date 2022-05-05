@@ -1,3 +1,7 @@
+# evavelo 1.1.3
+
+- Change max upload size from 30MB to 50MB
+
 # evavelo 1.1.2
 
 - Update README
