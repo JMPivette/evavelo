@@ -1,3 +1,7 @@
+# evavelo 1.1.4
+
+- Fix a bug in distance calculation in 1.1.3 that was released too quickly. (bug introduced with latest version of {sf})
+
 # evavelo 1.1.3
 
 - Change max upload size from 30MB to 50MB

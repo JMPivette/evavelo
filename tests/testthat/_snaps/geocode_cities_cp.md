@@ -53,7 +53,7 @@
     # A tibble: 3 x 10
       city  postcode     a     b country city_lat city_lon city_cog proposition_pos~
       <chr> <chr>    <dbl> <dbl> <chr>      <dbl>    <dbl> <chr>    <chr>           
-    1 Nante 44000        1     1 France      NA        NA  <NA>     44100           
+    1 Nante 44000        1     1 France      NA        NA  <NA>     44000           
     2 Canb~ <NA>         2     2 Austra~    -35.3     149. <NA>     <NA>            
     3 sidn~ 22000        2     2 Austra~    -33.9     151. <NA>     <NA>            
     # ... with 1 more variable: proposition_city <chr>
