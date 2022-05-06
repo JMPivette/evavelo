@@ -1,5 +1,5 @@
 pandoc: 2.7.3
-pkgdown: 2.0.1
+pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   ba-using_package: ba-using_package.html
@@ -7,7 +7,7 @@ articles:
   geocode_distance: geocode_distance.html
   numerical_outliers: numerical_outliers.html
   site_classification: site_classification.html
-last_built: 2021-12-14T08:48Z
+last_built: 2022-05-06T13:03Z
 urls:
   reference: https://jmpivette.github.io/evavelo/reference
   article: https://jmpivette.github.io/evavelo/articles
