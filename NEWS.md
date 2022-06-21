@@ -1,3 +1,7 @@
+# evavelo 1.2.0
+
+- Clustering: don't allow Dendogram visualisation above 50 sites. (otherwise rendering is way too slow)
+
 # evavelo 1.1.5
 
 - Fix bug in {openxlsx} when convering date-time on long object

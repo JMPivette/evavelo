@@ -15,7 +15,8 @@ mod_visualize_classification_ui <- function(id){
     numericInput(ns("k_clust"), "Nombre de groupes", value = 4, step = 1, min = 1),
     downloadButton(ns("downl_data"), "T\u00e9l\u00e9charger les donn\u00e9es"),
     br(),
-    plotOutput(ns("dendogram"))
+    plotOutput(ns("dendogram")) |>
+      shinycssloaders::withSpinner()
   )
 }
 
@@ -29,7 +30,6 @@ mod_visualize_classification_server <- function(input, output, session, r){
     req(r$clust$data)
     data_to_analyse <- r$clust$data %>%
       tidyr::drop_na(dplyr::starts_with("pred"))
-
     diff_na <- nrow(r$clust$data) - nrow(data_to_analyse)
     if(diff_na != 0){
       shinyWidgets::show_alert(
@@ -61,7 +61,12 @@ mod_visualize_classification_server <- function(input, output, session, r){
       need(
         input$k_clust %% 1 == 0,
         "Utilisez une valeur enti\u00e8re"
+      ),
+      need(
+        nrow(r$clust$data) <= 50,
+        "Impossible de G\u00e9n\u00e9rer un graphique avec plus de 50 sites.\n Veuillez t\u00e9l\u00e9charger les donn\u00e9es"
       )
+
       # need(data_to_analyse(), "Pas de donn\u00e9es \u00e0 analyser")
     )
     clust() %>%
