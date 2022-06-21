@@ -217,8 +217,6 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
     return(NULL)
   }
 
-
-
   load_data <- load_data%>%
     dplyr::select(-dplyr::any_of(c("date", "annee", "mois", "jour", "type_jour"))) %>%
     dplyr::rename(date = 1) %>%
@@ -230,7 +228,7 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
                                 ~ !is.na(.x))) %>%
     ## Create useful variables
     dplyr::mutate(
-      date= openxlsx::convertToDateTime(.data$date),
+      date = as.POSIXct(date*3600*24, tz = "GMT", origin = "1899-12-30"), ## to avoid BUG when converting long data using openxlsx
       week_end = lubridate::wday(.data$date) %in% c(1,7),
       july_august = lubridate::month(.data$date) %in% 7:8
     ) %>%
@@ -249,7 +247,6 @@ read_compt_auto <- function(file, sheet = "comptages_automatiques"){
   }
 
   # Compute predictors --------------------------------------------------------------------------
-
 
   pred <- load_data %>%
     dplyr::group_by(site_name, id_site, id_channel, name) %>%

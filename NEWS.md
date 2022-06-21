@@ -1,3 +1,7 @@
+# evavelo 1.1.5
+
+- Fix bug in {openxlsx} when convering date-time on long object
+
 # evavelo 1.1.4
 
 - Fix a bug in distance calculation in 1.1.3 that was released too quickly. (bug introduced with latest version of {sf})
