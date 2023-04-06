@@ -1229,7 +1229,7 @@
     },
     "nloptr": {
       "Package": "nloptr",
-      "Version": "2.0.0",
+      "Version": "2.0.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "6e45c045fea34a9d0d1ceaa6fb7c4e91",
@@ -1489,7 +1489,7 @@
     },
     "quantreg": {
       "Package": "quantreg",
-      "Version": "5.88",
+      "Version": "5.94",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "b7d49f60ce945abad300246d4766326a",
@@ -1950,7 +1950,7 @@
     },
     "terra": {
       "Package": "terra",
-      "Version": "1.5-21",
+      "Version": "1.7-18",
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "a713f0d9f9a2b68af112a991adbfe5d5",
