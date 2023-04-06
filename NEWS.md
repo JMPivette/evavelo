@@ -1,3 +1,7 @@
+# evavelo 1.2.1
+
+- Increase input file maximum size to 500MB
+
 # evavelo 1.2.0
 
 - Clustering: don't allow Dendogram visualisation above 50 sites. (otherwise rendering is way too slow)

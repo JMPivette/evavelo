@@ -5,7 +5,7 @@
 #' @import shiny
 #' @noRd
 app_server <- function( input, output, session ) {
-  options(shiny.maxRequestSize=50*1024^2) ## Allow file upload up to 50MB To be adjusted if needed
+  options(shiny.maxRequestSize=500*1024^2) ## Allow file upload up to 500MB To be adjusted if needed
 
   ## Small r strategy
   r <- reactiveValues()
