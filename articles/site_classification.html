@@ -101,11 +101,11 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jmpivette.github.io/evavelo/">evavelo</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ycphs.github.io/openxlsx/index.html" class="external-link">openxlsx</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/rpkgs/factoextra" class="external-link">factoextra</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jmpivette.github.io/evavelo/">evavelo</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ycphs.github.io/openxlsx/index.html" class="external-link">openxlsx</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/rpkgs/factoextra" class="external-link">factoextra</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -130,51 +130,56 @@
 <strong>pred_we_09_11</strong>: La proportion de données entre 9h et 11h pendant les week-end</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">xlsx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"example-data/02_simplified.xlsx"</span>, package <span class="op">=</span> <span class="st">"evavelo"</span><span class="op">)</span>
-
-<span class="va">predictors</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="../reference/read_compt_auto.html">read_compt_auto</a></span><span class="op">(</span><span class="va">xlsx_path</span><span class="op">)</span>
-
-<span class="va">predictors</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 17 × 12</span></span>
-<span class="co">#&gt;    site_name         id_site id_channel name  pred_wd_wp pred_wd_ho pred_jul_aug</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Barbâtre          200000… 200000081  Barb…      0.641      0.714        0.627</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Blain             200000… 251000188  Blai…      0.519      0.599        0.449</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Bouin             200000… 200000082  Bouin      0.664      0.692        0.534</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Brétignolles Sur… 200000… 200000083  Brét…      0.587      0.680        0.421</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> La Chapelle sur … 200000… 200000238  La C…      0.621      0.605        0.277</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> La Tranche Sur M… 200000… 200000085  La T…      0.680      0.699        0.395</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Le Pellerin - 44  200000… 353246746  Le P…      0.587      0.616        0.444</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Le Pellerin - Na… 200000… 200000162  Le P…      0.534      0.598        0.350</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Les Sables d'Olo… 200000… 200000086  Les …      0.601      0.661        0.471</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Saint Hilaire De… 200000… 200000087  Sain…      0.626      0.719        0.579</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> Saint Jean De Mo… 200000… 200000088  Sain…      0.567      0.701        0.638</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> Saint-Brevin      200000… 200000187  Sain…      0.627      0.660        0.418</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">13</span> Sainte Radegonde… 200000… 200000089  Sain…      0.685      0.678        0.523</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">14</span> St-Michel-Chef-C… 200000… 200000231  St-M…      0.613      0.684        0.504</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">15</span> Tortière_nord     200000… 201000165  Tort…      0.849      0.755        0.168</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">16</span> Tortière_sud      200000… 201000166  Tort…      0.841      0.767        0.166</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">17</span> V6 Caurel-2012    200000… 201000176  V6 C…      0.719      0.724        0.481</span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 5 more variables: pred_pont_jul_aug &lt;dbl&gt;, pred_wp_17_9 &lt;dbl&gt;,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   pred_we_09_11 &lt;dbl&gt;, missing_perc &lt;dbl&gt;, n_missing_days &lt;int&gt;</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">xlsx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"example-data/02_simplified.xlsx"</span>, package <span class="op">=</span> <span class="st">"evavelo"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">predictors</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="../reference/read_compt_auto.html">read_compt_auto</a></span><span class="op">(</span><span class="va">xlsx_path</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">predictors</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 17 × 12</span></span></span>
+<span><span class="co">#&gt;    site_name         id_site id_channel name  pred_wd_wp pred_wd_ho pred_jul_aug</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Barbâtre          200000… 200000081  Barb…      0.641      0.714        0.627</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Blain             200000… 251000188  Blai…      0.519      0.599        0.449</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Bouin             200000… 200000082  Bouin      0.664      0.692        0.534</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Brétignolles Sur… 200000… 200000083  Brét…      0.587      0.680        0.421</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> La Chapelle sur … 200000… 200000238  La C…      0.621      0.605        0.277</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> La Tranche Sur M… 200000… 200000085  La T…      0.680      0.699        0.395</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Le Pellerin - 44  200000… 353246746  Le P…      0.587      0.616        0.444</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Le Pellerin - Na… 200000… 200000162  Le P…      0.534      0.598        0.350</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Les Sables d'Olo… 200000… 200000086  Les …      0.601      0.661        0.471</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Saint Hilaire De… 200000… 200000087  Sain…      0.626      0.719        0.579</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> Saint Jean De Mo… 200000… 200000088  Sain…      0.567      0.701        0.638</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> Saint-Brevin      200000… 200000187  Sain…      0.627      0.660        0.418</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> Sainte Radegonde… 200000… 200000089  Sain…      0.685      0.678        0.523</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> St-Michel-Chef-C… 200000… 200000231  St-M…      0.613      0.684        0.504</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> Tortière_nord     200000… 201000165  Tort…      0.849      0.755        0.168</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> Tortière_sud      200000… 201000166  Tort…      0.841      0.767        0.166</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> V6 Caurel-2012    200000… 201000176  V6 C…      0.719      0.724        0.481</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 5 more variables: pred_pont_jul_aug &lt;dbl&gt;, pred_wp_17_9 &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   pred_we_09_11 &lt;dbl&gt;, missing_perc &lt;dbl&gt;, n_missing_days &lt;int&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="classification-hierarchique">Classification hierarchique<a class="anchor" aria-label="anchor" href="#classification-hierarchique"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pred_df</span> <span class="op">&lt;-</span> <span class="va">predictors</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"pred"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> 
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pred_df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">predictors</span><span class="op">$</span><span class="va">name</span>,<span class="st">"("</span>,<span class="va">predictors</span><span class="op">$</span><span class="va">id_site</span>, <span class="st">")"</span><span class="op">)</span>
-
-
-<span class="va">clust</span> <span class="op">&lt;-</span> <span class="va">pred_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/factoextra/man/dist.html" class="external-link">dist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html" class="external-link">hclust</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ward.D2"</span><span class="op">)</span> 
-
-<span class="fu"><a href="https://rdrr.io/pkg/factoextra/man/fviz_dend.html" class="external-link">fviz_dend</a></span><span class="op">(</span><span class="va">clust</span>, cex <span class="op">=</span> <span class="fl">0.6</span>,k <span class="op">=</span> <span class="fl">5</span>, rect <span class="op">=</span> <span class="cn">TRUE</span>, horiz <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
-<span class="co">#&gt; "none")` instead.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pred_df</span> <span class="op">&lt;-</span> <span class="va">predictors</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"pred"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pred_df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">predictors</span><span class="op">$</span><span class="va">name</span>,<span class="st">"("</span>,<span class="va">predictors</span><span class="op">$</span><span class="va">id_site</span>, <span class="st">")"</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">clust</span> <span class="op">&lt;-</span> <span class="va">pred_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/dist.html" class="external-link">dist</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/hclust.html" class="external-link">hclust</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"ward.D2"</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/factoextra/man/fviz_dend.html" class="external-link">fviz_dend</a></span><span class="op">(</span><span class="va">clust</span>, cex <span class="op">=</span> <span class="fl">0.6</span>,k <span class="op">=</span> <span class="fl">5</span>, rect <span class="op">=</span> <span class="cn">TRUE</span>, horiz <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The `&lt;scale&gt;` argument of `guides()` cannot be `FALSE`. Use "none" instead as</span></span>
+<span><span class="co">#&gt; of ggplot2 3.3.4.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">factoextra</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/kassambara/factoextra/issues&gt;</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
 <p><img src="site_classification_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
 </div>
   </div>
@@ -196,7 +201,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

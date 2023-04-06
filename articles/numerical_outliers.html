@@ -185,84 +185,84 @@
 <h2 id="exemple-de-traitement">Exemple de traitement<a class="anchor" aria-label="anchor" href="#exemple-de-traitement"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Calcul des categories corrigées</span>
-<span class="va">categorie_corrige</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_evavelo.html">process_evavelo</a></span><span class="op">(</span>
-  <span class="fu">evavelo</span><span class="fu">::</span><span class="va"><a href="../reference/evavelo_example_geocoded.html">evavelo_example_geocoded</a></span>
-<span class="op">)</span><span class="op">$</span><span class="va">enquetes_post_traitement</span><span class="op">$</span><span class="va">categorie_corrige</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## Calcul des categories corrigées</span></span>
+<span><span class="va">categorie_corrige</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/process_evavelo.html">process_evavelo</a></span><span class="op">(</span></span>
+<span>  <span class="fu">evavelo</span><span class="fu">::</span><span class="va"><a href="../reference/evavelo_example_geocoded.html">evavelo_example_geocoded</a></span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="va">enquetes_post_traitement</span><span class="op">$</span><span class="va">categorie_corrige</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Recherche des valeurs anormales</span>
-<span class="fu"><a href="../reference/check_num_outliers.html">check_num_outliers</a></span><span class="op">(</span>evadata <span class="op">=</span> <span class="va">evavelo_example_geocoded</span>,
-                   categorie_corrige <span class="op">=</span>  <span class="va">categorie_corrige</span><span class="op">)</span>
-<span class="co">#&gt; $km_sortie</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 4</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Groups:   categorie_corrige [4]</span></span>
-<span class="co">#&gt;    id_quest categorie_corrige km_sortie raison         </span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 106aA24  Loisir                  100 dernier centile</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 106aA33  Loisir                    3 premier centile</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 141A9    Loisir                    3 premier centile</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 141A13   Loisir                   60 1.5 x IQR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 141A20   Loisir                   70 1.5 x IQR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 141A21   Loisir                   70 1.5 x IQR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 141A22   Utilitaire               70 dernier centile</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 141A23   Sportif                  70 1.5 x IQR      </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 141A67   Itinérant                12 premier centile</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 106bA7   Sportif                   2 premier centile</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> 106bA51  Sportif                 100 dernier centile</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> 4A1      Utilitaire                4 premier centile</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $dms</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 6</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Groups:   mode_heb_regroupe, categorie_lump [6]</span></span>
-<span class="co">#&gt;    id_quest mode_heb_regroupe       categorie_corri… categorie_lump   dms raison</span>
-<span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 141A1    Hôtels/Chambres d'hôtes Itinérant        All               18 derni…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 141A5    <span style="color: #BB0000;">NA</span>                      Loisir           All                3 premi…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 141A13   Campings                Loisir           All                3 premi…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 141A24   Non marchand            Itinérant        All              120 derni…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 141A44   Non marchand            Itinérant        All               50 1.5 x…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 141A55   Hôtels/Chambres d'hôtes Loisir           All                2 premi…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 141A60   Hébergements locatifs   Loisir           All                4 premi…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 141A67   Campings                Itinérant        All              365 = 365 </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 106bA37  Campings                Itinérant        All               90 1.5 x…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 4A7      Hôtels/Chambres d'hôtes Loisir           All               15 1.5 x…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">11</span> 4A18     Non marchand            Loisir           All               31 1.5 x…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">12</span> 38A19    Hébergements locatifs   Loisir           All               21 derni…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">13</span> 38A24    Auberges de jeunesse, … Itinérant        All               14 derni…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">14</span> 38A25    Auberges de jeunesse, … Itinérant        All                7 premi…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">15</span> 38A30    <span style="color: #BB0000;">NA</span>                      Loisir           All                5 derni…</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $revenu</span>
-<span class="co">#&gt;   id_quest revenu          raison</span>
-<span class="co">#&gt; 1  106aA29      0 premier centile</span>
-<span class="co">#&gt; 2   141A40  20000 dernier centile</span>
-<span class="co">#&gt; 3  106bA20  10000       1.5 x IQR</span>
-<span class="co">#&gt; 4  106bA38  10000       1.5 x IQR</span>
-<span class="co">#&gt; 5  106bA50  10000       1.5 x IQR</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $tour_dep_cat</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 4</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Groups:   depense, categorie_corrige [0]</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 4 variables: id_quest &lt;chr&gt;, categorie_corrige &lt;chr&gt;, depense &lt;chr&gt;,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   valeur &lt;dbl&gt;</span></span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $tour_dep_heb</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Groups:   depense, mode_heb_regroupe [4]</span></span>
-<span class="co">#&gt;   id_quest mode_heb_regroupe                               depense valeur raison</span>
-<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 106aA12  Hôtels/Chambres d'hôtes                         tour_d…    160 derni…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 141A28   Campings                                        tour_d…     75 derni…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 106bA5   Hébergements locatifs                           tour_d…    300 derni…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 38A19    Hébergements locatifs                           tour_d…      9 premi…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 38A24    Auberges de jeunesse, gîte d’étapes, de groupes tour_d…     50 derni…</span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 38A25    Auberges de jeunesse, gîte d’étapes, de groupes tour_d…     35 premi…</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $tour_dep_transp</span>
-<span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 4</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># Groups:   mode_transp_lump [0]</span></span>
-<span class="co">#&gt; <span style="color: #949494;"># … with 4 variables: id_quest &lt;chr&gt;, mode_transp_jour &lt;chr&gt;,</span></span>
-<span class="co">#&gt; <span style="color: #949494;">#   tour_dep_transp &lt;dbl&gt;, mode_transp_lump &lt;chr&gt;</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## Recherche des valeurs anormales</span></span>
+<span><span class="fu"><a href="../reference/check_num_outliers.html">check_num_outliers</a></span><span class="op">(</span>evadata <span class="op">=</span> <span class="va">evavelo_example_geocoded</span>,</span>
+<span>                   categorie_corrige <span class="op">=</span>  <span class="va">categorie_corrige</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $km_sortie</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   categorie_corrige [4]</span></span></span>
+<span><span class="co">#&gt;    id_quest categorie_corrige km_sortie raison         </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 106aA24  Loisir                  100 dernier centile</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 106aA33  Loisir                    3 premier centile</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 141A9    Loisir                    3 premier centile</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 141A13   Loisir                   60 1.5 x IQR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 141A20   Loisir                   70 1.5 x IQR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 141A21   Loisir                   70 1.5 x IQR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 141A22   Utilitaire               70 dernier centile</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 141A23   Sportif                  70 1.5 x IQR      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 141A67   Itinérant                12 premier centile</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 106bA7   Sportif                   2 premier centile</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> 106bA51  Sportif                 100 dernier centile</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> 4A1      Utilitaire                4 premier centile</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $dms</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 15 × 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   mode_heb_regroupe, categorie_lump [6]</span></span></span>
+<span><span class="co">#&gt;    id_quest mode_heb_regroupe      categorie_corrige categorie_lump   dms raison</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 141A1    Hôtels/Chambres d'hôt… Itinérant         All               18 derni…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 141A5    <span style="color: #BB0000;">NA</span>                     Loisir            All                3 premi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 141A13   Campings               Loisir            All                3 premi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 141A24   Non marchand           Itinérant         All              120 derni…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 141A44   Non marchand           Itinérant         All               50 1.5 x…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 141A55   Hôtels/Chambres d'hôt… Loisir            All                2 premi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 141A60   Hébergements locatifs  Loisir            All                4 premi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 141A67   Campings               Itinérant         All              365 = 365 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 106bA37  Campings               Itinérant         All               90 1.5 x…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 4A7      Hôtels/Chambres d'hôt… Loisir            All               15 1.5 x…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> 4A18     Non marchand           Loisir            All               31 1.5 x…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> 38A19    Hébergements locatifs  Loisir            All               21 derni…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> 38A24    Auberges de jeunesse,… Itinérant         All               14 derni…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> 38A25    Auberges de jeunesse,… Itinérant         All                7 premi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> 38A30    <span style="color: #BB0000;">NA</span>                     Loisir            All                5 derni…</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $revenu</span></span>
+<span><span class="co">#&gt;   id_quest revenu          raison</span></span>
+<span><span class="co">#&gt; 1  106aA29      0 premier centile</span></span>
+<span><span class="co">#&gt; 2   141A40  20000 dernier centile</span></span>
+<span><span class="co">#&gt; 3  106bA20  10000       1.5 x IQR</span></span>
+<span><span class="co">#&gt; 4  106bA38  10000       1.5 x IQR</span></span>
+<span><span class="co">#&gt; 5  106bA50  10000       1.5 x IQR</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $tour_dep_cat</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   depense, categorie_corrige [0]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 variables: id_quest &lt;chr&gt;, categorie_corrige &lt;chr&gt;, depense &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   valeur &lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $tour_dep_heb</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   depense, mode_heb_regroupe [4]</span></span></span>
+<span><span class="co">#&gt;   id_quest mode_heb_regroupe                               depense valeur raison</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 106aA12  Hôtels/Chambres d'hôtes                         tour_d…    160 derni…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 141A28   Campings                                        tour_d…     75 derni…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 106bA5   Hébergements locatifs                           tour_d…    300 derni…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 38A19    Hébergements locatifs                           tour_d…      9 premi…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 38A24    Auberges de jeunesse, gîte d’étapes, de groupes tour_d…     50 derni…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 38A25    Auberges de jeunesse, gîte d’étapes, de groupes tour_d…     35 premi…</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $tour_dep_transp</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   mode_transp_lump [0]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 variables: id_quest &lt;chr&gt;, mode_transp_jour &lt;chr&gt;, tour_dep_transp &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   mode_transp_lump &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
   </div>
 
@@ -283,7 +283,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

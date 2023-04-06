@@ -105,163 +105,173 @@
 </h2>
 <p>Import des données</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Full data</span>
-<span class="co">#xlsx_path &lt;- system.file("example-data/01_all.xlsx", package = "evavelo")</span>
-<span class="co"># Corrected data</span>
-<span class="co">#xlsx_path &lt;- here::here("inst", "example-data", "01a_all_correct.xlsx")</span>
-<span class="co"># Reduced size data</span>
-<span class="va">xlsx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"example-data/02_simplified.xlsx"</span>, package <span class="op">=</span> <span class="st">"evavelo"</span><span class="op">)</span>
-<span class="co">#xlsx_path &lt;- here::here("inst", "example-data", "02_simplified.xlsx")</span>
-
-
-<span class="va">eva_data</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="../reference/read_evavelo.html">read_evavelo</a></span><span class="op">(</span><span class="va">xlsx_path</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Full data</span></span>
+<span><span class="co">#xlsx_path &lt;- system.file("example-data/01_all.xlsx", package = "evavelo")</span></span>
+<span><span class="co"># Corrected data</span></span>
+<span><span class="co">#xlsx_path &lt;- here::here("inst", "example-data", "01a_all_correct.xlsx")</span></span>
+<span><span class="co"># Reduced size data</span></span>
+<span><span class="va">xlsx_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"example-data/02_simplified.xlsx"</span>, package <span class="op">=</span> <span class="st">"evavelo"</span><span class="op">)</span></span>
+<span><span class="co">#xlsx_path &lt;- here::here("inst", "example-data", "02_simplified.xlsx")</span></span>
+<span></span>
+<span></span>
+<span><span class="va">eva_data</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="../reference/read_evavelo.html">read_evavelo</a></span><span class="op">(</span><span class="va">xlsx_path</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="test-input-values">Test input values<a class="anchor" aria-label="anchor" href="#test-input-values"></a>
 </h3>
 <p>Si l’object eva_data n’a pas été géocodé au préalable, <code><a href="../reference/process_evavelo.html">process_evavelo()</a></code> va géocoder les villes avant de faire le traitement. Un log du géocodage apparaitra dans les messages.</p>
 <p>La fonction retourne une liste de valeurs créées ou modifiées.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="../reference/process_evavelo.html">process_evavelo</a></span><span class="op">(</span><span class="va">eva_data</span><span class="op">)</span>
-<span class="co">#&gt; Vérification des noms de communes</span>
-<span class="co">#&gt; ---------------------------------</span>
-<span class="co">#&gt; ...Vérification de table_communes.............</span>
-<span class="co">#&gt; Les communes suivantes n'existent plus et doivent etre remplacées par les communes nouvelles:</span>
-<span class="co">#&gt;  Hiers-Brouage(17189) -&gt; Marennes-Hiers-Brouage(17219)</span>
-<span class="co">#&gt;  Marennes(17219) -&gt; Marennes-Hiers-Brouage(17219)</span>
-<span class="co">#&gt;  Locmaria-Berrien(29129) -&gt; Poullaouen(29227)</span>
-<span class="co">#&gt;  Château-d'Olonne(85060) -&gt; Les Sables-d'Olonne(85194)</span>
-<span class="co">#&gt;  Olonne-sur-Mer(85166) -&gt; Les Sables-d'Olonne(85194)</span>
-<span class="co">#&gt; Impossible de reconnaître les communes suivantes:</span>
-<span class="co">#&gt;  Lanouée(56102)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ...Vérification de ville_res.............</span>
-<span class="co">#&gt; Les villes suivantes ont ete ignorées. Propositions de corrections:</span>
-<span class="co">#&gt;  Angoulins-sur-Mer (17890) -&gt;    Angoulins (17690)</span>
-<span class="co">#&gt;  Angoulins-sur-Mer (17691) -&gt;    Angoulins (17690)</span>
-<span class="co">#&gt;  Angoulins-sur-Mer (17960) -&gt;    Angoulins (17690)</span>
-<span class="co">#&gt;  Angoulins-sur-Mer (17690) -&gt;    Angoulins (17690)</span>
-<span class="co">#&gt;  Arboras (34151) -&gt;  Arboras (34150)</span>
-<span class="co">#&gt;  Avallon (89201) -&gt;  Avallon (89200)</span>
-<span class="co">#&gt;  Avanton (86171) -&gt;  Avanton (86170)</span>
-<span class="co">#&gt;  Cachan (94231) -&gt;   Cachan (94230)</span>
-<span class="co">#&gt;  Chatelaillon (17340) -&gt;     Châtelaillon-Plage (17340)</span>
-<span class="co">#&gt;  Fouras (17451) -&gt;   Fouras (17450)</span>
-<span class="co">#&gt;  Le Mans (72700) -&gt;  Le Mans (72100)</span>
-<span class="co">#&gt;  Plouénan (39420) -&gt;     Plouénan (29420)</span>
-<span class="co">#&gt;  Rennes (35160) -&gt;   Rennes (35000)</span>
-<span class="co">#&gt;  Rivedoux (17940) -&gt;     Rivedoux-Plage (17940)</span>
-<span class="co">#&gt;  Rivedoux-Plage (17590) -&gt;   Rivedoux-Plage (17940)</span>
-<span class="co">#&gt;  Saint-Germain-du-Puy (18391) -&gt;     Saint-Germain-du-Puy (18390)</span>
-<span class="co">#&gt;  Saint-Joseph (97980) -&gt;     Saint-Joseph (97480)</span>
-<span class="co">#&gt;  Saint-Pol-de-Léon (22250) -&gt;    Saint-Pol-de-Léon (29250)</span>
-<span class="co">#&gt; Interprétation de noms de communes étrangères:</span>
-<span class="co">#&gt;  Chine : Benjing -&gt; Beijing</span>
-<span class="co">#&gt; Villes inconnues:</span>
-<span class="co">#&gt;  Noor mout (Pays-Bas)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ...Vérification de ville_heb.............</span>
-<span class="co">#&gt; Impossible de trouver les communes suivantes:</span>
-<span class="co">#&gt;   Camping-municipal-henvic</span>
-<span class="co">#&gt;   Chaix</span>
-<span class="co">#&gt;   Île de Ré</span>
-<span class="co">#&gt; Interpretation de communes mal nommées:</span>
-<span class="co">#&gt;  Chatelaillon -&gt; Châtelaillon-Plage (17094) </span>
-<span class="co">#&gt;  Saint-Pol -&gt; Saint-Pol-de-Léon (29259)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ...Vérification de iti_depart_itineraire.............</span>
-<span class="co">#&gt; Impossible de trouver les communes suivantes:</span>
-<span class="co">#&gt;   Uméa</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ...Vérification de iti_arrivee_itineraire.............</span>
-<span class="co">#&gt; Impossible de trouver les communes suivantes:</span>
-<span class="co">#&gt;   Dortmund</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ...Vérification de nom_site_enq.............</span>
-<span class="co">#&gt; Calcul des distances...</span>
-<span class="co">#&gt; Les villes de départ d'itinéraire suivantes sont trop éloignées de l'itinéraire (&gt;30km):</span>
-<span class="co">#&gt;  St Brieuc (38A23)</span>
-<span class="co">#&gt;  </span>
-<span class="co">#&gt; Les villes d'arrivée d'itinéraire suivantes sont trop éloignées de l'itinéraire (&gt;30km):</span>
-<span class="co">#&gt;  Paris (38A34)</span>
-<span class="co">#&gt;  </span>
-<span class="co">#&gt; Liste des régions de l'itinéraire à partir de tables_communes:</span>
-<span class="co">#&gt;  Bretagne, Nouvelle-Aquitaine, Pays de la Loire</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Correction de catégories pour 17 questionnaires ....</span>
-<span class="co">#&gt; Il n'a pas été possible de corriger les catégories de 3 questionnaire(s).</span>
-<span class="co">#&gt;  La catégorie du déclarant sera utilisée:</span>
-<span class="co">#&gt;  141A35, 38A45, 38A46</span>
-
-<span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">result</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; $comptages_man_post_traitements</span>
-<span class="co">#&gt;    id_quest categorie_visuelle_cycliste_corrige</span>
-<span class="co">#&gt; 1      &lt;NA&gt;                                &lt;NA&gt;</span>
-<span class="co">#&gt; 2      &lt;NA&gt;                              Loisir</span>
-<span class="co">#&gt; 3      &lt;NA&gt;                                &lt;NA&gt;</span>
-<span class="co">#&gt; 4      &lt;NA&gt;                              Loisir</span>
-<span class="co">#&gt; 5    106aA1                             Sportif</span>
-<span class="co">#&gt; 6      &lt;NA&gt;                                &lt;NA&gt;</span>
-<span class="co">#&gt; 7    106aA2                          Utilitaire</span>
-<span class="co">#&gt; 8      &lt;NA&gt;                                &lt;NA&gt;</span>
-<span class="co">#&gt; 9      &lt;NA&gt;                                &lt;NA&gt;</span>
-<span class="co">#&gt; 10   106aA3                             Sportif</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $enquetes_post_traitement</span>
-<span class="co">#&gt;    id_quest categorie_corrige distance_domicile_enq distance_dom_enq_reelle</span>
-<span class="co">#&gt; 1    106aA1           Sportif             0.5241257               0.7297089</span>
-<span class="co">#&gt; 2    106aA2        Utilitaire                    NA                      NA</span>
-<span class="co">#&gt; 3    106aA3           Sportif             5.0566412               6.7403990</span>
-<span class="co">#&gt; 4    106aA4            Loisir             0.5241257               0.7297089</span>
-<span class="co">#&gt; 5    106aA5           Sportif                    NA                      NA</span>
-<span class="co">#&gt; 6    106aA6            Loisir           156.9983854             172.7165825</span>
-<span class="co">#&gt; 7    106aA7            Loisir                    NA                      NA</span>
-<span class="co">#&gt; 8  106aA8-1            Loisir             8.4458138              10.9513746</span>
-<span class="co">#&gt; 9  106aA8-2            Loisir             8.4458138              10.9513746</span>
-<span class="co">#&gt; 10  106aA10           Sportif             0.5241257               0.7297089</span>
-<span class="co">#&gt;    distance_dom_enq_reelle_regions distance_dom_enq_reelle_france</span>
-<span class="co">#&gt; 1                        0.7297089                              0</span>
-<span class="co">#&gt; 2                               NA                             NA</span>
-<span class="co">#&gt; 3                        6.7403990                              0</span>
-<span class="co">#&gt; 4                        0.7297089                              0</span>
-<span class="co">#&gt; 5                               NA                             NA</span>
-<span class="co">#&gt; 6                      172.7165825                              0</span>
-<span class="co">#&gt; 7                               NA                             NA</span>
-<span class="co">#&gt; 8                       10.9513746                              0</span>
-<span class="co">#&gt; 9                       10.9513746                              0</span>
-<span class="co">#&gt; 10                       0.7297089                              0</span>
-<span class="co">#&gt;    distance_dom_enq_reelle_etranger distance_heb_enq distance_heb_enq_reelle</span>
-<span class="co">#&gt; 1                                 0               NA                      NA</span>
-<span class="co">#&gt; 2                                NA               NA                      NA</span>
-<span class="co">#&gt; 3                                 0               NA                      NA</span>
-<span class="co">#&gt; 4                                 0               NA                      NA</span>
-<span class="co">#&gt; 5                                NA               NA                      NA</span>
-<span class="co">#&gt; 6                                 0               NA                      NA</span>
-<span class="co">#&gt; 7                                NA               NA                      NA</span>
-<span class="co">#&gt; 8                                 0               NA                      NA</span>
-<span class="co">#&gt; 9                                 0               NA                      NA</span>
-<span class="co">#&gt; 10                                0               NA                      NA</span>
-<span class="co">#&gt;    iti_dep_iti_valide id_section_origine iti_arr_iti_valide id_section_dest</span>
-<span class="co">#&gt; 1                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 2                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 3                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 4                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 5                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 6                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 7                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 8                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 9                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt; 10               &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span>
-<span class="co">#&gt;    ville_heb_cog_lau ville_res_cog_lau</span>
-<span class="co">#&gt; 1               &lt;NA&gt;             17300</span>
-<span class="co">#&gt; 2               &lt;NA&gt;              &lt;NA&gt;</span>
-<span class="co">#&gt; 3               &lt;NA&gt;             17028</span>
-<span class="co">#&gt; 4               &lt;NA&gt;             17300</span>
-<span class="co">#&gt; 5               &lt;NA&gt;              &lt;NA&gt;</span>
-<span class="co">#&gt; 6               &lt;NA&gt;             33318</span>
-<span class="co">#&gt; 7               &lt;NA&gt;              &lt;NA&gt;</span>
-<span class="co">#&gt; 8               &lt;NA&gt;             17391</span>
-<span class="co">#&gt; 9               &lt;NA&gt;             17391</span>
-<span class="co">#&gt; 10              &lt;NA&gt;             17300</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">evavelo</span><span class="fu">::</span><span class="fu"><a href="../reference/process_evavelo.html">process_evavelo</a></span><span class="op">(</span><span class="va">eva_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Vérification des noms de communes</span></span>
+<span><span class="co">#&gt; ---------------------------------</span></span>
+<span><span class="co">#&gt; ...Vérification de table_communes.............</span></span>
+<span><span class="co">#&gt; Les communes suivantes n'existent plus et doivent etre remplacées par les communes nouvelles:</span></span>
+<span><span class="co">#&gt;  Hiers-Brouage(17189) -&gt; Marennes-Hiers-Brouage(17219)</span></span>
+<span><span class="co">#&gt;  Marennes(17219) -&gt; Marennes-Hiers-Brouage(17219)</span></span>
+<span><span class="co">#&gt;  Locmaria-Berrien(29129) -&gt; Poullaouen(29227)</span></span>
+<span><span class="co">#&gt;  Les Forges(56059) -&gt; Forges de Lanouée(56102)</span></span>
+<span><span class="co">#&gt;  Château-d'Olonne(85060) -&gt; Les Sables-d'Olonne(85194)</span></span>
+<span><span class="co">#&gt;  Olonne-sur-Mer(85166) -&gt; Les Sables-d'Olonne(85194)</span></span>
+<span><span class="co">#&gt; Impossible de reconnaître les communes suivantes:</span></span>
+<span><span class="co">#&gt;  Lanouée(56102)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ...Vérification de ville_res.............</span></span>
+<span><span class="co">#&gt; Les villes suivantes ont ete ignorées. Propositions de corrections:</span></span>
+<span><span class="co">#&gt;  Angoulins-sur-Mer (17890) -&gt;    Angoulins (17690)</span></span>
+<span><span class="co">#&gt;  Angoulins-sur-Mer (17690) -&gt;    Angoulins (17690)</span></span>
+<span><span class="co">#&gt;  Angoulins-sur-Mer (17691) -&gt;    Angoulins (17690)</span></span>
+<span><span class="co">#&gt;  Angoulins-sur-Mer (17960) -&gt;    Angoulins (17690)</span></span>
+<span><span class="co">#&gt;  Arboras (34151) -&gt;  Arboras (34150)</span></span>
+<span><span class="co">#&gt;  Avallon (89201) -&gt;  Avallon (89200)</span></span>
+<span><span class="co">#&gt;  Avanton (86171) -&gt;  Avanton (86170)</span></span>
+<span><span class="co">#&gt;  Cachan (94231) -&gt;   Cachan (94230)</span></span>
+<span><span class="co">#&gt;  Chatelaillon (17340) -&gt;     Châtelaillon-Plage (17340)</span></span>
+<span><span class="co">#&gt;  Fouras (17451) -&gt;   Fouras (17450)</span></span>
+<span><span class="co">#&gt;  Le Mans (72700) -&gt;  Le Mans (72100)</span></span>
+<span><span class="co">#&gt;  Plouénan (39420) -&gt;     Plouénan (29420)</span></span>
+<span><span class="co">#&gt;  Rennes (35160) -&gt;   Rennes (35700)</span></span>
+<span><span class="co">#&gt;  Rivedoux (17940) -&gt;     Rivedoux-Plage (17940)</span></span>
+<span><span class="co">#&gt;  Rivedoux-Plage (17590) -&gt;   Rivedoux-Plage (17940)</span></span>
+<span><span class="co">#&gt;  Saint-Germain-du-Puy (18391) -&gt;     Saint-Germain-du-Puy (18390)</span></span>
+<span><span class="co">#&gt;  Saint-Joseph (97980) -&gt;     Saint-Joseph (97480)</span></span>
+<span><span class="co">#&gt;  Saint-Pol-de-Léon (22250) -&gt;    Saint-Pol-de-Léon (29250)</span></span>
+<span><span class="co">#&gt; Interprétation de noms de communes étrangères:</span></span>
+<span><span class="co">#&gt;  Chine : Benjing -&gt; Beijing</span></span>
+<span><span class="co">#&gt; Warning in query_api(api_url, api_query_parameters, method = method): Bad</span></span>
+<span><span class="co">#&gt; Gateway (HTTP 502).</span></span>
+<span><span class="co">#&gt; Error: &lt;html&gt;</span></span>
+<span><span class="co">#&gt; &lt;head&gt;&lt;title&gt;502 Bad Gateway&lt;/title&gt;&lt;/head&gt;</span></span>
+<span><span class="co">#&gt; &lt;body&gt;</span></span>
+<span><span class="co">#&gt; &lt;center&gt;&lt;h1&gt;502 Bad Gateway&lt;/h1&gt;&lt;/center&gt;</span></span>
+<span><span class="co">#&gt; &lt;hr&gt;</span></span>
+<span><span class="co">#&gt; Villes inconnues:</span></span>
+<span><span class="co">#&gt;  Noor mout (Pays-Bas)</span></span>
+<span><span class="co">#&gt;  Cowes (Royaume-Uni)</span></span>
+<span><span class="co">#&gt;  Cowes (Royaume-Uni)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ...Vérification de ville_heb.............</span></span>
+<span><span class="co">#&gt; Impossible de trouver les communes suivantes:</span></span>
+<span><span class="co">#&gt;   Camping-municipal-henvic</span></span>
+<span><span class="co">#&gt;   Chaix</span></span>
+<span><span class="co">#&gt;   Île de Ré</span></span>
+<span><span class="co">#&gt; Interpretation de communes mal nommées:</span></span>
+<span><span class="co">#&gt;  Chatelaillon -&gt; Châtelaillon-Plage (17094) </span></span>
+<span><span class="co">#&gt;  Saint-Pol -&gt; Saint-Pol-de-Léon (29259)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ...Vérification de iti_depart_itineraire.............</span></span>
+<span><span class="co">#&gt; Impossible de trouver les communes suivantes:</span></span>
+<span><span class="co">#&gt;   Uméa</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ...Vérification de iti_arrivee_itineraire.............</span></span>
+<span><span class="co">#&gt; Impossible de trouver les communes suivantes:</span></span>
+<span><span class="co">#&gt;   Dortmund</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ...Vérification de nom_site_enq.............</span></span>
+<span><span class="co">#&gt; Calcul des distances...</span></span>
+<span><span class="co">#&gt; Les villes de départ d'itinéraire suivantes sont trop éloignées de l'itinéraire (&gt;30km):</span></span>
+<span><span class="co">#&gt;  St Brieuc (38A23)</span></span>
+<span><span class="co">#&gt;  </span></span>
+<span><span class="co">#&gt; Les villes d'arrivée d'itinéraire suivantes sont trop éloignées de l'itinéraire (&gt;30km):</span></span>
+<span><span class="co">#&gt;  Paris (38A34)</span></span>
+<span><span class="co">#&gt;  </span></span>
+<span><span class="co">#&gt; Liste des régions de l'itinéraire à partir de tables_communes:</span></span>
+<span><span class="co">#&gt;  Bretagne, Nouvelle-Aquitaine, Pays de la Loire</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Correction de catégories pour 17 questionnaires ....</span></span>
+<span><span class="co">#&gt; Il n'a pas été possible de corriger les catégories de 3 questionnaire(s).</span></span>
+<span><span class="co">#&gt;  La catégorie du déclarant sera utilisée:</span></span>
+<span><span class="co">#&gt;  141A35, 38A45, 38A46</span></span>
+<span></span>
+<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">result</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">.x</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $comptages_man_post_traitements</span></span>
+<span><span class="co">#&gt;    id_quest categorie_visuelle_cycliste_corrige</span></span>
+<span><span class="co">#&gt; 1      &lt;NA&gt;                                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2      &lt;NA&gt;                              Loisir</span></span>
+<span><span class="co">#&gt; 3      &lt;NA&gt;                                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4      &lt;NA&gt;                              Loisir</span></span>
+<span><span class="co">#&gt; 5    106aA1                             Sportif</span></span>
+<span><span class="co">#&gt; 6      &lt;NA&gt;                                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 7    106aA2                          Utilitaire</span></span>
+<span><span class="co">#&gt; 8      &lt;NA&gt;                                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 9      &lt;NA&gt;                                &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 10   106aA3                             Sportif</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $enquetes_post_traitement</span></span>
+<span><span class="co">#&gt;    id_quest categorie_corrige distance_domicile_enq distance_dom_enq_reelle</span></span>
+<span><span class="co">#&gt; 1    106aA1           Sportif             0.5241257               0.7297089</span></span>
+<span><span class="co">#&gt; 2    106aA2        Utilitaire                    NA                      NA</span></span>
+<span><span class="co">#&gt; 3    106aA3           Sportif             5.0566412               6.7403990</span></span>
+<span><span class="co">#&gt; 4    106aA4            Loisir             0.5241257               0.7297089</span></span>
+<span><span class="co">#&gt; 5    106aA5           Sportif                    NA                      NA</span></span>
+<span><span class="co">#&gt; 6    106aA6            Loisir           156.9983854             172.7165825</span></span>
+<span><span class="co">#&gt; 7    106aA7            Loisir                    NA                      NA</span></span>
+<span><span class="co">#&gt; 8  106aA8-1            Loisir             8.4458138              10.9513746</span></span>
+<span><span class="co">#&gt; 9  106aA8-2            Loisir             8.4458138              10.9513746</span></span>
+<span><span class="co">#&gt; 10  106aA10           Sportif             0.5241257               0.7297089</span></span>
+<span><span class="co">#&gt;    distance_dom_enq_reelle_regions distance_dom_enq_reelle_france</span></span>
+<span><span class="co">#&gt; 1                        0.7297089                              0</span></span>
+<span><span class="co">#&gt; 2                               NA                             NA</span></span>
+<span><span class="co">#&gt; 3                        6.7403990                              0</span></span>
+<span><span class="co">#&gt; 4                        0.7297089                              0</span></span>
+<span><span class="co">#&gt; 5                               NA                             NA</span></span>
+<span><span class="co">#&gt; 6                      172.7165825                              0</span></span>
+<span><span class="co">#&gt; 7                               NA                             NA</span></span>
+<span><span class="co">#&gt; 8                       10.9513746                              0</span></span>
+<span><span class="co">#&gt; 9                       10.9513746                              0</span></span>
+<span><span class="co">#&gt; 10                       0.7297089                              0</span></span>
+<span><span class="co">#&gt;    distance_dom_enq_reelle_etranger distance_heb_enq distance_heb_enq_reelle</span></span>
+<span><span class="co">#&gt; 1                                 0               NA                      NA</span></span>
+<span><span class="co">#&gt; 2                                NA               NA                      NA</span></span>
+<span><span class="co">#&gt; 3                                 0               NA                      NA</span></span>
+<span><span class="co">#&gt; 4                                 0               NA                      NA</span></span>
+<span><span class="co">#&gt; 5                                NA               NA                      NA</span></span>
+<span><span class="co">#&gt; 6                                 0               NA                      NA</span></span>
+<span><span class="co">#&gt; 7                                NA               NA                      NA</span></span>
+<span><span class="co">#&gt; 8                                 0               NA                      NA</span></span>
+<span><span class="co">#&gt; 9                                 0               NA                      NA</span></span>
+<span><span class="co">#&gt; 10                                0               NA                      NA</span></span>
+<span><span class="co">#&gt;    iti_dep_iti_valide id_section_origine iti_arr_iti_valide id_section_dest</span></span>
+<span><span class="co">#&gt; 1                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 2                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 3                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 4                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 5                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 6                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 7                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 8                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 9                &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt; 10               &lt;NA&gt;                 NA               &lt;NA&gt;              NA</span></span>
+<span><span class="co">#&gt;    ville_heb_cog_lau ville_res_cog_lau</span></span>
+<span><span class="co">#&gt; 1               &lt;NA&gt;             17300</span></span>
+<span><span class="co">#&gt; 2               &lt;NA&gt;              &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3               &lt;NA&gt;             17028</span></span>
+<span><span class="co">#&gt; 4               &lt;NA&gt;             17300</span></span>
+<span><span class="co">#&gt; 5               &lt;NA&gt;              &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6               &lt;NA&gt;             33318</span></span>
+<span><span class="co">#&gt; 7               &lt;NA&gt;              &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 8               &lt;NA&gt;             17391</span></span>
+<span><span class="co">#&gt; 9               &lt;NA&gt;             17391</span></span>
+<span><span class="co">#&gt; 10              &lt;NA&gt;             17300</span></span></code></pre></div>
 </div>
 </div>
   </div>
@@ -283,7 +293,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
